@@ -1,0 +1,6 @@
+{
+  "manifest_version": 3,
+  "name": "TeachMe AI",
+  "version": "1.0.0",
+  "description": "this is a companion tool to give you meaning to sentences and words in context of the webpage"
+}
