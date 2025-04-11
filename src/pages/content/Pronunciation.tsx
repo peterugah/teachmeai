@@ -11,7 +11,7 @@ export const Pronunciation = ({ title, content }: Props) => {
 			<div className="flex items-center justify-between">
 				<p className="truncate mr-4">{content}</p>
 				<button>
-					<SpeakerWaveIcon className=" text-gray-800 hover:text-black size-5 cursor-pointer" />
+					<SpeakerWaveIcon className=" text-gray-800 hover:text-black size-7 cursor-pointer hover:bg-gray-100 p-1 rounded-[5px]" />
 				</button>
 			</div>
 		</div>

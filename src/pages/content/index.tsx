@@ -1,4 +1,6 @@
+import { AskMore } from "./AskMore";
 import { Content } from "./Content";
+import { Footer } from "./Footer";
 import { Header } from "./Header";
 import { Pronunciation } from "./Pronunciation";
 
@@ -21,7 +23,9 @@ export function Index() {
 				adipisci eaque nemo explicabo voluptatem tempore eligendi nobis dolorum
 				harum."
 				/>
+				<AskMore />
 			</div>
+			<Footer />
 		</div>
 	);
 }
