@@ -10,12 +10,13 @@ import { SectionThree } from "./SectionThree";
 
 export function Index() {
 	const word = "open";
+	const webPage = "www.example.com";
 	const language = settingsStore.useSettingsStore.getState().language;
 	const sectionOne = searchStore.useSearchStore.getState().sectionOne;
 	const sectionTwo = searchStore.useSearchStore.getState().sectionTwo;
 	const response = searchStore.useSearchStore.getState().responses;
 	const sortedResponses = response
-		? searchStore.sortByTimestamp(response[word][language] || [])
+		? searchStore.sortByTimestamp(response[webPage][word][language] || [])
 		: [];
 
 	return (
@@ -24,38 +25,69 @@ export function Index() {
 			<div className="p-4">
 				{sectionOne ? (
 					<SectionOne
-						type={searchStore.getLanguageType(language, word, sectionOne)}
-						title={searchStore.getLanguageTitle(language, word, sectionOne)}
-						content={searchStore.getLanguageContent(language, word, sectionOne)}
+						type={searchStore.getLanguageType(
+							language,
+							webPage,
+							word,
+							sectionOne
+						)}
+						title={searchStore.getLanguageTitle(
+							language,
+							webPage,
+							word,
+							sectionOne
+						)}
+						content={searchStore.getLanguageContent(
+							language,
+							webPage,
+							word,
+							sectionOne
+						)}
 					/>
 				) : (
 					""
 				)}
 				{sectionTwo ? (
 					<SectionTwo
-						id={searchStore.getLanguageId(language, word, sectionTwo)}
+						id={searchStore.getLanguageId(language, webPage, word, sectionTwo)}
 						timestamp={searchStore.getLanguageTimestamp(
 							language,
+							webPage,
 							word,
 							sectionTwo
 						)}
-						type={searchStore.getLanguageType(language, word, sectionTwo)}
-						title={searchStore.getLanguageTitle(language, word, sectionTwo)}
-						content={searchStore.getLanguageContent(language, word, sectionTwo)}
+						type={searchStore.getLanguageType(
+							language,
+							webPage,
+							word,
+							sectionTwo
+						)}
+						title={searchStore.getLanguageTitle(
+							language,
+							webPage,
+							word,
+							sectionTwo
+						)}
+						content={searchStore.getLanguageContent(
+							language,
+							webPage,
+							word,
+							sectionTwo
+						)}
 					/>
 				) : (
 					""
 				)}
 				{sortedResponses.map((response) => (
 					<Response
-						key={searchStore.getLanguageId(language, word, {
-							[word]: { [language]: response },
+						key={searchStore.getLanguageId(language, webPage, word, {
+							[webPage]: { [word]: { [language]: response } },
 						})}
-						type={searchStore.getLanguageType(language, word, {
-							[word]: { [language]: response },
+						type={searchStore.getLanguageType(language, webPage, word, {
+							[webPage]: { [word]: { [language]: response } },
 						})}
-						content={searchStore.getLanguageContent(language, word, {
-							[word]: { [language]: response },
+						content={searchStore.getLanguageContent(language, webPage, word, {
+							[webPage]: { [word]: { [language]: response } },
 						})}
 					/>
 				))}

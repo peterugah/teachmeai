@@ -11,9 +11,9 @@ export const SectionOne = ({
 		<div>
 			<h1 className="font-bold mb-2">{title}</h1>
 			<div className="flex items-center justify-between">
-				<p className="truncate mr-4">
+				<div className="truncate mr-4">
 					<Response content={content} type={type} />
-				</p>
+				</div>
 				<button>
 					<SpeakerWaveIcon className=" text-gray-800 hover:text-black size-7 cursor-pointer hover:bg-gray-100 p-1 rounded-[5px]" />
 				</button>
