@@ -5,6 +5,7 @@ type RequestState = "loading" | "error" | "done";
 export type SearchType = "user" | "ai";
 
 export interface SearchBaseContent {
+  id: string;
   title: string;
   content: string;
   timestamp: number;
@@ -27,6 +28,7 @@ const initialState: SearchStore = {
   websiteContent: "",
   sectionTwo: {
     "EN": {
+      id: "1",
       type: "ai",
       timestamp: 1744383565,
       title: "testing this",
@@ -38,18 +40,21 @@ const initialState: SearchStore = {
   },
   responses: {
     "EN": [{
+      id: "2",
       title: "",
       timestamp: 1744381787,
-      content: "30 minutes ago",
+      content: "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Expedita unde suscipit autem animi, inventore amet optio sequi aut excepturi! Dolor nihil quia explicabo! Molestias, perferendis reiciendis error ducimus eaque architecto.",
       type: "user",
     },
     {
+      id: "3",
       timestamp: 174437280,
       title: "",
       content: "2 hours ago",
       type: "ai",
     },
     {
+      id: "4",
       title: "",
       timestamp: 1744383006,
       content: "10 minutes ago",
@@ -76,6 +81,10 @@ const getLanguageType = (language: Language, content: Partial<Record<Language, S
   return content ? content[language]?.type || 'ai' : "ai"
 }
 
+const getLanguageId = (language: Language, content: Partial<Record<Language, SearchBaseContent>> | undefined) => {
+  return content ? content[language]?.id || '' : ""
+}
+
 const getLanguageTimestamp = (language: Language, content: Partial<Record<Language, SearchBaseContent>> | undefined) => {
   return content ? content[language]?.timestamp || 0 : 0
 }
@@ -89,6 +98,7 @@ const sortByTimestamp = (conversations: SearchBaseContent[]) => {
 export const searchStore = {
   useSearchStore,
   setRequestState,
+  getLanguageId,
   sortByTimestamp,
   getLanguageContent,
   getLanguageTimestamp,

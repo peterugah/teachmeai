@@ -31,6 +31,7 @@ export function Index() {
 				)}
 				{sectionTwo ? (
 					<SectionTwo
+						id={searchStore.getLanguageId(language, sectionTwo)}
 						timestamp={searchStore.getLanguageTimestamp(language, sectionTwo)}
 						type={searchStore.getLanguageType(language, sectionTwo)}
 						title={searchStore.getLanguageTitle(language, sectionTwo)}
@@ -41,7 +42,12 @@ export function Index() {
 				)}
 				{sortedResponses.map((response) => (
 					<Response
-						type={searchStore.getLanguageType(language, sectionTwo)}
+						key={searchStore.getLanguageId(language, {
+							[language]: response,
+						})}
+						type={searchStore.getLanguageType(language, {
+							[language]: response,
+						})}
 						content={searchStore.getLanguageContent(language, {
 							[language]: response,
 						})}
