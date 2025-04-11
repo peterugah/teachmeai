@@ -12,27 +12,33 @@ export const AskMore = () => {
 		}
 	};
 
+	const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+		e.preventDefault();
+	};
+
 	const onInput = () => {
 		autoResize();
 	};
 
 	return (
 		<div className="mt-4 border border-gray-300 rounded-[15px] relative bg-gray-50">
-			<textarea
-				spellCheck={true}
-				ref={textareaRef}
-				placeholder="Ask more..."
-				rows={1}
-				onInput={onInput}
-				className="w-full resize-none overflow-hidden p-4 pr-16 rounded-[15px] focus:outline-none"
-			/>
+			<form onSubmit={onSubmit}>
+				<textarea
+					spellCheck={true}
+					ref={textareaRef}
+					placeholder="Ask more..."
+					rows={1}
+					onInput={onInput}
+					className="w-full resize-none overflow-hidden p-4 pr-16 rounded-[15px] focus:outline-none"
+				/>
 
-			<button
-				type="button"
-				className="absolute cursor-pointer bottom-[8px] right-[8px] text-sm text-white border-gray-50 border-[1px] p-2 rounded-2xl bg-blue-500 hover:bg-blue-600 transition"
-			>
-				<PaperAirplaneIcon className="size-5" />
-			</button>
+				<button
+					type="submit"
+					className="absolute cursor-pointer bottom-[8px] right-[8px] text-sm text-white border-gray-50 border-[1px] p-2 rounded-2xl bg-blue-500 hover:bg-blue-600 transition"
+				>
+					<PaperAirplaneIcon className="size-5" />
+				</button>
+			</form>
 		</div>
 	);
 };
