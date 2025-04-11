@@ -24,6 +24,7 @@ export interface SearchBaseContent {
   }
 }
  */
+
 interface SearchStore {
   liked?: boolean;
   website?: string;
@@ -105,38 +106,25 @@ const setRequestState = (requestState: RequestState) => {
   useSearchStore.setState(() => ({ requestState }))
 }
 
-const getLanguageContent = (language: Language, webPage: string, searchTerm: string, content: Record<string, Record<string, Partial<Record<Language, SearchBaseContent>>>> | undefined) => {
-  return content ? content[webPage][searchTerm][language]?.content || '' : '';
-}
+const getDetailsForSearchTerm = (webPage: string, searchTerm: string, language: Language) => {
+  const sectionOne = useSearchStore.getState().sectionOne;
+  const sectionTwo = useSearchStore.getState().sectionTwo;
+  const responses = useSearchStore.getState().responses;
 
-const getLanguageTitle = (language: Language, webPage: string, searchTerm: string, content: Record<string, Record<string, Partial<Record<Language, SearchBaseContent>>>> | undefined) => {
-  return content ? content[webPage][searchTerm][language]?.title || '' : '';
-}
-const getLanguageType = (language: Language, webPage: string, searchTerm: string, content: Record<string, Record<string, Partial<Record<Language, SearchBaseContent>>>> | undefined) => {
-  return content ? content[webPage][searchTerm][language]?.type || 'ai' : "ai"
-}
-
-const getLanguageId = (language: Language, webPage: string, searchTerm: string, content: Record<string, Record<string, Partial<Record<Language, SearchBaseContent>>>> | undefined) => {
-  return content ? content[webPage][searchTerm][language]?.id || '' : ""
-}
-
-const getLanguageTimestamp = (language: Language, webPage: string, searchTerm: string, content: Record<string, Record<string, Partial<Record<Language, SearchBaseContent>>>> | undefined) => {
-  return content ? content[webPage][searchTerm][language]?.timestamp || 0 : 0
+  return {
+    sectionOne: sectionOne && sectionOne[webPage] && sectionOne[webPage][searchTerm] && sectionOne[webPage][searchTerm][language] ? sectionOne[webPage][searchTerm][language] : undefined,
+    sectionTwo: sectionTwo && sectionTwo[webPage] && sectionTwo[webPage][searchTerm] && sectionTwo[webPage][searchTerm][language] ? sectionTwo[webPage][searchTerm][language] : undefined,
+    responses: responses && responses[webPage] && responses[webPage][searchTerm] && responses[webPage][searchTerm][language] ? responses[webPage][searchTerm][language] : []
+  }
 }
 
 const sortByTimestamp = (conversations: SearchBaseContent[]) => {
   return conversations.sort((a, b) => a.timestamp - b.timestamp);
 }
 
-
-
 export const searchStore = {
+  getDetailsForSearchTerm,
   useSearchStore,
   setRequestState,
-  getLanguageId,
   sortByTimestamp,
-  getLanguageContent,
-  getLanguageTimestamp,
-  getLanguageTitle,
-  getLanguageType,
 }
