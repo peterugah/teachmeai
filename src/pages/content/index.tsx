@@ -6,6 +6,7 @@ import { SectionOne } from "./SectionOne";
 import { searchStore } from "../../store/search";
 import { settingsStore } from "../../store/settings";
 import { Response } from "./Response";
+import { SectionThree } from "./SectionThree";
 
 export function Index() {
 	const word = "open";
@@ -58,6 +59,7 @@ export function Index() {
 						})}
 					/>
 				))}
+				<SectionThree />
 				<AskMore />
 			</div>
 			<Footer />

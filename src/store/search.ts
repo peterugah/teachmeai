@@ -28,6 +28,17 @@ const initialState: SearchStore = {
   requestState: "done",
   website: "https://www.google.com",
   websiteContent: "",
+  sectionOne: {
+    "open": {
+      "EN": {
+        id: "10",
+        type: "ai",
+        timestamp: 1744383565,
+        title: "Pronunciation",
+        content: "the-way-of-the-lord",
+      }
+    }
+  },
   sectionTwo: {
     "open": {
       "EN": {
