@@ -19,6 +19,7 @@ export const AskMore = () => {
 	return (
 		<div className="mt-4 border border-gray-300 rounded-[15px] relative bg-gray-50">
 			<textarea
+				spellCheck={true}
 				ref={textareaRef}
 				placeholder="Ask more..."
 				rows={1}
