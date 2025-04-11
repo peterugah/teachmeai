@@ -9,57 +9,63 @@ export interface SearchBaseContent {
   title: string;
   content: string;
   timestamp: number;
-  type: SearchType
+  type: SearchType;
 }
 
 interface SearchStore {
-  requestState: RequestState;
-  website?: string;
-  websiteContent?: string;
-  sectionOne?: Partial<Record<Language, SearchBaseContent>>;
-  sectionTwo?: Partial<Record<Language, SearchBaseContent>>;
-  responses?: Partial<Record<Language, SearchBaseContent[]>>;
   liked?: boolean;
+  website?: string;
+  searchTerms: string[];
+  websiteContent?: string;
+  requestState: RequestState;
+  responses?: Record<string, Partial<Record<Language, SearchBaseContent[]>>>;
+  sectionOne?: Record<string, Partial<Record<Language, SearchBaseContent>>>;
+  sectionTwo?: Record<string, Partial<Record<Language, SearchBaseContent>>>;
 }
 
 const initialState: SearchStore = {
+  searchTerms: [],
   requestState: "done",
   website: "https://www.google.com",
   websiteContent: "",
   sectionTwo: {
-    "EN": {
-      id: "1",
-      type: "ai",
-      timestamp: 1744383565,
-      title: "testing this",
-      content: `## Title
+    "open": {
+      "EN": {
+        id: "1",
+        type: "ai",
+        timestamp: 1744383565,
+        title: "testing this",
+        content: `## Title
       - list item 1
       - list item 2
       - list item 3`
+      }
     }
   },
   responses: {
-    "EN": [{
-      id: "2",
-      title: "",
-      timestamp: 1744381787,
-      content: "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Expedita unde suscipit autem animi, inventore amet optio sequi aut excepturi! Dolor nihil quia explicabo! Molestias, perferendis reiciendis error ducimus eaque architecto.",
-      type: "user",
-    },
-    {
-      id: "3",
-      timestamp: 174437280,
-      title: "",
-      content: "2 hours ago",
-      type: "ai",
-    },
-    {
-      id: "4",
-      title: "",
-      timestamp: 1744383006,
-      content: "10 minutes ago",
-      type: "ai",
-    }]
+    "open": {
+      "EN": [{
+        id: "2",
+        title: "",
+        timestamp: 1744381787,
+        content: "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Expedita unde suscipit autem animi, inventore amet optio sequi aut excepturi! Dolor nihil quia explicabo! Molestias, perferendis reiciendis error ducimus eaque architecto.",
+        type: "user",
+      },
+      {
+        id: "3",
+        timestamp: 174437280,
+        title: "",
+        content: "2 hours ago",
+        type: "ai",
+      },
+      {
+        id: "4",
+        title: "",
+        timestamp: 1744383006,
+        content: "10 minutes ago",
+        type: "ai",
+      }]
+    }
   },
 
 }
@@ -70,23 +76,23 @@ const setRequestState = (requestState: RequestState) => {
   useSearchStore.setState(() => ({ requestState }))
 }
 
-const getLanguageContent = (language: Language, content: Partial<Record<Language, SearchBaseContent>> | undefined) => {
-  return content ? content[language]?.content || '' : '';
+const getLanguageContent = (language: Language, searchTerm: string, content: Record<string, Partial<Record<Language, SearchBaseContent>>> | undefined) => {
+  return content ? content[searchTerm][language]?.content || '' : '';
 }
 
-const getLanguageTitle = (language: Language, content: Partial<Record<Language, SearchBaseContent>> | undefined) => {
-  return content ? content[language]?.title || '' : '';
+const getLanguageTitle = (language: Language, searchTerm: string, content: Record<string, Partial<Record<Language, SearchBaseContent>>> | undefined) => {
+  return content ? content[searchTerm][language]?.title || '' : '';
 }
-const getLanguageType = (language: Language, content: Partial<Record<Language, SearchBaseContent>> | undefined) => {
-  return content ? content[language]?.type || 'ai' : "ai"
-}
-
-const getLanguageId = (language: Language, content: Partial<Record<Language, SearchBaseContent>> | undefined) => {
-  return content ? content[language]?.id || '' : ""
+const getLanguageType = (language: Language, searchTerm: string, content: Record<string, Partial<Record<Language, SearchBaseContent>>> | undefined) => {
+  return content ? content[searchTerm][language]?.type || 'ai' : "ai"
 }
 
-const getLanguageTimestamp = (language: Language, content: Partial<Record<Language, SearchBaseContent>> | undefined) => {
-  return content ? content[language]?.timestamp || 0 : 0
+const getLanguageId = (language: Language, searchTerm: string, content: Record<string, Partial<Record<Language, SearchBaseContent>>> | undefined) => {
+  return content ? content[searchTerm][language]?.id || '' : ""
+}
+
+const getLanguageTimestamp = (language: Language, searchTerm: string, content: Record<string, Partial<Record<Language, SearchBaseContent>>> | undefined) => {
+  return content ? content[searchTerm][language]?.timestamp || 0 : 0
 }
 
 const sortByTimestamp = (conversations: SearchBaseContent[]) => {

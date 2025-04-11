@@ -8,12 +8,13 @@ import { settingsStore } from "../../store/settings";
 import { Response } from "./Response";
 
 export function Index() {
+	const word = "open";
 	const language = settingsStore.useSettingsStore.getState().language;
 	const sectionOne = searchStore.useSearchStore.getState().sectionOne;
 	const sectionTwo = searchStore.useSearchStore.getState().sectionTwo;
 	const response = searchStore.useSearchStore.getState().responses;
 	const sortedResponses = response
-		? searchStore.sortByTimestamp(response[language] || [])
+		? searchStore.sortByTimestamp(response[word][language] || [])
 		: [];
 
 	return (
@@ -22,34 +23,38 @@ export function Index() {
 			<div className="p-4">
 				{sectionOne ? (
 					<SectionOne
-						type={searchStore.getLanguageType(language, sectionOne)}
-						title={searchStore.getLanguageTitle(language, sectionOne)}
-						content={searchStore.getLanguageContent(language, sectionOne)}
+						type={searchStore.getLanguageType(language, word, sectionOne)}
+						title={searchStore.getLanguageTitle(language, word, sectionOne)}
+						content={searchStore.getLanguageContent(language, word, sectionOne)}
 					/>
 				) : (
 					""
 				)}
 				{sectionTwo ? (
 					<SectionTwo
-						id={searchStore.getLanguageId(language, sectionTwo)}
-						timestamp={searchStore.getLanguageTimestamp(language, sectionTwo)}
-						type={searchStore.getLanguageType(language, sectionTwo)}
-						title={searchStore.getLanguageTitle(language, sectionTwo)}
-						content={searchStore.getLanguageContent(language, sectionTwo)}
+						id={searchStore.getLanguageId(language, word, sectionTwo)}
+						timestamp={searchStore.getLanguageTimestamp(
+							language,
+							word,
+							sectionTwo
+						)}
+						type={searchStore.getLanguageType(language, word, sectionTwo)}
+						title={searchStore.getLanguageTitle(language, word, sectionTwo)}
+						content={searchStore.getLanguageContent(language, word, sectionTwo)}
 					/>
 				) : (
 					""
 				)}
 				{sortedResponses.map((response) => (
 					<Response
-						key={searchStore.getLanguageId(language, {
-							[language]: response,
+						key={searchStore.getLanguageId(language, word, {
+							[word]: { [language]: response },
 						})}
-						type={searchStore.getLanguageType(language, {
-							[language]: response,
+						type={searchStore.getLanguageType(language, word, {
+							[word]: { [language]: response },
 						})}
-						content={searchStore.getLanguageContent(language, {
-							[language]: response,
+						content={searchStore.getLanguageContent(language, word, {
+							[word]: { [language]: response },
 						})}
 					/>
 				))}
