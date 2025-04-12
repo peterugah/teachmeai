@@ -1,5 +1,7 @@
 import { create } from "zustand"
 import { Language } from "./language";
+import { persist } from "zustand/middleware";
+
 
 type RequestState = "loading" | "error" | "done";
 export type SearchType = "user" | "ai";
@@ -33,10 +35,6 @@ export interface SearchSectionTwo extends SearchBaseContent {
 interface SearchStore {
   liked?: boolean;
   website?: string;
-  placeHolders: {
-    askMore: string;
-    featureRequest: string;
-  },
   requestState: RequestState;
   responses?: Record<string, Record<string, Partial<Record<Language, SearchBaseContent[]>>>>;
   sectionOne?: Record<string, Record<string, Partial<Record<Language, SearchBaseContent>>>>;
@@ -45,10 +43,6 @@ interface SearchStore {
 
 const initialState: SearchStore = {
   requestState: "done",
-  placeHolders: {
-    askMore: "Ask More...",
-    featureRequest: "I'd love to hear from you :)",
-  },
   sectionOne: {
     "www.example.com": {
       "open": {
@@ -171,7 +165,15 @@ const initialState: SearchStore = {
 
 }
 
-const useSearchStore = create<SearchStore>(() => initialState)
+const useSearchStore = create<SearchStore>()(
+  persist(
+    () => initialState,
+    {
+      name: "search-store", //TODO: prefix it to have the user's unique id 
+    }
+  )
+);
+
 
 const setRequestState = (requestState: RequestState) => {
   useSearchStore.setState(() => ({ requestState }))
@@ -181,10 +183,8 @@ const getDetailsForSearchTerm = (webPage: string, searchTerm: string, language: 
   const sectionOne = useSearchStore.getState().sectionOne;
   const sectionTwo = useSearchStore.getState().sectionTwo;
   const responses = useSearchStore.getState().responses;
-  const placeholders = useSearchStore.getState().placeHolders;
 
   return {
-    placeholders,
     sectionOne: sectionOne && sectionOne[webPage] && sectionOne[webPage][searchTerm] && sectionOne[webPage][searchTerm][language] ? sectionOne[webPage][searchTerm][language] : undefined,
     sectionTwo: sectionTwo && sectionTwo[webPage] && sectionTwo[webPage][searchTerm] && sectionTwo[webPage][searchTerm][language] ? sectionTwo[webPage][searchTerm][language] : undefined,
     responses: responses && responses[webPage] && responses[webPage][searchTerm] && responses[webPage][searchTerm][language] ? responses[webPage][searchTerm][language] : []
@@ -196,7 +196,7 @@ const sortByTimestamp = (conversations: SearchBaseContent[]) => {
 }
 
 const getLanguages = () => {
-  return Object.keys(Language)
+  return Object.entries(Language)
 }
 
 const getPreviousSearches = () => {

@@ -2,7 +2,7 @@ import { SectionTwo } from "./SectionTwo";
 import { Header } from "./Header";
 import { SectionOne } from "./SectionOne";
 import { searchStore } from "../../store/search";
-import { settingsStore } from "../../store/settings";
+import { settingsStore } from "../../enums/settings";
 import { Response } from "./Response";
 import { SectionThree } from "./SectionThree";
 import { TextForm } from "../../components/TextForm";
@@ -12,14 +12,15 @@ import { Settings } from "./Settings";
 export function Index() {
 	const searchTerm = "open";
 	const webPage = "www.example.com";
-	const language = settingsStore.useSettingsStore.getState().language;
+	const { language } = settingsStore.useSettingsStore();
 
-	const { sectionOne, sectionTwo, responses, placeholders } =
+	const { sectionOne, sectionTwo, responses } =
 		searchStore.getDetailsForSearchTerm(webPage, searchTerm, language);
 	const sortedResponses = searchStore.sortByTimestamp(responses);
 
 	const { showSettings } = settingsStore.useSettingsStore();
 
+	console.log({ language });
 	return (
 		<div className="flex items-start justify-center">
 			{showSettings && (
@@ -36,13 +37,10 @@ export function Index() {
 						<Response key={response.id} {...response} />
 					))}
 					<SectionThree />
-					<TextForm
-						onSubmit={() => {}}
-						placeholderText={placeholders.askMore}
-					/>
+					<TextForm onSubmit={() => {}} placeholderText="Ask more..." />
 					<FeatureRequest
 						onSubmit={() => {}}
-						placeholderText={placeholders.featureRequest}
+						placeholderText="I'd like to hear from you :)"
 					/>
 				</div>
 			</div>

@@ -1,15 +1,30 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Language } from "../../store/language";
 import { searchStore } from "../../store/search";
 import { StarIcon } from "@heroicons/react/24/outline";
+import { Theme } from "../../enums/theme";
+import { settingsStore } from "../../enums/settings";
 
 export function Settings() {
-	const languages = searchStore.getLanguages();
-	const [language, setLanguage] = useState<Language>(Language.English);
 	const [hoveredStar, setHoveredStar] = useState<number | null>(null);
+	const [searchFilter, setSearchFilter] = useState<string>("");
 
-	const handleOnChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-		setLanguage(e.target.value as Language);
+	const filteredPreviousSearches = useMemo(() => {
+		return searchStore
+			.getPreviousSearches()
+			.filter(
+				(item) =>
+					item.title.includes(searchFilter.trim()) ||
+					item.content.includes(searchFilter.trim())
+			);
+	}, [searchFilter]);
+
+	const handleOnLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+		settingsStore.setLanguage(e.target.value as Language);
+	};
+
+	const handleOnChangeTheme = (e: React.ChangeEvent<HTMLSelectElement>) => {
+		settingsStore.setTheme(e.target.value as Theme);
 	};
 
 	const handleOnSearchTermClick = (
@@ -19,15 +34,15 @@ export function Settings() {
 	};
 
 	const renderLanguages = () => {
-		return languages.map((language) => (
-			<option key={language} value={language}>
-				{language}
+		return searchStore.getLanguages().map(([value, key]) => (
+			<option key={key} value={key}>
+				{value}
 			</option>
 		));
 	};
 
 	const renderPreviousSearches = () => {
-		return searchStore.getPreviousSearches().map((searchTerm) => {
+		return filteredPreviousSearches.map((searchTerm) => {
 			return (
 				<li
 					key={searchTerm.id}
@@ -45,24 +60,44 @@ export function Settings() {
 		});
 	};
 
+	const renderThemeOptions = () => {
+		return Object.values(Theme).map((theme) => {
+			return (
+				<option key={theme} value={theme}>
+					{theme}
+				</option>
+			);
+		});
+	};
+
 	return (
 		<div className="max-w-sm mx-auto bg-white border-[1px] border-gray-200 border-r-0 shadow-lg w-60 overflow-hidden">
 			<h1 className="font-bold border-b-[1px] border-gray-200 p-2">Settings</h1>
 			{/* Settings  */}
 			<div className="flex flex-col gap-4 p-2">
 				<div className="flex justify-between gap-2">
-					<label className="text-gray-700">Theme</label>
-					<select>
-						<option>one</option>
-						<option>two</option>
-						<option>three</option>
-					</select>
+					<label className="text-gray-700 mr-5">Theme</label>
+					<div className="bg-red overflow-hidden w-full">
+						<select
+							className="w-full"
+							value={settingsStore.useSettingsStore.getState().theme}
+							onChange={handleOnChangeTheme}
+						>
+							{renderThemeOptions()}
+						</select>
+					</div>
 				</div>
 				<div className="flex justify-between gap-2">
 					<label className="text-gray-700">Language</label>
-					<select value={language} onChange={handleOnChange}>
-						{renderLanguages()}
-					</select>
+					<div className="bg-red overflow-hidden w-full">
+						<select
+							className="w-full"
+							value={settingsStore.useSettingsStore.getState().language}
+							onChange={handleOnLanguageChange}
+						>
+							{renderLanguages()}
+						</select>
+					</div>
 				</div>
 			</div>
 			{/* Recent Search */}
@@ -73,6 +108,7 @@ export function Settings() {
 						placeholder="Search..."
 						type="text"
 						className="border-[1px] border-gray-200 focus:border-gray-300 rounded-[5px] w-full px-2"
+						onKeyUp={(e) => setSearchFilter(e.currentTarget.value)}
 					/>
 				</div>
 				<div className="ml-2 mt-2 max-h-50 overflow-y-auto">
@@ -104,7 +140,7 @@ export function Settings() {
 					<span className="text-[10px] mb-2 text-gray-600 ">
 						Sync your work across multiple devices
 					</span>
-					<button className="cursor-pointer font-bold text-gray-700">
+					<button className="cursor-pointer font-bold text-gray-700 hover:text-red-700">
 						Login with Google
 					</button>
 				</div>

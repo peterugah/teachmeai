@@ -1,5 +1,5 @@
 import { Cog8ToothIcon, XMarkIcon } from "@heroicons/react/16/solid";
-import { settingsStore } from "../../store/settings";
+import { settingsStore } from "../../enums/settings";
 
 export const Header = () => {
 	const { showSettings } = settingsStore.useSettingsStore();
