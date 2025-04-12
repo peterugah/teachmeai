@@ -12,6 +12,11 @@ export interface SearchBaseContent {
   timestamp: number;
   type: SearchType;
 }
+
+export interface SearchSectionTwo extends SearchBaseContent {
+  mainReference: boolean; // indicates which object is the user's main reference
+
+}
 /**
   Structure  
 {
@@ -28,14 +33,22 @@ export interface SearchBaseContent {
 interface SearchStore {
   liked?: boolean;
   website?: string;
+  placeHolders: {
+    askMore: string;
+    featureRequest: string;
+  },
   requestState: RequestState;
   responses?: Record<string, Record<string, Partial<Record<Language, SearchBaseContent[]>>>>;
   sectionOne?: Record<string, Record<string, Partial<Record<Language, SearchBaseContent>>>>;
-  sectionTwo?: Record<string, Record<string, Partial<Record<Language, SearchBaseContent>>>>;
+  sectionTwo?: Record<string, Record<string, Partial<Record<Language, SearchSectionTwo>>>>;
 }
 
 const initialState: SearchStore = {
   requestState: "done",
+  placeHolders: {
+    askMore: "Ask More...",
+    featureRequest: "I'd love to hear from you :)",
+  },
   sectionOne: {
     "www.example.com": {
       "open": {
@@ -59,11 +72,68 @@ const initialState: SearchStore = {
           type: "ai",
           timestamp: 1744383565,
           title: "testing this",
+          mainReference: true,
           content: `## Title
       - list item 1
       - list item 2
       - list item 3`
-        }
+        },
+      },
+      "add": {
+        "EN": {
+          webPage: "",
+          id: "22",
+          type: "ai",
+          timestamp: 1744383565,
+          title: "the thesis of the universe ahsdhasd ashd ashd ",
+          mainReference: true,
+          content: `## Title
+      - list item 1
+      - list item 2
+      - list item 3`
+        },
+      },
+      "three": {
+        "EN": {
+          webPage: "",
+          id: "222",
+          type: "ai",
+          timestamp: 1744383565,
+          title: "the thesis of the ahsdhasd ashd ashd ",
+          mainReference: true,
+          content: `## Title
+      - list item 1
+      - list item 2
+      - list item 3`
+        },
+      },
+      "four": {
+        "EN": {
+          webPage: "",
+          id: "2222",
+          type: "ai",
+          timestamp: 1744383565,
+          title: "the thesis of the ahsdhasasdasdd ashd ashd ",
+          mainReference: true,
+          content: `## Title
+      - list item 1
+      - list item 2
+      - list item 3`
+        },
+      },
+      "five": {
+        "EN": {
+          webPage: "",
+          id: "2222222",
+          type: "ai",
+          timestamp: 1744383565,
+          title: "the thesis of ashd ashd ",
+          mainReference: true,
+          content: `## Title
+      - list item 1
+      - list item 2
+      - list item 3`
+        },
       }
     }
   },
@@ -85,6 +155,7 @@ const initialState: SearchStore = {
           title: "",
           content: "2 hours ago",
           type: "ai",
+
         },
         {
           webPage: "",
@@ -110,8 +181,10 @@ const getDetailsForSearchTerm = (webPage: string, searchTerm: string, language: 
   const sectionOne = useSearchStore.getState().sectionOne;
   const sectionTwo = useSearchStore.getState().sectionTwo;
   const responses = useSearchStore.getState().responses;
+  const placeholders = useSearchStore.getState().placeHolders;
 
   return {
+    placeholders,
     sectionOne: sectionOne && sectionOne[webPage] && sectionOne[webPage][searchTerm] && sectionOne[webPage][searchTerm][language] ? sectionOne[webPage][searchTerm][language] : undefined,
     sectionTwo: sectionTwo && sectionTwo[webPage] && sectionTwo[webPage][searchTerm] && sectionTwo[webPage][searchTerm][language] ? sectionTwo[webPage][searchTerm][language] : undefined,
     responses: responses && responses[webPage] && responses[webPage][searchTerm] && responses[webPage][searchTerm][language] ? responses[webPage][searchTerm][language] : []
@@ -122,9 +195,33 @@ const sortByTimestamp = (conversations: SearchBaseContent[]) => {
   return conversations.sort((a, b) => a.timestamp - b.timestamp);
 }
 
+const getLanguages = () => {
+  return Object.keys(Language)
+}
+
+const getPreviousSearches = () => {
+  const response: SearchSectionTwo[] = [];
+  const sectionTwo = useSearchStore.getState().sectionTwo;
+  for (const webPage in sectionTwo) {
+    const searchTerms = sectionTwo[webPage];
+    for (const term in searchTerms) {
+      const languages = searchTerms[term];
+      for (const lang in languages) {
+        const obj = languages[lang as Language];
+        if (obj?.mainReference) {
+          response.push(obj)
+        }
+      }
+    }
+  }
+  return response;
+}
+
 export const searchStore = {
   getDetailsForSearchTerm,
+  getPreviousSearches,
   useSearchStore,
   setRequestState,
   sortByTimestamp,
+  getLanguages
 }

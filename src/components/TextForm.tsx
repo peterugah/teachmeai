@@ -1,7 +1,11 @@
 import { PaperAirplaneIcon } from "@heroicons/react/24/outline";
 import { useRef } from "react";
 
-export const AskMore = () => {
+interface Props {
+	onSubmit: () => void;
+	placeholderText: string;
+}
+export function TextForm({ onSubmit, placeholderText }: Props) {
 	const textareaRef = useRef<HTMLTextAreaElement>(null);
 
 	const autoResize = () => {
@@ -12,8 +16,9 @@ export const AskMore = () => {
 		}
 	};
 
-	const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+	const handleOnSubmit = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
+		onSubmit();
 	};
 
 	const onInput = () => {
@@ -22,11 +27,11 @@ export const AskMore = () => {
 
 	return (
 		<div className="mt-4 border border-gray-300 rounded-[15px] relative bg-gray-50">
-			<form onSubmit={onSubmit}>
+			<form onSubmit={handleOnSubmit}>
 				<textarea
 					spellCheck={true}
 					ref={textareaRef}
-					placeholder="Ask more..."
+					placeholder={placeholderText}
 					rows={1}
 					onInput={onInput}
 					className="w-full resize-none overflow-hidden p-4 pr-16 rounded-[15px] focus:outline-none"
@@ -41,4 +46,4 @@ export const AskMore = () => {
 			</form>
 		</div>
 	);
-};
+}
