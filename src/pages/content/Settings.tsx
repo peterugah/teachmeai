@@ -100,9 +100,9 @@ export function Settings() {
 					</div>
 				</div>
 			</div>
-			{/* Recent Search */}
+			{/* History */}
 			<div className="border-t-[1px] border-gray-200 p-2 ">
-				<h2 className="font-bold text-[12px] text-gray-700">Recent search</h2>
+				<h2 className="font-bold text-[12px] text-gray-700">History</h2>
 				<div className="mt-2">
 					<input
 						placeholder="Search..."

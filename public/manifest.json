@@ -11,7 +11,7 @@
     "<all_urls>"
   ],
   "action": {
-    "default_popup": "popup.html"
+    "default_popup": "public/popup.html"
   },
   "content_scripts": [
     {
@@ -26,7 +26,7 @@
   "web_accessible_resources": [
     {
       "resources": [
-        "content.html",
+        "public/content.html",
         "assets/*",
         "script/*"
       ],
