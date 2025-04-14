@@ -8,7 +8,6 @@ import { SectionThree } from "./SectionThree";
 import { TextForm } from "../../components/TextForm";
 import { FeatureRequest } from "./FeatureRequest";
 import { Settings } from "./Settings";
-import { useEffect } from "react";
 
 export function Index() {
 	const searchTerm = "open";
@@ -20,12 +19,6 @@ export function Index() {
 	const sortedResponses = searchStore.sortByTimestamp(responses);
 
 	const { showSettings } = settingsStore.useSettingsStore();
-
-	useEffect(() => {
-		document.addEventListener("mouseup", () => {
-			console.log("Selected an item");
-		});
-	}, []);
 
 	return (
 		<div className="flex items-start justify-center">
