@@ -1,7 +1,6 @@
 import { create } from "zustand"
 import { Language } from "../enums/language";
-import { createJSONStorage, persist } from "zustand/middleware";
-import { chromeStorage } from "./chromeStorage";
+import { persist } from "zustand/middleware";
 
 
 type RequestState = "loading" | "error" | "done";
@@ -171,7 +170,6 @@ const useSearchStore = create<SearchStore>()(
     () => initialState,
     {
       name: "search-store", //TODO: prefix it to have the user's unique id 
-      storage: createJSONStorage(() => chromeStorage),
     }
   )
 );
