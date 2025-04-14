@@ -17,8 +17,6 @@ export default defineConfig({
   build: {
     lib: {
       entry: resolve(__dirname, 'src/scripts/mount.tsx'),
-      // name: 'Mount',
-      // fileName: () => 'mount',
       formats: ['es'],
     },
     rollupOptions: {
