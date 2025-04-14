@@ -1,97 +1,140 @@
-// import { settingsStore } from "../store/settings";
+// // import { settingsStore } from "../store/settings";
 
-function createFloatingButton(): HTMLButtonElement {
-  const button = document.createElement('button');
-  button.id = 'teachme-ai-btn';
+// function createFloatingButton(): HTMLButtonElement {
+//   const button = document.createElement('button');
+//   button.id = 'teachme-ai-btn';
 
-  button.setAttribute('aria-label', 'TeachMe AI Action');
-  Object.assign(button.style, {
-    position: 'absolute',
-    zIndex: '9999',
-    border: 'none',
-    background: 'white',
-    borderRadius: '50%',
-    padding: '6px',
-    boxShadow: '0 2px 6px rgba(0,0,0,0.15)',
-    cursor: 'pointer',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  });
+//   button.setAttribute('aria-label', 'TeachMe AI Action');
+//   Object.assign(button.style, {
+//     position: 'absolute',
+//     zIndex: '9999',
+//     border: 'none',
+//     background: 'white',
+//     borderRadius: '50%',
+//     padding: '6px',
+//     boxShadow: '0 2px 6px rgba(0,0,0,0.15)',
+//     cursor: 'pointer',
+//     display: 'flex',
+//     alignItems: 'center',
+//     justifyContent: 'center',
+//   });
 
-  const icon = document.createElement('img');
-  icon.src = chrome.runtime.getURL('icons/info.svg');
-  icon.alt = 'TeachMe AI';
-  Object.assign(icon.style, {
-    width: '20px',
-    height: '20px',
-  });
+//   const icon = document.createElement('img');
+//   icon.src = chrome.runtime.getURL('icons/info.svg');
+//   icon.alt = 'TeachMe AI';
+//   Object.assign(icon.style, {
+//     width: '20px',
+//     height: '20px',
+//   });
 
-  button.appendChild(icon);
-  return button;
-}
+//   button.appendChild(icon);
+//   return button;
+// }
 
-function removeFloatingButton() {
-  const existing = document.getElementById('teachme-ai-btn');
-  if (existing) {
-    existing.remove();
-  }
-}
+// function removeFloatingButton() {
+//   const existing = document.getElementById('teachme-ai-btn');
+//   if (existing) {
+//     existing.remove();
+//   }
+// }
 
-function showButtonNearSelection() {
-  const selection = window.getSelection();
-  const selectedText = selection?.toString().trim();
+// function showButtonNearSelection() {
+//   const selection = window.getSelection();
+//   const selectedText = selection?.toString().trim();
 
-  if (!selection || !selectedText || selection.rangeCount === 0) {
-    removeFloatingButton();
-    return;
-  }
+//   if (!selection || !selectedText || selection.rangeCount === 0) {
+//     removeFloatingButton();
+//     return;
+//   }
 
-  const range = selection.getRangeAt(0);
-  const rect = range.getBoundingClientRect();
+//   const range = selection.getRangeAt(0);
+//   const rect = range.getBoundingClientRect();
 
-  removeFloatingButton();
+//   removeFloatingButton();
 
-  const button = createFloatingButton();
-  document.body.appendChild(button);
+//   const button = createFloatingButton();
+//   document.body.appendChild(button);
 
-  // Position the button slightly above and to the right of the selection
-  button.style.top = `${window.scrollY + rect.top - 36}px`;
-  button.style.left = `${window.scrollX + rect.left + rect.width}px`;
+//   // Position the button slightly above and to the right of the selection
+//   button.style.top = `${window.scrollY + rect.top - 36}px`;
+//   button.style.left = `${window.scrollX + rect.left + rect.width}px`;
 
-  button.onclick = () => {
-    console.log('TeachMe AI button clicked! ',);
-    button.remove(); // optional: hide after click
-  };
-}
+//   button.onclick = async () => {
+//     console.log("TeachMe AI button clicked!");
+//     button.remove();
 
-// ========== Event Listeners ==========
+//     // Remove existing popup if any
+//     const existingPopup = document.getElementById("teachme-ai-popup");
+//     if (existingPopup) {
+//       existingPopup.remove();
+//     }
 
-// Show on highlight
-document.addEventListener('mouseup', () => {
-  setTimeout(showButtonNearSelection, 0);
-});
+//     // Create popup container
+//     const popup = document.createElement("div");
+//     popup.id = "teachme-ai-popup";
+//     Object.assign(popup.style, {
+//       position: "absolute",
+//       top: `${window.scrollY + rect.bottom + 8}px`,
+//       left: `${window.scrollX + rect.left}px`,
+//       zIndex: "10000",
+//       backgroundColor: "white",
+//       border: "1px solid #ccc",
+//       borderRadius: "8px",
+//       boxShadow: "0 8px 20px rgba(0,0,0,0.2)",
+//       padding: "12px",
+//       maxWidth: "300px",
+//       width: "auto",
+//     });
 
-// Hide on ESC key
-document.addEventListener('keydown', (event) => {
-  if (event.key === 'Escape') {
-    removeFloatingButton();
-    window.getSelection()?.removeAllRanges();
-  }
-});
+//     document.body.appendChild(popup);
 
-// Hide when clicking outside the selection
-document.addEventListener('mousedown', (event) => {
-  const button = document.getElementById('teachme-ai-btn');
-  if (button && !button.contains(event.target as Node)) {
-    removeFloatingButton();
-  }
-});
+//     try {
+//       // Dynamically import your popup logic
+//       await import(chrome.runtime.getURL("assets/contentMount.js"));
 
-// Hide if user clears the selection (e.g. double clicks then clicks away)
-document.addEventListener('selectionchange', () => {
-  const selection = window.getSelection();
-  if (!selection || !selection.toString().trim()) {
-    removeFloatingButton();
-  }
-});
+//       // Trigger the mount function from the global
+//       // @ts-expect-error NONE
+//       if (window.__teachme_mount) {
+//         // @ts-expect-error NONE
+//         window.__teachme_mount(popup);
+//       } else {
+//         console.error("❌ window.__teachme_mount not found.");
+//       }
+//     } catch (err) {
+//       console.error("Failed to load React popup module:", err);
+//     }
+//   };
+// }
+
+
+
+// // ========== Event Listeners ==========
+
+// // Show on highlight
+// document.addEventListener('mouseup', () => {
+//   setTimeout(showButtonNearSelection, 0);
+// });
+
+// // Hide on ESC key
+// document.addEventListener('keydown', (event) => {
+//   if (event.key === 'Escape') {
+//     removeFloatingButton();
+//     window.getSelection()?.removeAllRanges();
+//   }
+// });
+
+// // Hide when clicking outside the selection
+// document.addEventListener('mousedown', (event) => {
+//   const button = document.getElementById('teachme-ai-btn');
+//   if (button && !button.contains(event.target as Node)) {
+//     removeFloatingButton();
+//   }
+// });
+
+// // Hide if user clears the selection (e.g. double clicks then clicks away)
+// document.addEventListener('selectionchange', () => {
+//   const selection = window.getSelection();
+//   if (!selection || !selection.toString().trim()) {
+//     removeFloatingButton();
+//   }
+// });

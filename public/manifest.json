@@ -11,16 +11,15 @@
   "host_permissions": [
     "<all_urls>"
   ],
-  "action": {
-    "default_popup": "html/popup.html"
-  },
+  "action": {},
   "content_scripts": [
     {
+      "type": "module",
       "matches": [
         "<all_urls>"
       ],
       "js": [
-        "scripts/content.js"
+        "scripts/mount.js"
       ]
     }
   ],
