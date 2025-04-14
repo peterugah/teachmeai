@@ -9,7 +9,6 @@ import { TextForm } from "../../components/TextForm";
 import { FeatureRequest } from "./FeatureRequest";
 import { Settings } from "./Settings";
 import { useEffect } from "react";
-import "../../index.css";
 
 export function Index() {
 	const searchTerm = "open";
@@ -28,7 +27,6 @@ export function Index() {
 		});
 	}, []);
 
-	console.log({ language });
 	return (
 		<div className="flex items-start justify-center">
 			{showSettings && (

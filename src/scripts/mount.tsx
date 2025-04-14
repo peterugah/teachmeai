@@ -1,5 +1,6 @@
 import { createRoot } from "react-dom/client";
 import { Index } from "../pages/content";
+import "../index.css";
 
 function mountTeachMePopup(container: HTMLElement) {
 	createRoot(container).render(<Index />);
