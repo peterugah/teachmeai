@@ -5,7 +5,8 @@
   "description": "This is a companion tool to give you meaning to sentences and words in context of the webpage.",
   "permissions": [
     "scripting",
-    "activeTab"
+    "activeTab",
+    "storage"
   ],
   "host_permissions": [
     "<all_urls>"
@@ -19,16 +20,17 @@
         "<all_urls>"
       ],
       "js": [
-        "script/content.js"
+        "scripts/content.js"
       ]
     }
   ],
   "web_accessible_resources": [
     {
       "resources": [
-        "html/content.html",
+        "html/*",
         "assets/*",
-        "script/*"
+        "scripts/*",
+        "icons/*"
       ],
       "matches": [
         "<all_urls>"

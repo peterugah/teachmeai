@@ -1,7 +1,8 @@
 import { create } from "zustand"
-import { Language } from "../store/language"
-import { Theme } from "./theme";
-import { persist } from "zustand/middleware";
+import { Language } from "../enums/language"
+import { Theme } from "../enums/theme";
+import { createJSONStorage, persist } from "zustand/middleware";
+import { chromeStorage } from "./chromeStorage";
 
 
 export interface SettingsStore {
@@ -21,6 +22,8 @@ const useSettingsStore = create<SettingsStore>()(
     () => initialState,
     {
       name: "settings-store", //TODO: prefix it to have the user's unique id 
+      storage: createJSONStorage(() => chromeStorage),
+
     }
   )
 );

@@ -1,9 +1,9 @@
 import { useMemo, useState } from "react";
-import { Language } from "../../store/language";
+import { Language } from "../../enums/language";
 import { searchStore } from "../../store/search";
 import { StarIcon } from "@heroicons/react/24/outline";
 import { Theme } from "../../enums/theme";
-import { settingsStore } from "../../enums/settings";
+import { settingsStore } from "../../store/settings";
 
 export function Settings() {
 	const [hoveredStar, setHoveredStar] = useState<number | null>(null);

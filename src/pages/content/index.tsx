@@ -2,7 +2,7 @@ import { SectionTwo } from "./SectionTwo";
 import { Header } from "./Header";
 import { SectionOne } from "./SectionOne";
 import { searchStore } from "../../store/search";
-import { settingsStore } from "../../enums/settings";
+import { settingsStore } from "../../store/settings";
 import { Response } from "./Response";
 import { SectionThree } from "./SectionThree";
 import { TextForm } from "../../components/TextForm";

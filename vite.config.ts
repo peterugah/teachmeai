@@ -9,19 +9,20 @@ import type { IncomingMessage, ServerResponse } from 'http';
 
 const readFile = promisify(fs.readFile);
 
-// Helper: Get all .ts or .js files from src/scripts/
+// ✅ Use "src/scripts" as source
 const scriptsDir = resolve(__dirname, 'src/scripts');
 const scriptFiles = fs
   .readdirSync(scriptsDir)
   .filter((file) => file.endsWith('.ts') || file.endsWith('.js'));
 
+// ✅ Output to "scripts/" in dist (instead of "script/")
 const inputScripts = scriptFiles.reduce((entries, file) => {
   const name = file.replace(/\.(ts|js)$/, '');
-  entries[`script/${name}`] = resolve(scriptsDir, file);
+  entries[`scripts/${name}`] = resolve(scriptsDir, file);
   return entries;
 }, {} as Record<string, string>);
 
-// Middleware plugin with proper types
+// ✅ Middleware to serve HTML from /html in dev
 const middleware = (): Plugin => {
   return {
     name: 'custom-html-middleware',
@@ -49,7 +50,6 @@ const middleware = (): Plugin => {
               return;
             } catch (err: unknown) {
               server.ssrFixStacktrace(err as Error);
-              return;
             }
           }
 
@@ -60,7 +60,7 @@ const middleware = (): Plugin => {
   };
 };
 
-// Vite config
+// ✅ Full Vite config
 export default defineConfig({
   plugins: [middleware(), react(), tailwindcss()],
   build: {
@@ -68,11 +68,11 @@ export default defineConfig({
       input: {
         popup: resolve(__dirname, 'html/popup.html'),
         content: resolve(__dirname, 'html/content.html'),
-        ...inputScripts,
+        ...inputScripts, // <- scripts/ from src/scripts
       },
       output: {
         entryFileNames: (chunk) =>
-          chunk.name.startsWith('script/') ? '[name].js' : 'assets/[name].js',
+          chunk.name.startsWith('scripts/') ? '[name].js' : 'assets/[name].js',
         chunkFileNames: 'assets/[name].js',
         assetFileNames: 'assets/[name].[ext]',
       },
