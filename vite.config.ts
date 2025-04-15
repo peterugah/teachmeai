@@ -16,13 +16,13 @@ export default defineConfig({
   },
   build: {
     lib: {
-      entry: resolve(__dirname, 'src/scripts/mount.tsx'),
+      entry: resolve(__dirname, 'src/entry/content.tsx'),
       formats: ['es'],
     },
     rollupOptions: {
       output: {
         format: 'es',
-        entryFileNames: 'scripts/mount.js',
+        entryFileNames: 'scripts/content.js',
         inlineDynamicImports: true,
       },
     },
