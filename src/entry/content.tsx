@@ -1,9 +1,10 @@
 import { createRoot } from "react-dom/client";
-import { Index } from "../pages/content";
+// import { Index } from "../pages/content";
 import "../styles/index.css";
 
 function mountContent(container: HTMLElement) {
-	createRoot(container).render(<Index />);
+	// createRoot(container).render(<Index />);
+	createRoot(container).render(<></>);
 }
 
 (function () {

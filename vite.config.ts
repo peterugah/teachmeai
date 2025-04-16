@@ -22,7 +22,7 @@ export default defineConfig({
     rollupOptions: {
       output: {
         format: 'es',
-        entryFileNames: 'scripts/content.js',
+        entryFileNames: 'content.js',
         inlineDynamicImports: true,
       },
     },

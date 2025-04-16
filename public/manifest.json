@@ -21,17 +21,14 @@
         "<all_urls>"
       ],
       "js": [
-        "scripts/content.js"
+        "content.js"
       ]
     }
   ],
   "web_accessible_resources": [
     {
       "resources": [
-        "html/*",
-        "assets/*",
-        "scripts/*",
-        "icons/*"
+        "content.js"
       ],
       "matches": [
         "<all_urls>"
