@@ -1,41 +1,18 @@
 import { useEffect, useRef, useState } from "react";
 import { ROOT_CONTAINER_ID } from "../../constant";
 import { InformationCircleIcon } from "@heroicons/react/24/outline";
+import { ElementDimensions, visibilityStore } from "../../store/visibility";
 
 export function Selection() {
 	const [show, setShow] = useState(false);
 	const [selectedText, setSelectedText] = useState("");
-	const [position, setPosition] = useState({ top: 0, left: 0 });
-	const [iconSize, setIconSize] = useState({ width: 0, height: 0 });
+
+	const [iconSize, setIconSize] = useState<ElementDimensions>({
+		width: 0,
+		height: 0,
+	});
 
 	const buttonRef = useRef<HTMLButtonElement>(null);
-
-	const getInfoIconPosition = (
-		rect: DOMRect,
-		iconWidth: number,
-		iconHeight: number
-	) => {
-		const { innerWidth, innerHeight } = window;
-
-		let top = rect.top + window.scrollY;
-		let left = rect.left + window.scrollX;
-
-		if (rect.right + iconWidth < innerWidth) {
-			top += rect.height / 2 - iconHeight / 2;
-			left = rect.right + window.scrollX;
-		} else if (rect.bottom + iconHeight < innerHeight) {
-			top = rect.bottom + window.scrollY;
-			left += rect.width / 2 - iconWidth / 2;
-		} else if (rect.top - iconHeight > 0) {
-			top = rect.top + window.scrollY - iconHeight;
-			left += rect.width / 2 - iconWidth / 2;
-		} else {
-			top += rect.height / 2 - iconHeight / 2;
-			left = rect.left + window.scrollX - iconWidth;
-		}
-
-		return { top, left };
-	};
 
 	const showInfoIcon = () => {
 		const selection = window.getSelection();
@@ -58,29 +35,45 @@ export function Selection() {
 		const isInsideExtension = element.closest(`#${ROOT_CONTAINER_ID}`) !== null;
 		if (isInsideExtension) return;
 
+		visibilityStore.setShowSettings(false);
+
 		setSelectedText(text);
 		setShow(true);
 
-		// Defer position setting until icon size is known (handled in useEffect)
+		// Defer position setting until icon size is known
 		setTimeout(() => {
 			const icon = buttonRef.current;
 			if (icon) {
 				const iconWidth = icon.offsetWidth;
 				const iconHeight = icon.offsetHeight;
 				setIconSize({ width: iconWidth, height: iconHeight });
-				const pos = getInfoIconPosition(rect, iconWidth, iconHeight);
-				setPosition(pos);
+				const position = visibilityStore.getComponentPosition(
+					rect,
+					iconWidth,
+					iconHeight
+				);
+				visibilityStore.setPosition(position);
 			}
-		}, 0);
+		}, 1);
 	};
 
 	const removeInfoButton = (event: MouseEvent) => {
 		const rootElement = document.getElementById(ROOT_CONTAINER_ID);
 		const clickedTarget = event.target as Node;
 
-		if (rootElement && !rootElement.contains(clickedTarget)) {
+		const isClickOutsideExtension =
+			rootElement && !rootElement.contains(clickedTarget);
+		const hasSelection = selectedText.trim().length > 0;
+
+		if (isClickOutsideExtension && hasSelection) {
 			// setShow(false);
+			// setSelectedText("");
 		}
+	};
+
+	const handleOnClick = () => {
+		setShow(false);
+		visibilityStore.setShowPopup(true);
 	};
 
 	useEffect(() => {
@@ -90,6 +83,7 @@ export function Selection() {
 			document.removeEventListener("mouseup", showInfoIcon);
 			document.removeEventListener("click", removeInfoButton);
 		};
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	useEffect(() => {
@@ -98,11 +92,14 @@ export function Selection() {
 
 	return show ? (
 		<button
+			onClick={handleOnClick}
 			ref={buttonRef}
 			className="fixed z-50 cursor-pointer size-7 text-black bg-white shadow-md rounded-full flex items-center justify-center"
 			style={{
-				top: `${position.top}px`,
-				left: `${position.left}px`,
+				top: `${visibilityStore.useVisibilityStore.getState().position.top}px`,
+				left: `${
+					visibilityStore.useVisibilityStore.getState().position.left
+				}px`,
 				position: "absolute",
 			}}
 		>

@@ -1,11 +1,15 @@
 import { Cog8ToothIcon, XMarkIcon } from "@heroicons/react/16/solid";
-import { settingsStore } from "../../store/settings";
+import { visibilityStore } from "../../store/visibility";
 
 export const Header = () => {
-	const { showSettings } = settingsStore.useSettingsStore();
+	const { showSettings } = visibilityStore.useVisibilityStore();
 
 	const handleShowSettings = () => {
-		settingsStore.setShowSettings(!showSettings);
+		visibilityStore.setShowSettings(!showSettings);
+	};
+
+	const handleClosePopUp = () => {
+		visibilityStore.setShowPopup(false);
 	};
 	return (
 		<nav className="flex items-center justify-between border-b-[1px] border-gray-200">
@@ -16,7 +20,10 @@ export const Header = () => {
 				<Cog8ToothIcon />
 			</button>
 			<p className="font-bold">Logo</p>
-			<button className="size-7 m-2 cursor-pointer text-gray-800 hover:text-black">
+			<button
+				onClick={handleClosePopUp}
+				className="size-7 m-2 cursor-pointer text-gray-800 hover:text-black"
+			>
 				<XMarkIcon />
 			</button>
 		</nav>

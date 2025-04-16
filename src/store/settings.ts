@@ -5,16 +5,12 @@ import { persist } from "zustand/middleware";
 
 
 export interface SettingsStore {
-  showPopup: boolean;
-  showSettings: boolean;
   language: Language;
   theme: Theme;
 }
 
 const initialState: SettingsStore = {
-  showPopup: false,
   theme: Theme.Light,
-  showSettings: false,
   language: Language.English
 }
 
@@ -27,12 +23,7 @@ const useSettingsStore = create<SettingsStore>()(
   )
 );
 
-const setShowSettings = (showSettings: boolean) => {
-  useSettingsStore.setState(() => ({ showSettings }))
-}
-const setShowPopup = (showPopup: boolean) => {
-  useSettingsStore.setState(() => ({ showPopup }))
-}
+
 const setTheme = (theme: Theme) => {
   useSettingsStore.setState(() => ({ theme }))
 }
@@ -42,8 +33,6 @@ const setLanguage = (language: Language) => {
 
 export const settingsStore = {
   useSettingsStore,
-  setShowPopup,
-  setShowSettings,
   setLanguage,
   setTheme
 }
