@@ -24,12 +24,5 @@ export default tseslint.config(
 				{ allowConstantExport: true },
 			],
 		},
-	},
-	// Add this override block to allow 'any' in vite.config.ts
-	{
-		files: ["vite.config.ts"],
-		rules: {
-			"@typescript-eslint/no-explicit-any": "off",
-		},
 	}
 );

@@ -2,17 +2,14 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { resolve } from 'path';
 import tailwindcss from '@tailwindcss/vite';
-import cssInjectedByJsPlugin from 'vite-plugin-css-injected-by-js';
 
 export default defineConfig({
   plugins: [
     react(),
     tailwindcss(),
-    cssInjectedByJsPlugin()
   ],
   define: {
-    'process.env.NODE_ENV': '"production"',
-    'process.env': '{}',
+    'process.env': {},
   },
   build: {
     lib: {
@@ -29,6 +26,6 @@ export default defineConfig({
     outDir: 'dist',
     emptyOutDir: false,
     target: 'esnext',
-    cssCodeSplit: false
+    cssCodeSplit: false,
   },
 });

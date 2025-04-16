@@ -47,7 +47,7 @@ const initialState: SearchStore = {
     "www.example.com": {
       "open": {
         "EN": {
-          webPage: "",
+          webPage: "www.example.com",
           id: "10",
           type: "ai",
           timestamp: 1744383565,
@@ -61,7 +61,7 @@ const initialState: SearchStore = {
     "www.example.com": {
       "open": {
         "EN": {
-          webPage: "",
+          webPage: "www.example.com",
           id: "1",
           type: "ai",
           timestamp: 1744383565,
@@ -75,7 +75,7 @@ const initialState: SearchStore = {
       },
       "add": {
         "EN": {
-          webPage: "",
+          webPage: "www.example.com",
           id: "22",
           type: "ai",
           timestamp: 1744383565,
@@ -89,7 +89,7 @@ const initialState: SearchStore = {
       },
       "three": {
         "EN": {
-          webPage: "",
+          webPage: "www.example.com",
           id: "222",
           type: "ai",
           timestamp: 1744383565,
@@ -103,7 +103,7 @@ const initialState: SearchStore = {
       },
       "four": {
         "EN": {
-          webPage: "",
+          webPage: "www.example.com",
           id: "2222",
           type: "ai",
           timestamp: 1744383565,
@@ -117,7 +117,7 @@ const initialState: SearchStore = {
       },
       "five": {
         "EN": {
-          webPage: "",
+          webPage: "www.example.com",
           id: "2222222",
           type: "ai",
           timestamp: 1744383565,

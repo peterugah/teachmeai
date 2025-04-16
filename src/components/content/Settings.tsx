@@ -46,7 +46,7 @@ export function Settings() {
 			return (
 				<li
 					key={searchTerm.id}
-					className="mb-2 w-full flex text-blue-600 hover:text-blue-700 hover:underline"
+					className="mb-2 w-full flex flex-col text-blue-600 hover:text-blue-700 hover:underline"
 				>
 					<a
 						onClick={handleOnSearchTermClick}
@@ -55,6 +55,9 @@ export function Settings() {
 					>
 						{searchTerm.title}
 					</a>
+					<span className="text-[8px] text-gray-800 truncate">
+						{searchTerm.webPage}
+					</span>
 				</li>
 			);
 		});
@@ -111,7 +114,7 @@ export function Settings() {
 						onKeyUp={(e) => setSearchFilter(e.currentTarget.value)}
 					/>
 				</div>
-				<div className="ml-2 mt-2 max-h-50 overflow-y-auto">
+				<div className="ml-2 mt-2 max-h-20 overflow-y-auto">
 					<ul>{renderPreviousSearches()}</ul>
 				</div>
 			</div>
@@ -135,7 +138,7 @@ export function Settings() {
 			</div>
 			{/* Login */}
 			{/* TODO: once logged in show user profile instead */}
-			<div className="border-t-[1px] border-gray-200 p-2">
+			{/* <div className="border-t-[1px] border-gray-200 p-2">
 				<div className="my-2 flex justify-center items-center flex-col">
 					<span className="text-[10px] mb-2 text-gray-600 ">
 						Sync your work across multiple devices
@@ -144,7 +147,7 @@ export function Settings() {
 						Login with Google
 					</button>
 				</div>
-			</div>
+			</div> */}
 		</div>
 	);
 }

@@ -1,20 +1,29 @@
 import { createRoot } from "react-dom/client";
-// import { Index } from "../pages/content";
-import "../styles/index.css";
+import tailwindCss from "../styles/index.css?inline"; // <- inline the tailwind styles as string
+import { Content } from "../components/content/Content";
+import { ROOT_CONTAINER_ID } from "../constant";
 
-function mountContent(container: HTMLElement) {
-	// createRoot(container).render(<Index />);
-	createRoot(container).render(<></>);
+function mountContent(shadowHost: HTMLElement) {
+	const shadowRoot = shadowHost.attachShadow({ mode: "open" });
+
+	const style = document.createElement("style");
+	style.textContent = tailwindCss;
+	shadowRoot.appendChild(style);
+
+	const extensionContainer = document.createElement("div");
+	extensionContainer.id = ROOT_CONTAINER_ID;
+
+	shadowRoot.appendChild(extensionContainer);
+	createRoot(extensionContainer).render(<Content />);
 }
 
+// NOTE: an IIFE is needed to execute the code immediately
 (function () {
-	const rootContainerId = "some-random-id"; //TODO: work on the right name
-	// Prevent multiple mounts
-	if (document.getElementById(rootContainerId)) return;
+	if (document.getElementById(ROOT_CONTAINER_ID)) return;
 
-	const container = document.createElement("div");
-	container.id = rootContainerId;
+	const shadowHost = document.createElement("div");
+	shadowHost.id = ROOT_CONTAINER_ID;
 
-	document.body.appendChild(container);
-	mountContent(container);
+	document.body.appendChild(shadowHost);
+	mountContent(shadowHost);
 })();
