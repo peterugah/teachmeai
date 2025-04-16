@@ -8,22 +8,21 @@ import { SectionThree } from "./SectionThree";
 import { TextForm } from "../../components/TextForm";
 import { FeatureRequest } from "./FeatureRequest";
 import { Settings } from "./Settings";
-import { useEffect } from "react";
-import { showInfoIcon } from "../../scripts/content";
 
 export function Content() {
 	const searchTerm = "open";
 	const webPage = "www.example.com";
-	const { language } = settingsStore.useSettingsStore();
+	const { language, showPopup } = settingsStore.useSettingsStore();
 
 	const { sectionOne, sectionTwo, responses } =
 		searchStore.getDetailsForSearchTerm(webPage, searchTerm, language);
 	const sortedResponses = searchStore.sortByTimestamp(responses);
 
 	const { showSettings } = settingsStore.useSettingsStore();
-	useEffect(() => {
-		document.addEventListener("mouseup", showInfoIcon);
-	}, []);
+
+	if (!showPopup) {
+		return null;
+	}
 	return (
 		<div className="flex items-start justify-center text-black text-[16px] z-[9999999]">
 			{showSettings && (
