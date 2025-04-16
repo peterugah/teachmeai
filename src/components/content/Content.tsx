@@ -25,7 +25,7 @@ export function Content() {
 		document.addEventListener("mouseup", showInfoIcon);
 	}, []);
 	return (
-		<div className="flex items-start justify-center text-black text-[16px]">
+		<div className="flex items-start justify-center text-black text-[16px] z-[9999999]">
 			{showSettings && (
 				<div className="flex-shrink-0 mt-5">
 					<Settings />

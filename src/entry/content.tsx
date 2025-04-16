@@ -8,11 +8,9 @@ function mountContent(shadowHost: HTMLElement) {
 
 	const style = document.createElement("style");
 	style.textContent = tailwindCss;
+	console.log(tailwindCss);
 	shadowRoot.appendChild(style);
-
 	const extensionContainer = document.createElement("div");
-	extensionContainer.id = ROOT_CONTAINER_ID;
-
 	shadowRoot.appendChild(extensionContainer);
 	createRoot(extensionContainer).render(<Content />);
 }
@@ -20,10 +18,8 @@ function mountContent(shadowHost: HTMLElement) {
 // NOTE: an IIFE is needed to execute the code immediately
 (function () {
 	if (document.getElementById(ROOT_CONTAINER_ID)) return;
-
 	const shadowHost = document.createElement("div");
 	shadowHost.id = ROOT_CONTAINER_ID;
-
 	document.body.appendChild(shadowHost);
 	mountContent(shadowHost);
 })();
