@@ -19,7 +19,7 @@ export function Content() {
 	const sortedResponses = searchStore.sortByTimestamp(responses);
 
 	return (
-		<div className="bg-white rounded-2xl shadow-lg dark:bg-neutral-950">
+		<div className="bg-white rounded-2xl shadow-lg dark:bg-neutral-900">
 			<Header />
 			{/* loading spinner */}
 			{/* <div className=" flex items-center justify-center mt-7">

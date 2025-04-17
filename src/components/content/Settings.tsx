@@ -81,7 +81,7 @@ export function Settings() {
 	};
 
 	return (
-		<div className="bg-white border-gray-200 border-r-0 shadow-lg rounded-2xl dark:bg-neutral-950">
+		<div className="bg-white border-gray-200 border-r-0 shadow-lg rounded-2xl dark:bg-neutral-900">
 			<div className="border-b-[1px] border-gray-200 p-2 flex justify-between dark:border-neutral-700">
 				<h1 className="font-bold dark:text-neutral-300">Settings</h1>
 				<button
