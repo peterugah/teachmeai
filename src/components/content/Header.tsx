@@ -2,10 +2,9 @@ import { Cog8ToothIcon, XMarkIcon } from "@heroicons/react/16/solid";
 import { visibilityStore } from "../../store/visibility";
 
 export const Header = () => {
-	const { showSettings } = visibilityStore.useVisibilityStore();
-
 	const handleShowSettings = () => {
-		visibilityStore.setShowSettings(!showSettings);
+		visibilityStore.setShowSettings(true);
+		visibilityStore.setShowPopup(false);
 	};
 
 	const handleClosePopUp = () => {

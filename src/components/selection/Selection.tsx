@@ -7,7 +7,7 @@ export function Selection() {
 	const [show, setShow] = useState(false);
 	const [selectedText, setSelectedText] = useState("");
 
-	const [iconSize, setIconSize] = useState<ElementDimensions>({
+	const [_, setIconSize] = useState<ElementDimensions>({
 		width: 0,
 		height: 0,
 	});
@@ -35,8 +35,8 @@ export function Selection() {
 		const isInsideExtension = element.closest(`#${ROOT_CONTAINER_ID}`) !== null;
 		if (isInsideExtension) return;
 
+		visibilityStore.setShowPopup(false);
 		visibilityStore.setShowSettings(false);
-
 		setSelectedText(text);
 		setShow(true);
 
@@ -66,14 +66,18 @@ export function Selection() {
 		const hasSelection = selectedText.trim().length > 0;
 
 		if (isClickOutsideExtension && hasSelection) {
-			// setShow(false);
-			// setSelectedText("");
+			setShow(false);
+			setSelectedText("");
+			window.getSelection()?.removeAllRanges();
+			console.log("outside the button");
 		}
 	};
 
 	const handleOnClick = () => {
+		window.getSelection()?.removeAllRanges();
 		setShow(false);
 		visibilityStore.setShowPopup(true);
+		visibilityStore.setShowSettings(false);
 	};
 
 	useEffect(() => {
@@ -85,10 +89,6 @@ export function Selection() {
 		};
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
-
-	useEffect(() => {
-		console.log({ show, selectedText, iconSize });
-	}, [show, selectedText, iconSize]);
 
 	return show ? (
 		<button

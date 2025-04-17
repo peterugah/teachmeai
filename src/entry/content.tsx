@@ -30,8 +30,26 @@ function mountContent(shadowHost: HTMLElement) {
 	createRoot(extensionContainer).render(<Extension />);
 }
 
+function isLocalhost() {
+	const hostname = window.location.hostname;
+	if (
+		hostname === "localhost" ||
+		hostname === "127.0.0.1" ||
+		hostname === "::1"
+	) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
 // NOTE: an IIFE is needed to execute the code immediately
 (function () {
+	// NOTE: prevent extension from working in localhost to allow effective development
+	if (isLocalhost()) {
+		console.log("extension not working in localhost :)");
+		return;
+	}
 	if (document.getElementById(ROOT_CONTAINER_ID)) return;
 	const shadowHost = document.createElement("div");
 	shadowHost.id = ROOT_CONTAINER_ID;
