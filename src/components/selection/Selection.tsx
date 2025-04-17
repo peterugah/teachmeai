@@ -65,7 +65,6 @@ export function Selection() {
 			if (isSelectingText.current) {
 				return; // click right after highlight — skip it
 			}
-
 			const rootElement = document.getElementById(ROOT_CONTAINER_ID);
 			const clickedTarget = e.target as Node;
 			const isClickOutsideExtension =
@@ -73,6 +72,7 @@ export function Selection() {
 			const hasSelection = selectedText.current.trim().length > 0;
 
 			if (isClickOutsideExtension && hasSelection) {
+				console.log("outside extension content....");
 				selectedText.current = "";
 				setShowInfoIcon(false);
 				window.getSelection()?.removeAllRanges();
