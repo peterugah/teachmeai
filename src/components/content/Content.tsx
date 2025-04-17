@@ -18,7 +18,7 @@ export function Content() {
 	const sortedResponses = searchStore.sortByTimestamp(responses);
 
 	return (
-		<div className="bg-white rounded-2xl shadow-lg">
+		<div className="bg-white rounded-2xl shadow-lg dark:bg-neutral-950">
 			<Header />
 			<div className="p-4">
 				{sectionOne ? <SectionOne {...sectionOne} /> : ""}

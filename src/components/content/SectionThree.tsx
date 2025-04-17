@@ -7,13 +7,13 @@ import {
 export const SectionThree = () => {
 	return (
 		<div className="mt-4 flex items-center space-x-2">
-			<button className="cursor-pointer text-gray-800 hover:text-black size-7 hover:bg-gray-100 p-1 rounded-[5px]">
+			<button className="cursor-pointer text-gray-800 hover:text-black size-7 hover:bg-gray-100 p-1 rounded-[5px] dark:text-neutral-500 dark:hover:bg-neutral-500">
 				<HandThumbUpIcon />
 			</button>
-			<button className="cursor-pointer text-gray-800 hover:text-black size-7 hover:bg-gray-100 p-1 rounded-[5px]">
+			<button className="cursor-pointer text-gray-800 hover:text-black size-7 hover:bg-gray-100 p-1 rounded-[5px] dark:text-neutral-500 dark:hover:bg-neutral-500">
 				<DocumentDuplicateIcon />
 			</button>
-			<button className="cursor-pointer text-gray-800 hover:text-black size-7 hover:bg-gray-100 p-1 rounded-[5px]">
+			<button className="cursor-pointer text-gray-800 hover:text-black size-7 hover:bg-gray-100 p-1 rounded-[5px] dark:text-neutral-500 dark:hover:bg-neutral-500">
 				<SpeakerWaveIcon />
 			</button>
 		</div>

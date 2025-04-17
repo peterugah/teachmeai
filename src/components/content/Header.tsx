@@ -11,17 +11,17 @@ export const Header = () => {
 		visibilityStore.setShowPopup(false);
 	};
 	return (
-		<nav className="flex items-center justify-between border-b-[1px] border-gray-200">
+		<nav className="flex items-center justify-between border-b-[1px] border-gray-200 dark:border-neutral-700">
 			<button
 				onClick={handleShowSettings}
-				className="size-6 m-2 cursor-pointer text-gray-800 hover:text-black"
+				className="size-6 m-2 cursor-pointer text-gray-800 hover:text-black dark:text-neutral-500 dark:hover:text-neutral-300"
 			>
 				<Cog8ToothIcon />
 			</button>
-			<p className="font-bold">Logo</p>
+			<p className="font-bold dark:text-neutral-300">Logo</p>
 			<button
 				onClick={handleClosePopUp}
-				className="size-7 m-2 cursor-pointer text-gray-800 hover:text-black"
+				className="size-7 m-2 cursor-pointer text-gray-800 hover:text-black  dark:text-neutral-500 dark:hover:text-neutral-300"
 			>
 				<XMarkIcon />
 			</button>

@@ -1,5 +1,8 @@
 export enum Theme {
-  SystemDefault = "System default",
-  Light = "Light",
-  Dark = "Dark",
+  Light = "light",
+  Dark = "dark",
+}
+export enum ThemePreference {
+  Browser = "Browser",
+  User = "User"
 }

@@ -53,7 +53,7 @@ export function Settings() {
 			return (
 				<li
 					key={searchTerm.id}
-					className="mb-2 w-full flex flex-col text-blue-700 hover:text-blue-800 hover:underline"
+					className="mb-2 w-full flex flex-col text-blue-700 hover:text-blue-800 hover:underline dark:text-blue-500 dark:hover:text-blue-600"
 				>
 					<a
 						onClick={handleOnSearchTermClick}
@@ -62,7 +62,7 @@ export function Settings() {
 					>
 						{searchTerm.title}
 					</a>
-					<span className="text-[8px] text-gray-800 truncate">
+					<span className="text-[8px] text-gray-800 truncate dark:text-neutral-300">
 						{searchTerm.webPage}
 					</span>
 				</li>
@@ -81,12 +81,12 @@ export function Settings() {
 	};
 
 	return (
-		<div className="bg-white border-[1px] border-gray-200 border-r-0 shadow-lg rounded-2xl">
-			<div className="border-b-[1px] border-gray-200 p-2 flex justify-between">
-				<h1 className="font-bold ">Settings</h1>
+		<div className="bg-white border-[1px] border-gray-200 border-r-0 shadow-lg rounded-2xl dark:bg-neutral-950">
+			<div className="border-b-[1px] border-gray-200 p-2 flex justify-between dark:border-neutral-700">
+				<h1 className="font-bold dark:text-neutral-300">Settings</h1>
 				<button
 					onClick={handleOnBackClick}
-					className="cursor-pointer text-gray-800 hover:text-black"
+					className="cursor-pointer text-gray-800 hover:text-black dark:text-neutral-400 dark:hover:text-neutral-300"
 				>
 					<ArrowUturnLeftIcon className="size-6 " />
 				</button>
@@ -94,7 +94,9 @@ export function Settings() {
 			{/* Settings  */}
 			<div className="flex flex-col gap-4 p-2">
 				<div className="flex justify-between gap-2">
-					<label className="text-gray-700 mr-5">Theme</label>
+					<label className="text-gray-700 mr-5 dark:text-neutral-300">
+						Theme
+					</label>
 					<div className="bg-red overflow-hidden w-full">
 						<select
 							className="w-full"
@@ -106,7 +108,9 @@ export function Settings() {
 					</div>
 				</div>
 				<div className="flex justify-between gap-2">
-					<label className="text-gray-700">Language</label>
+					<label className="text-gray-700 dark:text-neutral-300">
+						Language
+					</label>
 					<div className="bg-red overflow-hidden w-full">
 						<select
 							className="w-full"
@@ -119,13 +123,15 @@ export function Settings() {
 				</div>
 			</div>
 			{/* History */}
-			<div className="border-t-[1px] border-gray-200 p-2">
-				<h2 className="font-bold text-[12px] text-gray-700">History</h2>
+			<div className="border-t-[1px] border-gray-200 p-2 dark:border-neutral-700">
+				<h2 className="font-bold text-[12px] text-gray-700 dark:text-neutral-300">
+					History
+				</h2>
 				<div className="mt-2">
 					<input
 						placeholder="Search..."
 						type="text"
-						className="border-[1px] border-gray-700  rounded-2xl w-full px-2"
+						className=" border-gray-700  rounded-2xl w-full px-2 dark:bg-neutral-800 bg-gray-100"
 						onKeyUp={(e) => setSearchFilter(e.currentTarget.value)}
 					/>
 				</div>

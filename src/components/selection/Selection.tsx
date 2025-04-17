@@ -6,87 +6,78 @@ import { visibilityStore } from "../../store/visibility";
 export function Selection() {
 	const { position } = visibilityStore.useVisibilityStore();
 	const [showInfoIcon, setShowInfoIcon] = useState(false);
-	const skipClickEvent = useRef(false);
 
 	const selectedText = useRef("");
 	const buttonRef = useRef<HTMLButtonElement>(null);
+	const isSelectingText = useRef(false);
 
-	const handleShowInfoIcon = () => {
-		//
+	const handleMouseUp = () => {
 		const selection = window.getSelection();
-		if (!selection || selection.isCollapsed) return;
+		const text = selection?.toString().trim() || "";
 
-		// prevent the click event from firing
-		// NOTE: this has to come after if (!selection || selection.isCollapsed) return; else when there is no selection,it will set skipClickEvent to true
-		skipClickEvent.current = true;
-		console.log("firing... mouseup event");
+		if (!text) {
+			isSelectingText.current = false;
+			return;
+		}
 
-		const text = selection.toString().trim();
-
-		if (!text) return;
-
-		const range = selection.getRangeAt(0);
+		const range = selection!.getRangeAt(0);
 		const rect = range.getBoundingClientRect();
 		const node = range.commonAncestorContainer;
-
 		const element =
 			node.nodeType === Node.ELEMENT_NODE
 				? (node as Element)
 				: node.parentElement;
 
 		if (!element) return;
+		if (element.closest(`#${ROOT_CONTAINER_ID}`)) return;
 
-		const isInsideExtension = element.closest(`#${ROOT_CONTAINER_ID}`) !== null;
-		if (isInsideExtension) return;
+		isSelectingText.current = true;
+
+		// Allow time for the click to register the flag
+		setTimeout(() => {
+			isSelectingText.current = false;
+		}, 100); // <-- longer delay (100ms) gives click time to react
 
 		selectedText.current = text;
 		setShowInfoIcon(true);
 		visibilityStore.setShowPopup(false);
 		visibilityStore.setShowSettings(false);
 
-		// Defer position setting until icon size is known
 		setTimeout(() => {
 			const icon = buttonRef.current;
 			if (icon) {
-				const iconWidth = icon.offsetWidth;
-				const iconHeight = icon.offsetHeight;
-				const position = visibilityStore.getComponentPosition(
+				const pos = visibilityStore.getComponentPosition(
 					rect,
-					iconWidth,
-					iconHeight
+					icon.offsetWidth,
+					icon.offsetHeight
 				);
-				visibilityStore.setPosition(position);
+				visibilityStore.setPosition(pos);
 			}
 		}, 0);
 	};
 
-	const removeInfoButton = (e: MouseEvent) => {
-		if (skipClickEvent.current) {
-			console.log("skipping click event...");
-			skipClickEvent.current = false;
-			return;
-		}
+	const handleClick = (e: MouseEvent) => {
+		// Delay just slightly to ensure mouseup completes
+		setTimeout(() => {
+			if (isSelectingText.current) {
+				return; // click right after highlight — skip it
+			}
 
-		const rootElement = document.getElementById(ROOT_CONTAINER_ID);
-		const clickedTarget = e.target as Node;
+			const rootElement = document.getElementById(ROOT_CONTAINER_ID);
+			const clickedTarget = e.target as Node;
+			const isClickOutsideExtension =
+				rootElement && !rootElement.contains(clickedTarget);
+			const hasSelection = selectedText.current.trim().length > 0;
 
-		const isClickOutsideExtension =
-			rootElement && !rootElement.contains(clickedTarget);
-		const hasSelection = selectedText.current.trim().length > 0;
-
-		if (isClickOutsideExtension && hasSelection) {
-			selectedText.current = "";
-			setShowInfoIcon(false);
-			window.getSelection()?.removeAllRanges();
-			console.log({
-				isClickOutsideExtension,
-				hasSelection: selectedText.current,
-			});
-		}
+			if (isClickOutsideExtension && hasSelection) {
+				selectedText.current = "";
+				setShowInfoIcon(false);
+				window.getSelection()?.removeAllRanges();
+			}
+		}, 0);
 	};
 
-	const handleOnClick = () => {
-		// remove the highlight
+	const handleOnIconClick = () => {
 		setShowInfoIcon(false);
 		selectedText.current = "";
 		window.getSelection()?.removeAllRanges();
@@ -95,22 +86,18 @@ export function Selection() {
 	};
 
 	useEffect(() => {
-		document.addEventListener("click", removeInfoButton);
-		document.addEventListener("mouseup", handleShowInfoIcon);
+		document.addEventListener("mouseup", handleMouseUp);
+		document.addEventListener("click", handleClick);
 
 		return () => {
-			document.removeEventListener("click", removeInfoButton);
-			document.removeEventListener("mouseup", handleShowInfoIcon);
+			document.removeEventListener("mouseup", handleMouseUp);
+			document.removeEventListener("click", handleClick);
 		};
 	}, []);
 
-	useEffect(() => {
-		console.log({ skipClickEvent: skipClickEvent.current });
-	}, [skipClickEvent]);
-
 	return showInfoIcon ? (
 		<button
-			onClick={handleOnClick}
+			onClick={handleOnIconClick}
 			ref={buttonRef}
 			className="fixed z-50 cursor-pointer size-7 text-black bg-white shadow-md rounded-full flex items-center justify-center"
 			style={{

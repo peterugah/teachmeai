@@ -15,7 +15,7 @@ export const SectionOne = ({
 					<Response content={content} type={type} />
 				</div>
 				<button>
-					<SpeakerWaveIcon className=" text-gray-800 hover:text-black size-7 cursor-pointer hover:bg-gray-100 p-1 rounded-[5px]" />
+					<SpeakerWaveIcon className=" text-gray-800 hover:text-black size-7 cursor-pointer hover:bg-gray-100 p-1 rounded-[5px] dark:text-neutral-500 dark:hover:bg-neutral-500" />
 				</button>
 			</div>
 		</div>

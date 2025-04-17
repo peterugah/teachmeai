@@ -9,7 +9,7 @@ export const Response = ({
 		<div
 			className={`my-2 flex ${
 				type === "user"
-					? "bg-gray-50 w-auto rounded-2xl justify-end px-5 py-2"
+					? "bg-gray-100 w-auto rounded-2xl justify-end px-5 py-2 dark:bg-neutral-800 dark:text-neutral-100"
 					: ""
 			}`}
 		>

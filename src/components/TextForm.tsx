@@ -26,7 +26,7 @@ export function TextForm({ onSubmit, placeholderText }: Props) {
 	};
 
 	return (
-		<div className="mt-4 border border-gray-300 rounded-[15px] relative bg-gray-50">
+		<div className="mt-4 border-gray-300 rounded-[15px] relative bg-gray-100 dark:bg-neutral-800">
 			<form onSubmit={handleOnSubmit}>
 				<textarea
 					spellCheck={true}
@@ -39,7 +39,7 @@ export function TextForm({ onSubmit, placeholderText }: Props) {
 
 				<button
 					type="submit"
-					className="absolute cursor-pointer bottom-[8px] right-[8px] text-sm text-white border-gray-50 border-[1px] p-2 rounded-2xl bg-blue-500 hover:bg-blue-600 transition"
+					className="absolute cursor-pointer bottom-[8px] right-[8px] text-sm text-white border-gray-50 p-2 rounded-2xl bg-blue-500 hover:bg-blue-600 transition"
 				>
 					<PaperAirplaneIcon className="size-5" />
 				</button>

@@ -12,7 +12,7 @@ export function FeatureRequest({ onSubmit, placeholderText }: Props) {
 			<div className=" flex justify-center  mt-4">
 				<button
 					onClick={() => setShow(!show)}
-					className="cursor-pointer text-[12px] text-blue-600 hover:text-blue-700 transition-all underline decoration-dotted underline-offset-4 "
+					className="cursor-pointer text-[12px] text-blue-600 hover:text-blue-700 transition-all underline decoration-dotted underline-offset-4 dark:text-blue-500 dark:hover:text-blue-600"
 				>
 					feature request / contact me 🙂
 				</button>
