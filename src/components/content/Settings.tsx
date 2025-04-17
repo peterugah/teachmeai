@@ -135,7 +135,7 @@ export function Settings() {
 						onKeyUp={(e) => setSearchFilter(e.currentTarget.value)}
 					/>
 				</div>
-				<div className="ml-2 mt-2 max-h-100 overflow-y-auto">
+				<div className="ml-2 mt-2 max-h-80 overflow-y-auto">
 					<ul>{renderPreviousSearches()}</ul>
 				</div>
 			</div>
