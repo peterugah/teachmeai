@@ -7,6 +7,7 @@ import { Response } from "./Response";
 import { SectionThree } from "./SectionThree";
 import { TextForm } from "../../components/TextForm";
 import { FeatureRequest } from "./FeatureRequest";
+import Spinner from "../Spinner";
 
 export function Content() {
 	const searchTerm = "open";
@@ -20,6 +21,10 @@ export function Content() {
 	return (
 		<div className="bg-white rounded-2xl shadow-lg dark:bg-neutral-950">
 			<Header />
+			{/* loading spinner */}
+			{/* <div className=" flex items-center justify-center mt-7">
+				<Spinner lightColor="grey-800" size={5} darkColor="" />
+			</div> */}
 			<div className="p-4">
 				{sectionOne ? <SectionOne {...sectionOne} /> : ""}
 				{sectionTwo ? <SectionTwo {...sectionTwo} /> : ""}
