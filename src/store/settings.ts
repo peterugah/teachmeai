@@ -1,19 +1,17 @@
 import { create } from "zustand"
 import { Language } from "../enums/language"
-import { Theme, ThemePreference } from "../enums/theme";
+import { Theme, } from "../enums/theme";
 import { persist } from "zustand/middleware";
 
 
 export interface SettingsStore {
   theme: Theme;
   language: Language;
-  themePreference: ThemePreference;
 }
 
 const initialState: SettingsStore = {
   theme: Theme.Light,
   language: Language.English,
-  themePreference: ThemePreference.Browser
 }
 
 const useSettingsStore = create<SettingsStore>()(

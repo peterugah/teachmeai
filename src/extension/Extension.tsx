@@ -5,12 +5,12 @@ import { Selection } from "../components/selection/Selection";
 import { visibilityStore } from "../store/visibility";
 import { ROOT_CONTAINER_ID } from "../constant";
 import { settingsStore } from "../store/settings";
-import { Theme, ThemePreference } from "../enums/theme";
+import { Theme } from "../enums/theme";
 
 export function Extension() {
 	const { showSettings, position, showPopup } =
 		visibilityStore.useVisibilityStore();
-	const { themePreference, theme } = settingsStore.useSettingsStore();
+	const { theme } = settingsStore.useSettingsStore();
 	const divRef = useRef<HTMLDivElement>(null);
 	const [adjustedLeft, setAdjustedLeft] = useState<number>(position.left);
 
@@ -32,17 +32,6 @@ export function Extension() {
 		}
 	};
 
-	const setBrowserTheme = (isDarkTheme: boolean) => {
-		if (themePreference === ThemePreference.Browser) {
-			settingsStore.setTheme(isDarkTheme ? Theme.Dark : Theme.Light);
-		}
-	};
-
-	const onBrowserThemeChange = (event: MediaQueryListEvent) => {
-		setBrowserTheme(event.matches);
-		console.log({ math: event.matches });
-	};
-
 	useLayoutEffect(() => {
 		if (divRef.current) {
 			const popupRect = divRef.current.getBoundingClientRect();
@@ -58,13 +47,6 @@ export function Extension() {
 	}, [position.left, position.top, showPopup, showSettings]);
 
 	useEffect(() => {
-		const theme = settingsStore.getBrowserTheme();
-		setBrowserTheme(theme === Theme.Dark);
-		// listen for theme change
-		window
-			.matchMedia("(prefers-color-scheme: dark)")
-			.addEventListener("change", onBrowserThemeChange);
-		//
 		document.addEventListener("mousedown", handleClickOutside);
 		document.addEventListener("keydown", handleEscapeKey);
 
