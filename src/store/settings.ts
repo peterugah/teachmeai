@@ -2,6 +2,7 @@ import { create } from "zustand"
 import { Language } from "../enums/language"
 import { Theme, } from "../enums/theme";
 import { persist } from "zustand/middleware";
+import { createChromeStorage } from "./chromeStorage";
 
 
 export interface SettingsStore {
@@ -13,12 +14,25 @@ const initialState: SettingsStore = {
   theme: Theme.Light,
   language: Language.English,
 }
+const isLocalhost = () => {
+  const hostname = window.location.hostname;
+  if (
+    hostname === "localhost" ||
+    hostname === "127.0.0.1" ||
+    hostname === "::1"
+  ) {
+    return true;
+  } else {
+    return false;
+  }
+}
 
 const useSettingsStore = create<SettingsStore>()(
   persist(
     () => initialState,
     {
       name: "settings-store", //TODO: prefix it to have the user's unique id 
+      storage: isLocalhost() ? undefined : createChromeStorage<SettingsStore>(),
     }
   )
 );
@@ -36,8 +50,9 @@ const setLanguage = (language: Language) => {
 }
 
 export const settingsStore = {
-  useSettingsStore,
-  getBrowserTheme,
+  setTheme,
+  isLocalhost,
   setLanguage,
-  setTheme
+  getBrowserTheme,
+  useSettingsStore,
 }

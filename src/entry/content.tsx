@@ -2,6 +2,7 @@ import { createRoot } from "react-dom/client";
 import tailwindCss from "../styles/index.css?inline"; // <- inline the tailwind styles as string
 import { ROOT_CONTAINER_ID } from "../constant";
 import { Extension } from "../extension/Extension";
+import { settingsStore } from "../store/settings";
 
 function mountContent(shadowHost: HTMLElement) {
 	const shadowRoot = shadowHost.attachShadow({ mode: "open" });
@@ -30,23 +31,10 @@ function mountContent(shadowHost: HTMLElement) {
 	createRoot(extensionContainer).render(<Extension />);
 }
 
-function isLocalhost() {
-	const hostname = window.location.hostname;
-	if (
-		hostname === "localhost" ||
-		hostname === "127.0.0.1" ||
-		hostname === "::1"
-	) {
-		return true;
-	} else {
-		return false;
-	}
-}
-
 // NOTE: an IIFE is needed to execute the code immediately
 (function () {
 	// NOTE: prevent extension from working in localhost to allow effective development
-	if (isLocalhost()) {
+	if (settingsStore.isLocalhost()) {
 		console.log("extension not working in localhost :)");
 		return;
 	}
