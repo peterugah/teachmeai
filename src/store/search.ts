@@ -67,10 +67,7 @@ const initialState: SearchStore = {
           timestamp: 1744383565,
           title: "testing this",
           mainReference: true,
-          content: `## Title
-      - list item 1
-      - list item 2
-      - list item 3`
+          content: `this is some demo conetnt here...`
         },
       },
       "add": {

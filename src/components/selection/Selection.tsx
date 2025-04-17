@@ -1,24 +1,28 @@
 import { useEffect, useRef, useState } from "react";
 import { ROOT_CONTAINER_ID } from "../../constant";
 import { InformationCircleIcon } from "@heroicons/react/24/outline";
-import { ElementDimensions, visibilityStore } from "../../store/visibility";
+import { visibilityStore } from "../../store/visibility";
 
 export function Selection() {
-	const [show, setShow] = useState(false);
-	const [selectedText, setSelectedText] = useState("");
+	const { position } = visibilityStore.useVisibilityStore();
+	const [showInfoIcon, setShowInfoIcon] = useState(false);
+	const skipClickEvent = useRef(false);
 
-	const [_, setIconSize] = useState<ElementDimensions>({
-		width: 0,
-		height: 0,
-	});
-
+	const selectedText = useRef("");
 	const buttonRef = useRef<HTMLButtonElement>(null);
 
-	const showInfoIcon = () => {
+	const handleShowInfoIcon = () => {
+		//
 		const selection = window.getSelection();
 		if (!selection || selection.isCollapsed) return;
 
+		// prevent the click event from firing
+		// NOTE: this has to come after if (!selection || selection.isCollapsed) return; else when there is no selection,it will set skipClickEvent to true
+		skipClickEvent.current = true;
+		console.log("firing... mouseup event");
+
 		const text = selection.toString().trim();
+
 		if (!text) return;
 
 		const range = selection.getRangeAt(0);
@@ -35,10 +39,10 @@ export function Selection() {
 		const isInsideExtension = element.closest(`#${ROOT_CONTAINER_ID}`) !== null;
 		if (isInsideExtension) return;
 
+		selectedText.current = text;
+		setShowInfoIcon(true);
 		visibilityStore.setShowPopup(false);
 		visibilityStore.setShowSettings(false);
-		setSelectedText(text);
-		setShow(true);
 
 		// Defer position setting until icon size is known
 		setTimeout(() => {
@@ -46,7 +50,6 @@ export function Selection() {
 			if (icon) {
 				const iconWidth = icon.offsetWidth;
 				const iconHeight = icon.offsetHeight;
-				setIconSize({ width: iconWidth, height: iconHeight });
 				const position = visibilityStore.getComponentPosition(
 					rect,
 					iconWidth,
@@ -54,52 +57,65 @@ export function Selection() {
 				);
 				visibilityStore.setPosition(position);
 			}
-		}, 1);
+		}, 0);
 	};
 
-	const removeInfoButton = (event: MouseEvent) => {
+	const removeInfoButton = (e: MouseEvent) => {
+		if (skipClickEvent.current) {
+			console.log("skipping click event...");
+			skipClickEvent.current = false;
+			return;
+		}
+
 		const rootElement = document.getElementById(ROOT_CONTAINER_ID);
-		const clickedTarget = event.target as Node;
+		const clickedTarget = e.target as Node;
 
 		const isClickOutsideExtension =
 			rootElement && !rootElement.contains(clickedTarget);
-		const hasSelection = selectedText.trim().length > 0;
+		const hasSelection = selectedText.current.trim().length > 0;
 
 		if (isClickOutsideExtension && hasSelection) {
-			setShow(false);
-			setSelectedText("");
+			selectedText.current = "";
+			setShowInfoIcon(false);
 			window.getSelection()?.removeAllRanges();
-			console.log("outside the button");
+			console.log({
+				isClickOutsideExtension,
+				hasSelection: selectedText.current,
+			});
 		}
 	};
 
 	const handleOnClick = () => {
+		// remove the highlight
+		setShowInfoIcon(false);
+		selectedText.current = "";
 		window.getSelection()?.removeAllRanges();
-		setShow(false);
 		visibilityStore.setShowPopup(true);
 		visibilityStore.setShowSettings(false);
 	};
 
 	useEffect(() => {
-		document.addEventListener("mouseup", showInfoIcon);
 		document.addEventListener("click", removeInfoButton);
+		document.addEventListener("mouseup", handleShowInfoIcon);
+
 		return () => {
-			document.removeEventListener("mouseup", showInfoIcon);
 			document.removeEventListener("click", removeInfoButton);
+			document.removeEventListener("mouseup", handleShowInfoIcon);
 		};
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
-	return show ? (
+	useEffect(() => {
+		console.log({ skipClickEvent: skipClickEvent.current });
+	}, [skipClickEvent]);
+
+	return showInfoIcon ? (
 		<button
 			onClick={handleOnClick}
 			ref={buttonRef}
 			className="fixed z-50 cursor-pointer size-7 text-black bg-white shadow-md rounded-full flex items-center justify-center"
 			style={{
-				top: `${visibilityStore.useVisibilityStore.getState().position.top}px`,
-				left: `${
-					visibilityStore.useVisibilityStore.getState().position.left
-				}px`,
+				top: `${position.top}px`,
+				left: `${position.left}px`,
 				position: "absolute",
 			}}
 		>
