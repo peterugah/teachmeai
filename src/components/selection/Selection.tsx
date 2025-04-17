@@ -2,9 +2,12 @@ import { useEffect, useRef, useState } from "react";
 import { ROOT_CONTAINER_ID } from "../../constant";
 import { InformationCircleIcon } from "@heroicons/react/24/outline";
 import { visibilityStore } from "../../store/visibility";
+import { settingsStore } from "../../store/settings";
+import { Theme } from "../../enums/theme";
 
 export function Selection() {
 	const { position } = visibilityStore.useVisibilityStore();
+	const { theme } = settingsStore.useSettingsStore();
 	const [showInfoIcon, setShowInfoIcon] = useState(false);
 
 	const selectedText = useRef("");
@@ -96,17 +99,19 @@ export function Selection() {
 	}, []);
 
 	return showInfoIcon ? (
-		<button
-			onClick={handleOnIconClick}
-			ref={buttonRef}
-			className="fixed z-50 cursor-pointer size-7 text-black bg-white shadow-md rounded-full flex items-center justify-center"
-			style={{
-				top: `${position.top}px`,
-				left: `${position.left}px`,
-				position: "absolute",
-			}}
-		>
-			<InformationCircleIcon />
-		</button>
+		<div className={`${theme === Theme.Dark && "dark"}`}>
+			<button
+				onClick={handleOnIconClick}
+				ref={buttonRef}
+				className={`dark:text-red fixed z-50 cursor-pointer size-7 text-yellow bg-white shadow-md rounded-full flex items-center justify-center`}
+				style={{
+					top: `${position.top}px`,
+					left: `${position.left}px`,
+					position: "absolute",
+				}}
+			>
+				<InformationCircleIcon />
+			</button>
+		</div>
 	) : null;
 }

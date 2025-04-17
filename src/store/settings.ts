@@ -4,6 +4,7 @@ import { Theme, } from "../enums/theme";
 import { persist } from "zustand/middleware";
 import { createChromeStorage } from "./chromeStorage";
 import { isLocalhost } from "../utils/isLocalHost";
+import { ROOT_CONTAINER_ID } from "../constant";
 
 
 export interface SettingsStore {
@@ -12,7 +13,7 @@ export interface SettingsStore {
 }
 
 const initialState: SettingsStore = {
-  theme: Theme.Light,
+  theme: Theme.Dark,
   language: Language.English,
 }
 
@@ -20,7 +21,7 @@ const useSettingsStore = create<SettingsStore>()(
   persist(
     () => initialState,
     {
-      name: "settings-store", //TODO: prefix it to have the user's unique id 
+      name: `${ROOT_CONTAINER_ID}-settings-store`,
       storage: isLocalhost() ? undefined : createChromeStorage<SettingsStore>(),
     }
   )

@@ -1,6 +1,7 @@
 import { create } from "zustand"
 import { Language } from "../enums/language";
 import { persist } from "zustand/middleware";
+import { ROOT_CONTAINER_ID } from "../constant";
 
 
 type RequestState = "loading" | "error" | "done";
@@ -166,7 +167,7 @@ const useSearchStore = create<SearchStore>()(
   persist(
     () => initialState,
     {
-      name: "search-store", //TODO: prefix it to have the user's unique id 
+      name: `${ROOT_CONTAINER_ID}-search-store`,
     }
   )
 );
