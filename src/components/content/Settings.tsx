@@ -99,7 +99,7 @@ export function Settings() {
 					</label>
 					<div className="bg-red overflow-hidden w-full">
 						<select
-							className="w-full"
+							className="w-full focus:outline-none"
 							value={theme}
 							onChange={handleOnChangeTheme}
 						>
@@ -113,7 +113,7 @@ export function Settings() {
 					</label>
 					<div className="bg-red overflow-hidden w-full">
 						<select
-							className="w-full"
+							className="w-full focus:outline-none"
 							value={language}
 							onChange={handleOnLanguageChange}
 						>
@@ -131,11 +131,11 @@ export function Settings() {
 					<input
 						placeholder="Search..."
 						type="text"
-						className=" border-gray-700  rounded-2xl w-full px-2 dark:bg-neutral-800 bg-gray-100"
+						className=" border-gray-700  rounded-2xl w-full px-2 dark:bg-neutral-800 bg-gray-100 focus:outline-none"
 						onKeyUp={(e) => setSearchFilter(e.currentTarget.value)}
 					/>
 				</div>
-				<div className="ml-2 mt-2 max-h-80 overflow-y-auto ">
+				<div className="ml-2 mt-2 max-h-80 overflow-y-auto scrollbar-track-transparent ">
 					<ul>{renderPreviousSearches()}</ul>
 				</div>
 			</div>

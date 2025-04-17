@@ -3,6 +3,7 @@ import { Language } from "../enums/language"
 import { Theme, } from "../enums/theme";
 import { persist } from "zustand/middleware";
 import { createChromeStorage } from "./chromeStorage";
+import { isLocalhost } from "../utils/isLocalHost";
 
 
 export interface SettingsStore {
@@ -13,18 +14,6 @@ export interface SettingsStore {
 const initialState: SettingsStore = {
   theme: Theme.Light,
   language: Language.English,
-}
-const isLocalhost = () => {
-  const hostname = window.location.hostname;
-  if (
-    hostname === "localhost" ||
-    hostname === "127.0.0.1" ||
-    hostname === "::1"
-  ) {
-    return true;
-  } else {
-    return false;
-  }
 }
 
 const useSettingsStore = create<SettingsStore>()(
