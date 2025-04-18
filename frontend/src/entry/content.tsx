@@ -7,17 +7,27 @@ import { isLocalhost } from "../utils/isLocalHost";
 function mountContent(shadowHost: HTMLElement) {
 	const shadowRoot = shadowHost.attachShadow({ mode: "open" });
 	const style = document.createElement("style");
-	// const finalCss = "";
+	let finalCss = "";
 
-	// finalCss += tailwindCss;
+	/** 
+	the variables have to be defined at the top layer for them to be accessible within the shadow dom 
+	 */
+	// const variables = tailwindCss.match(
+	// 	/(:root,:host|:before,:after,::backdrop)\s*{[\s\S]*?}/g
+	// );
+
+	// if (variables) {
+	// 	finalCss += variables.map((definition) => definition);
+	// }
+	finalCss += tailwindCss;
 
 	// finalCss = finalCss
 	// 	.replace(/(:root,:host|:before,:after,::backdrop)/g, ":host")
 	// 	.replace(/,:host/g, ":host");
 
-	style.textContent = tailwindCss;
+	style.textContent = finalCss;
 
-	console.log(style.textContent);
+	// console.log(style.textContent);
 
 	shadowRoot.appendChild(style);
 	const extensionContainer = document.createElement("div");
@@ -33,6 +43,22 @@ function mountContent(shadowHost: HTMLElement) {
 		return;
 	}
 	if (document.getElementById(ROOT_CONTAINER_ID)) return;
+
+	// Inject Google Fonts link into the <head> of the main document
+	const fontLink = document.createElement("link");
+	fontLink.href =
+		"https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap";
+	fontLink.rel = "stylesheet";
+
+	// Prevent duplicate injection
+	if (
+		![...document.head.querySelectorAll("link")].some(
+			(link) => link.href === fontLink.href
+		)
+	) {
+		document.head.appendChild(fontLink);
+	}
+
 	const shadowHost = document.createElement("div");
 	shadowHost.id = ROOT_CONTAINER_ID;
 	document.body.appendChild(shadowHost);

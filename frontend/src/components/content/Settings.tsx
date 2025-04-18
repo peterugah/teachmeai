@@ -81,8 +81,8 @@ export function Settings() {
 	};
 
 	return (
-		<div className="bg-white border-gray-200 border-r-0 shadow-lg rounded-2xl dark:bg-neutral-900">
-			<div className="border-b-[1px] border-gray-200 p-2 flex justify-between dark:border-neutral-700">
+		<div className="bg-white rounded-2xl dark:bg-neutral-900">
+			<div className="p-2 flex justify-between">
 				<h1 className="font-bold dark:text-neutral-300">Settings</h1>
 				<button
 					onClick={handleOnBackClick}
@@ -123,7 +123,7 @@ export function Settings() {
 				</div>
 			</div>
 			{/* History */}
-			<div className="border-t-[1px] border-gray-200 p-2 dark:border-neutral-700">
+			<div className="p-2">
 				<h2 className="font-bold text-[12px] text-gray-700 dark:text-neutral-300">
 					History
 				</h2>

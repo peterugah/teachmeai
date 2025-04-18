@@ -14,7 +14,7 @@ export function Selection() {
 	const buttonRef = useRef<HTMLButtonElement>(null);
 	const isSelectingText = useRef(false);
 
-	const handleMouseUp = () => {
+	const handleMouseUp = (e: MouseEvent) => {
 		const selection = window.getSelection();
 		const text = selection?.toString().trim() || "";
 
@@ -40,6 +40,12 @@ export function Selection() {
 		setTimeout(() => {
 			isSelectingText.current = false;
 		}, 100); // <-- longer delay (100ms) gives click time to react
+
+		const rootElement = document.getElementById(ROOT_CONTAINER_ID);
+		// if selection is inside the extension, do nothing
+		if (rootElement && rootElement.contains(e.target as Node)) {
+			return;
+		}
 
 		selectedText.current = text;
 		setShowInfoIcon(true);
