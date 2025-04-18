@@ -7,23 +7,17 @@ import { isLocalhost } from "../utils/isLocalHost";
 function mountContent(shadowHost: HTMLElement) {
 	const shadowRoot = shadowHost.attachShadow({ mode: "open" });
 	const style = document.createElement("style");
-	let finalCss = "";
+	// const finalCss = "";
 
-	/** 
-	the variables have to be defined at the top layer for them to be accessible within the shadow dom 
-	 */
-	const variables = tailwindCss.match(
-		/(:root,:host|:before,:after,::backdrop)\s*{[\s\S]*?}/g
-	);
+	// finalCss += tailwindCss;
 
-	if (variables) {
-		finalCss += variables.map((definition) => definition);
-	}
-	finalCss += tailwindCss;
+	// finalCss = finalCss
+	// 	.replace(/(:root,:host|:before,:after,::backdrop)/g, ":host")
+	// 	.replace(/,:host/g, ":host");
 
-	style.textContent = finalCss
-		.replace(/(:root,:host|:before,:after,::backdrop)/g, ":host")
-		.replace(/,:host/g, ":host");
+	style.textContent = tailwindCss;
+
+	console.log(style.textContent);
 
 	shadowRoot.appendChild(style);
 	const extensionContainer = document.createElement("div");
