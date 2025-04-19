@@ -4,31 +4,18 @@ import { ROOT_CONTAINER_ID } from "../constant";
 import { Extension } from "../extension/Extension";
 import { isLocalhost } from "../utils/isLocalHost";
 
+// the quirks of css required this function
+function convertRemToPx(css: string, basePx = 16) {
+	return css.replace(
+		/([\d.]+)rem/g,
+		(_, remVal) => `${parseFloat(remVal) * basePx}px`
+	);
+}
+
 function mountContent(shadowHost: HTMLElement) {
 	const shadowRoot = shadowHost.attachShadow({ mode: "open" });
 	const style = document.createElement("style");
-	let finalCss = "";
-
-	/** 
-	the variables have to be defined at the top layer for them to be accessible within the shadow dom 
-	 */
-	// const variables = tailwindCss.match(
-	// 	/(:root,:host|:before,:after,::backdrop)\s*{[\s\S]*?}/g
-	// );
-
-	// if (variables) {
-	// 	finalCss += variables.map((definition) => definition);
-	// }
-	finalCss += tailwindCss;
-
-	// finalCss = finalCss
-	// 	.replace(/(:root,:host|:before,:after,::backdrop)/g, ":host")
-	// 	.replace(/,:host/g, ":host");
-
-	style.textContent = finalCss;
-
-	// console.log(style.textContent);
-
+	style.textContent = convertRemToPx(tailwindCss);
 	shadowRoot.appendChild(style);
 	const extensionContainer = document.createElement("div");
 	shadowRoot.appendChild(extensionContainer);
@@ -37,7 +24,6 @@ function mountContent(shadowHost: HTMLElement) {
 
 // NOTE: an IIFE is needed to execute the code immediately
 (function () {
-	// NOTE: prevent extension from working in localhost to allow effective development
 	if (isLocalhost()) {
 		console.info("extension disabled in localhost :)");
 		return;
@@ -61,6 +47,7 @@ function mountContent(shadowHost: HTMLElement) {
 
 	const shadowHost = document.createElement("div");
 	shadowHost.id = ROOT_CONTAINER_ID;
+	shadowHost.style.fontSize = "16px";
 	document.body.appendChild(shadowHost);
 	mountContent(shadowHost);
 })();

@@ -1,6 +1,6 @@
 import { SpeakerWaveIcon } from "@heroicons/react/24/outline";
 import { Response } from "./Response";
-import { SearchBaseContent } from "../../store/search";
+import { SearchBaseContent } from "@shared/types";
 
 export const SectionOne = ({
 	title,

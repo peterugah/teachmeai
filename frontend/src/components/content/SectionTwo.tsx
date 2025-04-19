@@ -1,5 +1,5 @@
+import { SearchBaseContent } from "@shared/types";
 import { Response } from "./Response";
-import { SearchBaseContent } from "../../store/search";
 
 export const SectionTwo = ({ title, content, type }: SearchBaseContent) => {
 	return (

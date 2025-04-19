@@ -7,7 +7,6 @@ import { Response } from "./Response";
 import { SectionThree } from "./SectionThree";
 import { TextForm } from "../../components/TextForm";
 import { FeatureRequest } from "./FeatureRequest";
-// import Spinner from "../Spinner";
 
 export function Content() {
 	const searchTerm = "open";

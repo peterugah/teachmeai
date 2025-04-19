@@ -1,5 +1,5 @@
+import { SearchBaseContent } from "@shared/types";
 import ReactMarkDown from "react-markdown";
-import { SearchBaseContent } from "../../store/search";
 
 export const Response = ({
 	content,

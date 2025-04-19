@@ -2,24 +2,8 @@ import { create } from "zustand"
 import { Language } from "../enums/language";
 import { persist } from "zustand/middleware";
 import { ROOT_CONTAINER_ID } from "../constant";
+import { RequestState, SearchBaseContent, SearchSectionTwo } from "@shared/types";
 
-
-type RequestState = "loading" | "error" | "done";
-export type SearchType = "user" | "ai";
-
-export interface SearchBaseContent {
-  webPage: string;
-  id: string;
-  title: string;
-  content: string;
-  timestamp: number;
-  type: SearchType;
-}
-
-export interface SearchSectionTwo extends SearchBaseContent {
-  mainReference: boolean; // indicates which object is the user's main reference
-
-}
 /**
   Structure  
 {
@@ -32,7 +16,6 @@ export interface SearchSectionTwo extends SearchBaseContent {
   }
 }
  */
-
 interface SearchStore {
   liked?: boolean;
   website?: string;

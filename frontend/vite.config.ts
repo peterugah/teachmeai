@@ -4,6 +4,11 @@ import { resolve } from 'path';
 import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
+  resolve: {
+    alias: {
+      '@shared': resolve(__dirname, '../shared'),
+    },
+  },
   plugins: [
     react(),
     tailwindcss(),
@@ -27,5 +32,10 @@ export default defineConfig({
     emptyOutDir: false,
     target: 'esnext',
     cssCodeSplit: false,
+  },
+  server: {
+    fs: {
+      allow: ['..'], // Allow access to files one level above (../shared)
+    },
   },
 });
