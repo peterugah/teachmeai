@@ -199,15 +199,13 @@ const getPreviousSearches = () => {
 }
 
 const requestExplanation = (payload: AskDto) => {
-  try {
-    console.log(import.meta.env.VITE_BASE_URL)
-    console.log({ payload })
-    setRequestState("loading")
-  } catch {
-    console.log("error")
-  } finally {
-    // setRequestState("done")
+  setRequestState("loading")
+  const eventSource = new EventSource(`${import.meta.env.VITE_BASE_URL}/search/ask`);
+  eventSource.onmessage = (e) => {
+    setRequestState("done");
+
   }
+
 }
 
 export const searchStore = {
