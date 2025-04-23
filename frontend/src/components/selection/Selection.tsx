@@ -40,14 +40,6 @@ export function Selection() {
 			.replace(/\s+/g, " ")
 			.trim();
 
-	const tokenize = (text: string): string[] =>
-		normalizeText(text).toLowerCase().split(/\s+/);
-
-	const getWordHash = (words: string[]): string => {
-		// Create a basic fingerprint using sorted unique words
-		return [...new Set(words)].sort().join("-");
-	};
-
 	const isVisible = (el: HTMLElement): boolean => {
 		const style = window.getComputedStyle(el);
 		return (
@@ -55,6 +47,17 @@ export function Selection() {
 			style.visibility !== "hidden" &&
 			el.getAttribute("aria-hidden") !== "true"
 		);
+	};
+
+	const getUniqueChunks = (text: string, seen: Set<string>): string[] => {
+		return text
+			.split(/(?<=[.!?])\s+(?=[A-Z])/g) // sentence-splitting regex
+			.map((chunk) => normalizeText(chunk))
+			.filter((chunk) => {
+				if (seen.has(chunk) || chunk.length < 20) return false;
+				seen.add(chunk);
+				return true;
+			});
 	};
 
 	const getWebPageContent = (selection: Selection | null) => {
@@ -70,13 +73,13 @@ export function Selection() {
 
 		if (!currentNode) return;
 
-		const seenHashes = new Set<string>();
+		const seenChunks = new Set<string>();
 		const contextBlocks: string[] = [];
 		let totalWords = 0;
 
-		let depth = 0;
 		const MAX_DEPTH = 15;
 		const MAX_WORDS = 500;
+		let depth = 0;
 
 		while (
 			currentNode &&
@@ -87,22 +90,22 @@ export function Selection() {
 			if (currentNode instanceof HTMLElement && isVisible(currentNode)) {
 				const rawText = currentNode.innerText;
 				const normalized = normalizeText(rawText);
-				const words = tokenize(normalized);
+				const uniqueChunks = getUniqueChunks(normalized, seenChunks);
 
-				const hash = getWordHash(words);
-				if (words.length > 10 && !seenHashes.has(hash)) {
-					contextBlocks.unshift(normalized);
-					seenHashes.add(hash);
-					totalWords += words.length;
+				if (uniqueChunks.length > 0) {
+					const joined = uniqueChunks.join(" ");
+					contextBlocks.unshift(joined);
+					totalWords += joined.split(" ").length;
 				}
 			}
 
 			currentNode = currentNode.parentElement;
 			depth++;
 		}
-		console.log({ contextBlocks });
 
-		const collectedText = contextBlocks.join(" ");
+		const collectedText = contextBlocks
+			.filter((item) => item.trim() !== selectedText.current.trim())
+			.join(" ");
 
 		webPageContent.current = collectedText;
 	};
