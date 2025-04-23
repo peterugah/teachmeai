@@ -2,7 +2,7 @@ import { create } from "zustand"
 import { Language } from "../enums/language";
 import { persist } from "zustand/middleware";
 import { ROOT_CONTAINER_ID } from "../constant";
-import { RequestState, SearchBaseContent, SearchSectionTwo } from "@shared/types";
+import { AskDto, RequestState, SearchBaseContent, SearchSectionTwo } from "@shared/types";
 
 /**
   Structure  
@@ -198,9 +198,22 @@ const getPreviousSearches = () => {
   return response;
 }
 
+const requestExplanation = (payload: AskDto) => {
+  try {
+    console.log(import.meta.env.VITE_BASE_URL)
+    console.log({ payload })
+    setRequestState("loading")
+  } catch {
+    console.log("error")
+  } finally {
+    // setRequestState("done")
+  }
+}
+
 export const searchStore = {
   getDetailsForSearchTerm,
   getPreviousSearches,
+  requestExplanation,
   useSearchStore,
   setRequestState,
   sortByTimestamp,

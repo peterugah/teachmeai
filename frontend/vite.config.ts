@@ -3,7 +3,11 @@ import react from '@vitejs/plugin-react';
 import { resolve } from 'path';
 import tailwindcss from '@tailwindcss/vite';
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
+  define: {
+    'process.env.NODE_ENV': JSON.stringify(mode),
+  },
+
   resolve: {
     alias: {
       '@shared': resolve(__dirname, '../shared'),
@@ -13,9 +17,6 @@ export default defineConfig({
     react(),
     tailwindcss(),
   ],
-  define: {
-    'process.env': {},
-  },
   build: {
     lib: {
       entry: resolve(__dirname, 'src/entry/content.tsx'),
@@ -35,7 +36,7 @@ export default defineConfig({
   },
   server: {
     fs: {
-      allow: ['..'], // Allow access to files one level above (../shared)
+      allow: ['..'],
     },
   },
-});
+}));

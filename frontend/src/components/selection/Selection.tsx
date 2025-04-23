@@ -4,24 +4,65 @@ import { InformationCircleIcon } from "@heroicons/react/24/outline";
 import { visibilityStore } from "../../store/visibility";
 import { settingsStore } from "../../store/settings";
 import { Theme } from "../../enums/theme";
+import { v4 as uuid } from "uuid";
+import { AskDto } from "@shared/types";
+import { searchStore } from "../../store/search";
 
 export function Selection() {
 	const { position } = visibilityStore.useVisibilityStore();
 	const { theme } = settingsStore.useSettingsStore();
-	const [showInfoIcon, setShowInfoIcon] = useState(false);
 
 	const selectedText = useRef("");
-	const buttonRef = useRef<HTMLButtonElement>(null);
+	const webPageContent = useRef("");
 	const isSelectingText = useRef(false);
+	const buttonRef = useRef<HTMLButtonElement>(null);
+	const [showInfoIcon, setShowInfoIcon] = useState(false);
+
+	const getCurrentPageURL = (): string => {
+		return window.location.href;
+	};
+
+	const constructRequestPayload = (): AskDto => {
+		return {
+			id: uuid(),
+			timestamp: Date.now(),
+			webPage: getCurrentPageURL(),
+			content: webPageContent.current,
+			searchTerm: selectedText.current,
+			language: settingsStore.useSettingsStore.getState().language,
+			translations: [], //TODO: translations
+			additionalContext: [], // existing conversation,
+		};
+	};
+	const normalizeText = (text: string): string =>
+		text
+			.replace(/[\n\r\t]+/g, " ")
+			.replace(/\s+/g, " ")
+			.trim();
+
+	const tokenize = (text: string): string[] =>
+		normalizeText(text).toLowerCase().split(/\s+/);
+
+	const getWordHash = (words: string[]): string => {
+		// Create a basic fingerprint using sorted unique words
+		return [...new Set(words)].sort().join("-");
+	};
+
+	const isVisible = (el: HTMLElement): boolean => {
+		const style = window.getComputedStyle(el);
+		return (
+			style.display !== "none" &&
+			style.visibility !== "hidden" &&
+			el.getAttribute("aria-hidden") !== "true"
+		);
+	};
 
 	const getWebPageContent = (selection: Selection | null) => {
-		if (!selection) {
-			return;
-		}
+		if (!selection) return;
+
 		const anchorNode = selection.anchorNode;
 		if (!anchorNode) return;
 
-		// Start from the selected node
 		let currentNode: Node | null =
 			anchorNode.nodeType === Node.TEXT_NODE
 				? anchorNode.parentElement
@@ -29,27 +70,60 @@ export function Selection() {
 
 		if (!currentNode) return;
 
-		const elements: HTMLElement[] = [];
+		const seenHashes = new Set<string>();
+		const contextBlocks: string[] = [];
+		let totalWords = 0;
 
-		// Climb up to <body>, collecting elements
-		while (currentNode && currentNode.nodeName.toLowerCase() !== "body") {
-			if (currentNode instanceof HTMLElement) {
-				elements.unshift(currentNode); // add to the beginning to reverse order
+		let depth = 0;
+		const MAX_DEPTH = 15;
+		const MAX_WORDS = 500;
+
+		while (
+			currentNode &&
+			currentNode.nodeName.toLowerCase() !== "body" &&
+			depth < MAX_DEPTH &&
+			totalWords < MAX_WORDS
+		) {
+			if (currentNode instanceof HTMLElement && isVisible(currentNode)) {
+				const rawText = currentNode.innerText;
+				const normalized = normalizeText(rawText);
+				const words = tokenize(normalized);
+
+				const hash = getWordHash(words);
+				if (words.length > 10 && !seenHashes.has(hash)) {
+					contextBlocks.unshift(normalized);
+					seenHashes.add(hash);
+					totalWords += words.length;
+				}
 			}
+
 			currentNode = currentNode.parentElement;
+			depth++;
 		}
+		console.log({ contextBlocks });
 
-		// Combine all collected innerText in top-down order
-		const collectedText = elements.map((el) => el.innerText).join("\n");
+		const collectedText = contextBlocks.join(" ");
 
-		console.log("Collected Text Top to Bottom:", collectedText);
+		webPageContent.current = collectedText;
+	};
+
+	const isInsideExtension = (target: Node) => {
+		const rootElement = document.getElementById(ROOT_CONTAINER_ID);
+		return !!(rootElement && rootElement.contains(target));
+	};
+
+	const positionIcon = (rect: DOMRect, icon: HTMLElement) => {
+		const pos = visibilityStore.getComponentPosition(
+			rect,
+			icon.offsetWidth,
+			icon.offsetHeight
+		);
+		visibilityStore.setPosition(pos);
 	};
 
 	const handleOnMouseUp = (e: MouseEvent) => {
 		const selection = window.getSelection();
 		const text = selection?.toString().trim() || "";
-
-		getWebPageContent(selection);
 
 		if (!text) {
 			isSelectingText.current = false;
@@ -59,27 +133,17 @@ export function Selection() {
 		const range = selection!.getRangeAt(0);
 		const rect = range.getBoundingClientRect();
 		const node = range.commonAncestorContainer;
-
 		const element =
 			node.nodeType === Node.ELEMENT_NODE
 				? (node as Element)
 				: node.parentElement;
 
-		if (!element) return;
-		if (element.closest(`#${ROOT_CONTAINER_ID}`)) return;
+		if (!element || element.closest(`#${ROOT_CONTAINER_ID}`)) return;
 
 		isSelectingText.current = true;
+		setTimeout(() => (isSelectingText.current = false), 100);
 
-		// Allow time for the click to register the flag
-		setTimeout(() => {
-			isSelectingText.current = false;
-		}, 100); // <-- longer delay (100ms) gives click time to react
-
-		const rootElement = document.getElementById(ROOT_CONTAINER_ID);
-		// if selection is inside the extension, do nothing
-		if (rootElement && rootElement.contains(e.target as Node)) {
-			return;
-		}
+		if (isInsideExtension(e.target as Node)) return;
 
 		selectedText.current = text;
 		setShowInfoIcon(true);
@@ -88,31 +152,19 @@ export function Selection() {
 
 		setTimeout(() => {
 			const icon = buttonRef.current;
-			if (icon) {
-				const pos = visibilityStore.getComponentPosition(
-					rect,
-					icon.offsetWidth,
-					icon.offsetHeight
-				);
-				visibilityStore.setPosition(pos);
-			}
+			if (icon) positionIcon(rect, icon);
+			getWebPageContent(selection);
 		}, 0);
 	};
 
 	const handleOnWindowClick = (e: MouseEvent) => {
-		// Delay just slightly to ensure mouseup completes
 		setTimeout(() => {
-			if (isSelectingText.current) {
-				return; // click right after highlight — skip it
-			}
-			const rootElement = document.getElementById(ROOT_CONTAINER_ID);
-			const clickedTarget = e.target as Node;
-			const isClickOutsideExtension =
-				rootElement && !rootElement.contains(clickedTarget);
-			const hasSelection = selectedText.current.trim().length > 0;
+			if (isSelectingText.current) return;
 
-			if (isClickOutsideExtension && hasSelection) {
-				console.log("outside extension content....");
+			const clickedTarget = e.target as Node;
+			if (isInsideExtension(clickedTarget)) return;
+
+			if (selectedText.current.trim().length > 0) {
 				selectedText.current = "";
 				setShowInfoIcon(false);
 				window.getSelection()?.removeAllRanges();
@@ -121,6 +173,9 @@ export function Selection() {
 	};
 
 	const handleOnIconClick = () => {
+		const payload = constructRequestPayload();
+		searchStore.requestExplanation(payload);
+
 		setShowInfoIcon(false);
 		selectedText.current = "";
 		window.getSelection()?.removeAllRanges();
@@ -131,19 +186,19 @@ export function Selection() {
 	useEffect(() => {
 		document.addEventListener("mouseup", handleOnMouseUp);
 		document.addEventListener("click", handleOnWindowClick);
-
 		return () => {
 			document.removeEventListener("mouseup", handleOnMouseUp);
 			document.removeEventListener("click", handleOnWindowClick);
 		};
 	}, []);
 
+	// Render icon
 	return showInfoIcon ? (
 		<div className={`${theme === Theme.Dark && "dark"}`}>
 			<button
 				onClick={handleOnIconClick}
 				ref={buttonRef}
-				className={`dark:text-red fixed z-50 cursor-pointer size-7 text-yellow bg-white shadow-md rounded-full flex items-center justify-center`}
+				className="fixed z-50 cursor-pointer size-7 text-yellow bg-white shadow-md rounded-full flex items-center justify-center dark:text-red"
 				style={{
 					top: `${position.top}px`,
 					left: `${position.left}px`,
