@@ -3,6 +3,9 @@ import { Language } from "../enums/language";
 import { persist } from "zustand/middleware";
 import { ROOT_CONTAINER_ID } from "../constant";
 import { AskDto, RequestState, SearchBaseContent, SearchSectionTwo } from "@shared/types";
+import { END_OF_SSE_EVENT } from "@shared/constants";
+import { isLocalhost } from "../utils/isLocalHost";
+import { createChromeStorage } from "./chromeStorage";
 
 /**
   Structure  
@@ -151,10 +154,14 @@ const useSearchStore = create<SearchStore>()(
     () => initialState,
     {
       name: `${ROOT_CONTAINER_ID}-search-store`,
+      storage: isLocalhost() ? undefined : createChromeStorage<SearchStore>("local"),
     }
   )
 );
 
+const setSectionTwo = (data: Record<string, Record<string, Partial<Record<Language, SearchSectionTwo>>>>) => {
+  useSearchStore.setState((store) => ({ sectionTwo: { ...store.sectionTwo, data } }))
+}
 
 const setRequestState = (requestState: RequestState) => {
   useSearchStore.setState(() => ({ requestState }))
@@ -198,14 +205,61 @@ const getPreviousSearches = () => {
   return response;
 }
 
-const requestExplanation = (payload: AskDto) => {
-  setRequestState("loading")
-  const eventSource = new EventSource(`${import.meta.env.VITE_BASE_URL}/search/ask`);
-  eventSource.onmessage = (e) => {
-    setRequestState("done");
+const convertAskPayloadToQueryString = (payload: AskDto) => {
+  const query = new URLSearchParams({
+    additionalContext: JSON.stringify(payload.additionalContext),
+    content: payload.content,
+    id: payload.id,
+    language: payload.language,
+    searchTerm: payload.searchTerm,
+    timestamp: String(payload.timestamp),
+    webPage: payload.webPage
+  }).toString();
+  return query;
+}
 
+const constructSectionContentFromAsk = (payload: AskDto, content: string) => {
+  return {
+    [payload.webPage]: {
+      [payload.searchTerm]: {
+        [payload.language]: {
+          content,
+          id: payload.id,
+          mainReference: true,
+          timestamp: payload.timestamp,
+          title: payload.searchTerm,
+          type: "ai",
+          webPage: payload.webPage
+        } as SearchSectionTwo
+      }
+    }
+  }
+}
+
+const requestExplanation = (payload: AskDto) => {
+  const query = convertAskPayloadToQueryString(payload)
+
+  let content = "";
+
+  setRequestState("loading")
+  const eventSource = new EventSource(`${import.meta.env.VITE_BASE_URL}/search/ask?${query}`,);
+
+  eventSource.onmessage = (e) => {
+    if (e.data !== END_OF_SSE_EVENT) {
+      content += e.data;
+      setSectionTwo(constructSectionContentFromAsk(payload, content))
+    } else {
+      eventSource.close()
+      setRequestState("done");
+      console.log(constructSectionContentFromAsk(payload, content))
+    }
   }
 
+  eventSource.onerror = (e) => {
+    console.log(e)
+    eventSource.close()
+    setRequestState("error");
+  }
 }
 
 export const searchStore = {

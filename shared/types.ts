@@ -17,6 +17,5 @@ export interface SearchSectionTwo extends SearchBaseContent {
 export interface AskDto extends Omit<SearchBaseContent, "type" | "title"> {
   language: string;
   searchTerm: string;
-  translations: string[]; //the list of items to be translated
-  additionalContext: Pick<SearchBaseContent, "type" | "content">[]; // exiting conversations between the user and the teach me
+  additionalContext: string[]; // exiting conversations between the user and the teach me
 }

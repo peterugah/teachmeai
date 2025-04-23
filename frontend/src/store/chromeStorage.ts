@@ -1,11 +1,11 @@
 // src/utils/chromeStorage.ts
 import { PersistStorage, StorageValue } from "zustand/middleware"
 
-export function createChromeStorage<T>(): PersistStorage<T> {
+export function createChromeStorage<T>(type: "local" | "sync" = "local"): PersistStorage<T> {
   return {
     getItem: (name: string): Promise<StorageValue<T> | null> => {
       return new Promise((resolve) => {
-        chrome.storage.sync.get([name], (result) => {
+        chrome.storage[type].get([name], (result) => {
           const storedValue = result[name]
           if (!storedValue) return resolve(null)
 
@@ -22,13 +22,13 @@ export function createChromeStorage<T>(): PersistStorage<T> {
     setItem: (name: string, value: StorageValue<T>): Promise<void> => {
       return new Promise((resolve) => {
         const stringified = JSON.stringify(value)
-        chrome.storage.sync.set({ [name]: stringified }, () => resolve())
+        chrome.storage[type].set({ [name]: stringified }, () => resolve())
       })
     },
 
     removeItem: (name: string): Promise<void> => {
       return new Promise((resolve) => {
-        chrome.storage.sync.remove(name, () => resolve())
+        chrome.storage[type].remove(name, () => resolve())
       })
     },
   }

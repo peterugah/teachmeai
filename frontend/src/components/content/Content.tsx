@@ -7,15 +7,25 @@ import { Response } from "./Response";
 import { SectionThree } from "./SectionThree";
 import { TextForm } from "../../components/TextForm";
 import { FeatureRequest } from "./FeatureRequest";
+import { useEffect } from "react";
 
 export function Content() {
 	const searchTerm = "open";
 	const webPage = "www.example.com";
 	const { language } = settingsStore.useSettingsStore();
+	const { sectionTwo: ss } = searchStore.useSearchStore();
 
 	const { sectionOne, sectionTwo, responses } =
 		searchStore.getDetailsForSearchTerm(webPage, searchTerm, language);
 	const sortedResponses = searchStore.sortByTimestamp(responses);
+
+	useEffect(() => {
+		console.log(ss);
+	}, [ss]);
+
+	if (!ss) {
+		return;
+	}
 
 	return (
 		<div className="bg-white rounded-2xl dark:bg-neutral-900">

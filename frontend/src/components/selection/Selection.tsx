@@ -30,7 +30,6 @@ export function Selection() {
 			content: webPageContent.current,
 			searchTerm: selectedText.current,
 			language: settingsStore.useSettingsStore.getState().language,
-			translations: [], //TODO: translations
 			additionalContext: [], // existing conversation,
 		};
 	};

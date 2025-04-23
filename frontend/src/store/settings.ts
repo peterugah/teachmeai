@@ -22,7 +22,7 @@ const useSettingsStore = create<SettingsStore>()(
     () => initialState,
     {
       name: `${ROOT_CONTAINER_ID}-settings-store`,
-      storage: isLocalhost() ? undefined : createChromeStorage<SettingsStore>(),
+      storage: isLocalhost() ? undefined : createChromeStorage<SettingsStore>("sync"),
     }
   )
 );
