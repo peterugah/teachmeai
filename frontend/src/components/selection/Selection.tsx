@@ -14,9 +14,42 @@ export function Selection() {
 	const buttonRef = useRef<HTMLButtonElement>(null);
 	const isSelectingText = useRef(false);
 
-	const handleMouseUp = (e: MouseEvent) => {
+	const getWebPageContent = (selection: Selection | null) => {
+		if (!selection) {
+			return;
+		}
+		const anchorNode = selection.anchorNode;
+		if (!anchorNode) return;
+
+		// Start from the selected node
+		let currentNode: Node | null =
+			anchorNode.nodeType === Node.TEXT_NODE
+				? anchorNode.parentElement
+				: anchorNode;
+
+		if (!currentNode) return;
+
+		const elements: HTMLElement[] = [];
+
+		// Climb up to <body>, collecting elements
+		while (currentNode && currentNode.nodeName.toLowerCase() !== "body") {
+			if (currentNode instanceof HTMLElement) {
+				elements.unshift(currentNode); // add to the beginning to reverse order
+			}
+			currentNode = currentNode.parentElement;
+		}
+
+		// Combine all collected innerText in top-down order
+		const collectedText = elements.map((el) => el.innerText).join("\n");
+
+		console.log("Collected Text Top to Bottom:", collectedText);
+	};
+
+	const handleOnMouseUp = (e: MouseEvent) => {
 		const selection = window.getSelection();
 		const text = selection?.toString().trim() || "";
+
+		getWebPageContent(selection);
 
 		if (!text) {
 			isSelectingText.current = false;
@@ -26,6 +59,7 @@ export function Selection() {
 		const range = selection!.getRangeAt(0);
 		const rect = range.getBoundingClientRect();
 		const node = range.commonAncestorContainer;
+
 		const element =
 			node.nodeType === Node.ELEMENT_NODE
 				? (node as Element)
@@ -65,7 +99,7 @@ export function Selection() {
 		}, 0);
 	};
 
-	const handleClick = (e: MouseEvent) => {
+	const handleOnWindowClick = (e: MouseEvent) => {
 		// Delay just slightly to ensure mouseup completes
 		setTimeout(() => {
 			if (isSelectingText.current) {
@@ -95,12 +129,12 @@ export function Selection() {
 	};
 
 	useEffect(() => {
-		document.addEventListener("mouseup", handleMouseUp);
-		document.addEventListener("click", handleClick);
+		document.addEventListener("mouseup", handleOnMouseUp);
+		document.addEventListener("click", handleOnWindowClick);
 
 		return () => {
-			document.removeEventListener("mouseup", handleMouseUp);
-			document.removeEventListener("click", handleClick);
+			document.removeEventListener("mouseup", handleOnMouseUp);
+			document.removeEventListener("click", handleOnWindowClick);
 		};
 	}, []);
 

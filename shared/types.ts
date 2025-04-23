@@ -18,5 +18,5 @@ export interface AskDto {
   webpageContent: string;
   searchTerm: string;
   language: string;
-  translations: string[] //the list of items to be translated
+  translations: string[]; //the list of items to be translated
 }

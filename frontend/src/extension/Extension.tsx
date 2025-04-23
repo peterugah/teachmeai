@@ -70,8 +70,8 @@ export function Extension() {
 					theme === Theme.Dark && "dark"
 				}`}
 			>
-				{showSettings && <Settings />}
 				{showPopup && <Content />}
+				{showSettings && <Settings />}
 			</div>
 		</>
 	);
