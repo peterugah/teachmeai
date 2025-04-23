@@ -20,134 +20,139 @@ import { createChromeStorage } from "./chromeStorage";
 }
  */
 interface SearchStore {
-  liked?: boolean;
-  website?: string;
   requestState: RequestState;
   responses?: Record<string, Record<string, Partial<Record<Language, SearchBaseContent[]>>>>;
   sectionOne?: Record<string, Record<string, Partial<Record<Language, SearchBaseContent>>>>;
   sectionTwo?: Record<string, Record<string, Partial<Record<Language, SearchSectionTwo>>>>;
 }
 
+// const initialState: SearchStore = {
+//   requestState: "done",
+//   sectionOne: {
+//     "www.example.com": {
+//       "open": {
+//         "EN": {
+//           webPage: "www.example.com",
+//           id: "10",
+//           type: "ai",
+//           timestamp: 1744383565,
+//           title: "Pronunciation",
+//           content: "the-way-of-the-lord",
+//         }
+//       }
+//     }
+//   },
+//   sectionTwo: {
+//     "www.example.com": {
+//       "open": {
+//         "EN": {
+//           webPage: "www.example.com",
+//           id: "1",
+//           type: "ai",
+//           timestamp: 1744383565,
+//           title: "testing this",
+//           mainReference: true,
+//           content: `this is some demo conetnt here...`
+//         },
+//       },
+//       "add": {
+//         "EN": {
+//           webPage: "www.example.com",
+//           id: "22",
+//           type: "ai",
+//           timestamp: 1744383565,
+//           title: "the thesis of the universe ahsdhasd ashd ashd ",
+//           mainReference: true,
+//           content: `## Title
+//       - list item 1
+//       - list item 2
+//       - list item 3`
+//         },
+//       },
+//       "three": {
+//         "EN": {
+//           webPage: "www.example.com",
+//           id: "222",
+//           type: "ai",
+//           timestamp: 1744383565,
+//           title: "the thesis of the ahsdhasd ashd ashd ",
+//           mainReference: true,
+//           content: `## Title
+//       - list item 1
+//       - list item 2
+//       - list item 3`
+//         },
+//       },
+//       "four": {
+//         "EN": {
+//           webPage: "www.example.com",
+//           id: "2222",
+//           type: "ai",
+//           timestamp: 1744383565,
+//           title: "the thesis of the ahsdhasasdasdd ashd ashd ",
+//           mainReference: true,
+//           content: `## Title
+//       - list item 1
+//       - list item 2
+//       - list item 3`
+//         },
+//       },
+//       "five": {
+//         "EN": {
+//           webPage: "www.example.com",
+//           id: "2222222",
+//           type: "ai",
+//           timestamp: 1744383565,
+//           title: "the thesis of ashd ashd ",
+//           mainReference: true,
+//           content: `## Title
+//       - list item 1
+//       - list item 2
+//       - list item 3`
+//         },
+//       }
+//     }
+//   },
+//   responses: {
+//     "www.example.com": {
+//       "open": {
+//         "EN": [{
+//           webPage: "",
+//           id: "2",
+//           title: "",
+//           timestamp: 1744381787,
+//           content: "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Expedita unde suscipit autem animi, inventore amet optio sequi aut excepturi! Dolor nihil quia explicabo! Molestias, perferendis reiciendis error ducimus eaque architecto.",
+//           type: "user",
+//         },
+//         {
+//           webPage: "",
+//           id: "3",
+//           timestamp: 174437280,
+//           title: "",
+//           content: "2 hours ago",
+//           type: "ai",
+
+//         },
+//         {
+//           webPage: "",
+//           id: "4",
+//           title: "",
+//           timestamp: 1744383006,
+//           content: "10 minutes ago",
+//           type: "ai",
+//         }]
+//       }
+//     }
+//   },
+
+// }
+
 const initialState: SearchStore = {
   requestState: "done",
-  sectionOne: {
-    "www.example.com": {
-      "open": {
-        "EN": {
-          webPage: "www.example.com",
-          id: "10",
-          type: "ai",
-          timestamp: 1744383565,
-          title: "Pronunciation",
-          content: "the-way-of-the-lord",
-        }
-      }
-    }
-  },
-  sectionTwo: {
-    "www.example.com": {
-      "open": {
-        "EN": {
-          webPage: "www.example.com",
-          id: "1",
-          type: "ai",
-          timestamp: 1744383565,
-          title: "testing this",
-          mainReference: true,
-          content: `this is some demo conetnt here...`
-        },
-      },
-      "add": {
-        "EN": {
-          webPage: "www.example.com",
-          id: "22",
-          type: "ai",
-          timestamp: 1744383565,
-          title: "the thesis of the universe ahsdhasd ashd ashd ",
-          mainReference: true,
-          content: `## Title
-      - list item 1
-      - list item 2
-      - list item 3`
-        },
-      },
-      "three": {
-        "EN": {
-          webPage: "www.example.com",
-          id: "222",
-          type: "ai",
-          timestamp: 1744383565,
-          title: "the thesis of the ahsdhasd ashd ashd ",
-          mainReference: true,
-          content: `## Title
-      - list item 1
-      - list item 2
-      - list item 3`
-        },
-      },
-      "four": {
-        "EN": {
-          webPage: "www.example.com",
-          id: "2222",
-          type: "ai",
-          timestamp: 1744383565,
-          title: "the thesis of the ahsdhasasdasdd ashd ashd ",
-          mainReference: true,
-          content: `## Title
-      - list item 1
-      - list item 2
-      - list item 3`
-        },
-      },
-      "five": {
-        "EN": {
-          webPage: "www.example.com",
-          id: "2222222",
-          type: "ai",
-          timestamp: 1744383565,
-          title: "the thesis of ashd ashd ",
-          mainReference: true,
-          content: `## Title
-      - list item 1
-      - list item 2
-      - list item 3`
-        },
-      }
-    }
-  },
-  responses: {
-    "www.example.com": {
-      "open": {
-        "EN": [{
-          webPage: "",
-          id: "2",
-          title: "",
-          timestamp: 1744381787,
-          content: "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Expedita unde suscipit autem animi, inventore amet optio sequi aut excepturi! Dolor nihil quia explicabo! Molestias, perferendis reiciendis error ducimus eaque architecto.",
-          type: "user",
-        },
-        {
-          webPage: "",
-          id: "3",
-          timestamp: 174437280,
-          title: "",
-          content: "2 hours ago",
-          type: "ai",
-
-        },
-        {
-          webPage: "",
-          id: "4",
-          title: "",
-          timestamp: 1744383006,
-          content: "10 minutes ago",
-          type: "ai",
-        }]
-      }
-    }
-  },
-
-}
+  sectionOne: {},
+  sectionTwo: {},
+  responses: {},
+};
 
 const useSearchStore = create<SearchStore>()(
   persist(
@@ -218,18 +223,18 @@ const convertAskPayloadToQueryString = (payload: AskDto) => {
   return query;
 }
 
-const constructSectionContentFromAsk = (payload: AskDto, content: string) => {
+const constructSectionForAsk = (payload: AskDto) => {
   return {
     [payload.webPage]: {
       [payload.searchTerm]: {
         [payload.language]: {
-          content,
           id: payload.id,
           mainReference: true,
           timestamp: payload.timestamp,
           title: payload.searchTerm,
           type: "ai",
-          webPage: payload.webPage
+          webPage: payload.webPage,
+          content: payload.content
         } as SearchSectionTwo
       }
     }
@@ -238,20 +243,17 @@ const constructSectionContentFromAsk = (payload: AskDto, content: string) => {
 
 const requestExplanation = (payload: AskDto) => {
   const query = convertAskPayloadToQueryString(payload)
-
   let content = "";
-
   setRequestState("loading")
   const eventSource = new EventSource(`${import.meta.env.VITE_BASE_URL}/search/ask?${query}`,);
 
   eventSource.onmessage = (e) => {
     if (e.data !== END_OF_SSE_EVENT) {
       content += e.data;
-      setSectionTwo(constructSectionContentFromAsk(payload, content))
     } else {
       eventSource.close()
       setRequestState("done");
-      console.log(constructSectionContentFromAsk(payload, content))
+      setSectionTwo(constructSectionForAsk({ ...payload, content }))
     }
   }
 

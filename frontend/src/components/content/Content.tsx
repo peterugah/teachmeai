@@ -13,20 +13,14 @@ export function Content() {
 	const searchTerm = "open";
 	const webPage = "www.example.com";
 	const { language } = settingsStore.useSettingsStore();
-	const { sectionTwo: ss } = searchStore.useSearchStore();
 
 	const { sectionOne, sectionTwo, responses } =
 		searchStore.getDetailsForSearchTerm(webPage, searchTerm, language);
 	const sortedResponses = searchStore.sortByTimestamp(responses);
 
 	useEffect(() => {
-		console.log(ss);
-	}, [ss]);
-
-	if (!ss) {
-		return;
-	}
-
+		console.log(sectionTwo);
+	}, []);
 	return (
 		<div className="bg-white rounded-2xl dark:bg-neutral-900">
 			<Header />
