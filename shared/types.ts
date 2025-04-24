@@ -1,21 +1,10 @@
-export type RequestState = "loading" | "error" | "done";
-export type SearchType = "user" | "ai";
+import { Language } from "./languageEnum";
 
-export interface SearchBaseContent {
-  id: string;
-  title: string;
-  webPage: string;
-  content: string;
-  type: SearchType;
-  timestamp: number;
-}
+export type RequestState = "loading" | "error" | "done"
 
-export interface SearchSectionTwo extends SearchBaseContent {
-  mainReference: boolean; // indicates which object is the user's main reference
-}
-
-export interface AskDto extends Omit<SearchBaseContent, "type" | "title"> {
-  language: string;
+export type ResponseType = "user" | "ai";
+export interface SearchDto {
+  context: string;
+  language: Language;
   searchTerm: string;
-  additionalContext: string[]; // exiting conversations between the user and the teach me
 }

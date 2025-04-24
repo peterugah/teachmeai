@@ -2,13 +2,13 @@ import { PaperAirplaneIcon } from "@heroicons/react/24/outline";
 import { useRef } from "react";
 
 interface Props {
-	onSubmit: () => void;
+	onSubmit: (question: string) => void;
 	placeholderText: string;
 }
 export function TextForm({ onSubmit, placeholderText }: Props) {
 	const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-	const autoResize = () => {
+	const autoResizeTextArea = () => {
 		const textarea = textareaRef.current;
 		if (textarea) {
 			textarea.style.height = "auto";
@@ -18,11 +18,15 @@ export function TextForm({ onSubmit, placeholderText }: Props) {
 
 	const handleOnSubmit = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
-		onSubmit();
+		if (textareaRef.current) {
+			onSubmit(textareaRef.current.value);
+			textareaRef.current.value = "";
+			autoResizeTextArea();
+		}
 	};
 
 	const onInput = () => {
-		autoResize();
+		autoResizeTextArea();
 	};
 
 	return (

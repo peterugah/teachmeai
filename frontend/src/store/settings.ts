@@ -1,5 +1,5 @@
 import { create } from "zustand"
-import { Language } from "../enums/language"
+import { Language } from "../../../shared/languageEnum"
 import { Theme, } from "../enums/theme";
 import { persist } from "zustand/middleware";
 import { createChromeStorage } from "./chromeStorage";
@@ -26,6 +26,9 @@ const useSettingsStore = create<SettingsStore>()(
     }
   )
 );
+const getLanguages = () => {
+  return Object.entries(Language)
+}
 
 const getBrowserTheme = (): Theme => {
   return window.matchMedia("(prefers-color-scheme: dark)").matches ? Theme.Dark : Theme.Light;
@@ -43,6 +46,7 @@ export const settingsStore = {
   setTheme,
   isLocalhost,
   setLanguage,
+  getLanguages,
   getBrowserTheme,
   useSettingsStore,
 }

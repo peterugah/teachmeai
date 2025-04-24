@@ -1,19 +1,21 @@
-import { SearchBaseContent } from "@shared/types";
+import { ResponseType } from "@shared/types";
 import ReactMarkDown from "react-markdown";
-
-export const Response = ({
-	content,
-	type,
-}: Pick<SearchBaseContent, "content" | "type">) => {
+interface Prop {
+	content: string;
+	type: ResponseType;
+}
+export const Response = ({ content, type }: Prop) => {
 	return (
-		<div
-			className={`my-2 flex ${
-				type === "user"
-					? "bg-gray-100 w-auto rounded-2xl justify-end px-5 py-2 dark:bg-neutral-800 dark:text-neutral-100"
-					: ""
-			}`}
-		>
-			<ReactMarkDown>{content}</ReactMarkDown>
+		<div className="flex flex-col my-2">
+			<div
+				className={`${
+					type === "user"
+						? "bg-gray-100 w-auto rounded-2xl justify-end p-2 dark:bg-neutral-800 dark:text-neutral-100"
+						: ""
+				}`}
+			>
+				<ReactMarkDown>{content}</ReactMarkDown>
+			</div>
 		</div>
 	);
 };
