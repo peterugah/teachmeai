@@ -1,6 +1,4 @@
-import { useMemo, useState } from "react";
-import { Language } from "../../enums/language";
-import { searchStore } from "../../store/search";
+import { Language } from "../../../../shared/languageEnum";
 import { ArrowUturnLeftIcon } from "@heroicons/react/24/outline";
 import { Theme } from "../../enums/theme";
 import { settingsStore } from "../../store/settings";
@@ -8,18 +6,7 @@ import { visibilityStore } from "../../store/visibility";
 
 export function Settings() {
 	// const [hoveredStar, setHoveredStar] = useState<number | null>(null);
-	const [searchFilter, setSearchFilter] = useState<string>("");
 	const { language, theme } = settingsStore.useSettingsStore();
-
-	const filteredPreviousSearches = useMemo(() => {
-		return searchStore
-			.getPreviousSearches()
-			.filter(
-				(item) =>
-					item.title.includes(searchFilter.trim()) ||
-					item.content.includes(searchFilter.trim())
-			);
-	}, [searchFilter]);
 
 	const handleOnLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
 		settingsStore.setLanguage(e.target.value as Language);
@@ -29,11 +16,11 @@ export function Settings() {
 		settingsStore.setTheme(e.target.value as Theme);
 	};
 
-	const handleOnSearchTermClick = (
-		e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
-	) => {
-		e.preventDefault();
-	};
+	// const handleOnSearchTermClick = (
+	// 	e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
+	// ) => {
+	// 	e.preventDefault();
+	// };
 
 	const handleOnBackClick = () => {
 		visibilityStore.setShowSettings(false);
@@ -41,34 +28,34 @@ export function Settings() {
 	};
 
 	const renderLanguages = () => {
-		return searchStore.getLanguages().map(([value, key]) => (
+		return settingsStore.getLanguages().map(([value, key]) => (
 			<option key={key} value={key}>
 				{value}
 			</option>
 		));
 	};
 
-	const renderPreviousSearches = () => {
-		return filteredPreviousSearches.map((searchTerm) => {
-			return (
-				<li
-					key={searchTerm.id}
-					className="mb-2 w-full flex flex-col text-blue-700 hover:text-blue-800 hover:underline dark:text-blue-500 dark:hover:text-blue-600"
-				>
-					<a
-						onClick={handleOnSearchTermClick}
-						className="w-full"
-						href={searchTerm.webPage}
-					>
-						{searchTerm.title}
-					</a>
-					<span className="text-[8px] text-gray-800 truncate dark:text-neutral-300">
-						{searchTerm.webPage}
-					</span>
-				</li>
-			);
-		});
-	};
+	// const renderPreviousSearches = () => {
+	// return filteredPreviousSearches.map((searchTerm) => {
+	// 	return (
+	// 		<li
+	// 			key={searchTerm.id}
+	// 			className="mb-2 w-full flex flex-col text-blue-700 hover:text-blue-800 hover:underline dark:text-blue-500 dark:hover:text-blue-600"
+	// 		>
+	// 			<a
+	// 				onClick={handleOnSearchTermClick}
+	// 				className="w-full"
+	// 				href={searchTerm.webPage}
+	// 			>
+	// 				{searchTerm.title}
+	// 			</a>
+	// 			<span className="text-[8px] text-gray-800 truncate dark:text-neutral-300">
+	// 				{searchTerm.webPage}
+	// 			</span>
+	// 		</li>
+	// 	);
+	// });
+	// };
 
 	const renderThemeOptions = () => {
 		return Object.values(Theme).map((theme) => {
@@ -132,11 +119,11 @@ export function Settings() {
 						placeholder="Search..."
 						type="text"
 						className=" border-gray-700  rounded-2xl w-full px-2 dark:bg-neutral-800 bg-gray-100 focus:outline-none"
-						onKeyUp={(e) => setSearchFilter(e.currentTarget.value)}
+						// onKeyUp={(e) => setSearchFilter(e.currentTarget.value)}
 					/>
 				</div>
 				<div className="ml-2 mt-2 max-h-80 overflow-y-auto">
-					<ul>{renderPreviousSearches()}</ul>
+					{/* <ul>{renderPreviousSearches()}</ul> */}
 				</div>
 			</div>
 			{/* Rating */}

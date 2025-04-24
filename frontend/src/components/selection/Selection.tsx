@@ -4,8 +4,6 @@ import { InformationCircleIcon } from "@heroicons/react/24/outline";
 import { visibilityStore } from "../../store/visibility";
 import { settingsStore } from "../../store/settings";
 import { Theme } from "../../enums/theme";
-import { v4 as uuid } from "uuid";
-import { AskDto } from "@shared/types";
 import { searchStore } from "../../store/search";
 
 export function Selection() {
@@ -18,21 +16,6 @@ export function Selection() {
 	const buttonRef = useRef<HTMLButtonElement>(null);
 	const [showInfoIcon, setShowInfoIcon] = useState(false);
 
-	const getCurrentPageURL = (): string => {
-		return window.location.href;
-	};
-
-	const constructRequestPayload = (): AskDto => {
-		return {
-			id: uuid(),
-			timestamp: Date.now(),
-			webPage: getCurrentPageURL(),
-			content: webPageContent.current,
-			searchTerm: selectedText.current,
-			language: settingsStore.useSettingsStore.getState().language,
-			additionalContext: [], // existing conversation,
-		};
-	};
 	const normalizeText = (text: string): string =>
 		text
 			.replace(/[\n\r\t]+/g, " ")
@@ -175,8 +158,10 @@ export function Selection() {
 	};
 
 	const handleOnIconClick = () => {
-		const payload = constructRequestPayload();
-		searchStore.requestExplanation(payload);
+		searchStore.requestExplanation({
+			context: webPageContent.current,
+			searchTerm: selectedText.current,
+		});
 
 		setShowInfoIcon(false);
 		selectedText.current = "";
@@ -194,7 +179,6 @@ export function Selection() {
 		};
 	}, []);
 
-	// Render icon
 	return showInfoIcon ? (
 		<div className={`${theme === Theme.Dark && "dark"}`}>
 			<button
