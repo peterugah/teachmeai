@@ -7,20 +7,33 @@ import { Response } from "./Response";
 import { SectionThree } from "./SectionThree";
 import { TextForm } from "../../components/TextForm";
 import { FeatureRequest } from "./FeatureRequest";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 
 export function Content() {
-	const searchTerm = "open";
-	const webPage = "www.example.com";
+	const { activeSearchTerm, activeWebPage } = searchStore.useSearchStore();
 	const { language } = settingsStore.useSettingsStore();
 
-	const { sectionOne, sectionTwo, responses } =
-		searchStore.getDetailsForSearchTerm(webPage, searchTerm, language);
+	const { sectionOne, sectionTwo, responses } = useMemo(() => {
+		return searchStore.getDetailsForSearchTerm(
+			activeWebPage,
+			activeSearchTerm,
+			language
+		);
+	}, [activeSearchTerm, activeWebPage, language]);
+
 	const sortedResponses = searchStore.sortByTimestamp(responses);
 
 	useEffect(() => {
-		console.log(sectionTwo);
-	}, []);
+		console.log({ activeSearchTerm, activeWebPage });
+
+		const response = searchStore.getDetailsForSearchTerm(
+			activeWebPage,
+			activeSearchTerm,
+			language
+		);
+		console.log({ response });
+	}, [activeSearchTerm, activeWebPage]);
+
 	return (
 		<div className="bg-white rounded-2xl dark:bg-neutral-900">
 			<Header />

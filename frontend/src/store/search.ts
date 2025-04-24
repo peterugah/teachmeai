@@ -20,6 +20,8 @@ import { createChromeStorage } from "./chromeStorage";
 }
  */
 interface SearchStore {
+  activeWebPage: string;
+  activeSearchTerm: string;
   requestState: RequestState;
   responses?: Record<string, Record<string, Partial<Record<Language, SearchBaseContent[]>>>>;
   sectionOne?: Record<string, Record<string, Partial<Record<Language, SearchBaseContent>>>>;
@@ -148,6 +150,8 @@ interface SearchStore {
 // }
 
 const initialState: SearchStore = {
+  activeSearchTerm: "",
+  activeWebPage: "",
   requestState: "done",
   sectionOne: {},
   sectionTwo: {},
@@ -166,6 +170,14 @@ const useSearchStore = create<SearchStore>()(
 
 const setSectionTwo = (data: Record<string, Record<string, Partial<Record<Language, SearchSectionTwo>>>>) => {
   useSearchStore.setState((store) => ({ sectionTwo: { ...store.sectionTwo, data } }))
+}
+
+const setActiveSearchTerm = (activeSearchTerm: string) => {
+  useSearchStore.setState(() => ({ activeSearchTerm }))
+}
+
+const setActiveWebPage = (activeWebPage: string) => {
+  useSearchStore.setState(() => ({ activeWebPage }))
 }
 
 const setRequestState = (requestState: RequestState) => {
@@ -250,10 +262,14 @@ const requestExplanation = (payload: AskDto) => {
   eventSource.onmessage = (e) => {
     if (e.data !== END_OF_SSE_EVENT) {
       content += e.data;
+      // TODO: remove
+      setSectionTwo(constructSectionForAsk({ ...payload, content }))
     } else {
       eventSource.close()
       setRequestState("done");
       setSectionTwo(constructSectionForAsk({ ...payload, content }))
+      setActiveSearchTerm(payload.searchTerm);
+      setActiveWebPage(payload.webPage);
     }
   }
 
