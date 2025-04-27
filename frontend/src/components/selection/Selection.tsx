@@ -150,6 +150,7 @@ export function Selection() {
 			if (isInsideExtension(clickedTarget)) return;
 
 			if (selectedText.current.trim().length > 0) {
+				console.log("reset search store");
 				selectedText.current = "";
 				setShowInfoIcon(false);
 				window.getSelection()?.removeAllRanges();
