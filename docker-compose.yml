@@ -1,0 +1,29 @@
+version: "3.9"
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    depends_on:
+      - ollama
+    environment:
+      - OLLAMA_BASE_URL=http://ollama:11434 # important for the backend to reach ollama
+    networks:
+      - teachme
+
+  ollama:
+    image: ollama/ollama
+    ports:
+      - "11434:11434"
+    networks:
+      - teachme
+    volumes:
+      - ollama-data:/root/.ollama # optional: persist ollama models
+
+networks:
+  teachme:
+
+volumes:
+  ollama-data:

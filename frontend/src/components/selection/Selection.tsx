@@ -162,6 +162,7 @@ export function Selection() {
 		searchStore.requestExplanation({
 			context: webPageContent.current,
 			searchTerm: selectedText.current,
+			language: settingsStore.useSettingsStore.getState().language,
 		});
 
 		setShowInfoIcon(false);

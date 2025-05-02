@@ -1,8 +1,7 @@
 import { create } from "zustand"
-import { RequestState, ResponseType, SearchDto, } from "@shared/types";
-import { END_OF_SSE_EVENT } from "@shared/constants";
+import { ResponseDto, RequestState, ResponseType, AskDto, AskType, } from "@shared/types";
 import { v4 as uuid } from "uuid"
-import { settingsStore } from "./settings";
+import { END_OF_SSE_EVENT } from "@shared/constants";
 
 interface Conversation {
   id: string;
@@ -11,11 +10,13 @@ interface Conversation {
   content: string;
 };
 interface SearchStore {
+  askId: number;
   conversation: Conversation[];
   requestState: RequestState;
 }
 
 const initialState: SearchStore = {
+  askId: 0,
   requestState: "done",
   conversation: [],
 };
@@ -47,20 +48,47 @@ const uploadLastAIResponse = (content: string) => {
 const setRequestState = (requestState: RequestState) => {
   useSearchStore.setState(() => ({ requestState }))
 }
+const setAskId = (askId: number) => {
+  useSearchStore.setState(() => ({ askId }))
+}
 
-const requestExplanation = (payload: Omit<SearchDto, "language">) => {
-  setRequestState("loading");
-  const query = new URLSearchParams({
-    context: payload.context,
-    searchTerm: payload.searchTerm,
-    language: settingsStore.useSettingsStore.getState().language
-  }).toString();
+const ask = async (payload: AskDto) => {
+  try {
+    const response = await fetch(`${import.meta.env.VITE_BASE_URL}/search`, {
+      body: JSON.stringify(payload),
+      headers: {
+        "Content-Type": "application/json"
+      },
+      method: "POST"
+    })
+    return response.json() as Promise<{ id: number }>
+  } catch {
+    setRequestState("error");
+    throw new Error("could not register request")
+  }
+}
+const addResponse = async (payload: ResponseDto) => {
+  try {
+    const response = await fetch(`${import.meta.env.VITE_BASE_URL}/search`, {
+      body: JSON.stringify(payload),
+      headers: {
+        "Content-Type": "application/json"
+      },
+      method: "PATCH"
+    })
+    return response.json() as Promise<{ id: number }>
+  } catch {
+    setRequestState("error");
+    throw new Error("could not register request")
+  }
+}
 
+const handleStreamedResponse = (id: number, askType: AskType) => {
   let content = "";
-
+  setRequestState("loading");
   appendMessage({ type: "ai", id: uuid(), timestamp: Date.now(), content: "" });
 
-  const eventSource = new EventSource(`${import.meta.env.VITE_BASE_URL}/search/ask-stream?${query}`)
+  const eventSource = askType === "firstQuestion" ? new EventSource(`${import.meta.env.VITE_BASE_URL}/search/${id}`) : new EventSource(`${import.meta.env.VITE_BASE_URL}/search/conversation/${id}`);
 
   eventSource.onmessage = (e) => {
     if (e.data !== END_OF_SSE_EVENT) {
@@ -68,22 +96,42 @@ const requestExplanation = (payload: Omit<SearchDto, "language">) => {
       uploadLastAIResponse(content);
       setRequestState("done");
     } else {
+      addResponse({
+        askId: id,
+        content,
+        type: "ai"
+      });
+      setAskId(id);
       eventSource.close();
     }
-  }
+  };
 
   eventSource.onerror = () => {
     setRequestState("error");
     eventSource.close();
-  }
-}
+  };
+};
 
-const askQuestion = (question: string) => {
+const requestExplanation = async (payload: AskDto) => {
+  setRequestState("loading");
+  const { id } = await ask(payload);
+  handleStreamedResponse(id, "firstQuestion");
+};
+
+const requestContinuation = async (id: number) => {
+  handleStreamedResponse(id, "continuation");
+};
+
+const askQuestion = async (question: string) => {
+  setRequestState("loading");
+  const askId = useSearchStore.getState().askId;
   appendMessage({ content: question, id: uuid(), timestamp: Date.now(), type: "user" });
-  requestExplanation({
-    context: useSearchStore.getState().conversation.join(" "),
-    searchTerm: question
+  await addResponse({
+    askId,
+    content: question,
+    type: "user"
   })
+  requestContinuation(askId)
 }
 
 
