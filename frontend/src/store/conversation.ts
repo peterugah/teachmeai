@@ -20,7 +20,7 @@ const initialState: ConversationStore = {
 
 const useConversationStore = create(() => initialState);
 
-const addResponse = (response: ConversationResponse) => {
+const ResponseDto = (response: ConversationResponse) => {
   useConversationStore.setState((store) => ({
     responses: [...store.responses, response]
   }))
@@ -31,7 +31,7 @@ const initializeConversation = (conversation: ConversationStore) => {
 }
 
 export const conversationStore = {
-  addResponse,
+  ResponseDto,
   useConversationStore,
   initializeConversation,
 }
