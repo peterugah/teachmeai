@@ -53,34 +53,24 @@ const setAskId = (askId: number) => {
 }
 
 const ask = async (payload: AskDto) => {
-  try {
-    const response = await fetch(`${import.meta.env.VITE_BASE_URL}/search`, {
-      body: JSON.stringify(payload),
-      headers: {
-        "Content-Type": "application/json"
-      },
-      method: "POST"
-    })
-    return response.json() as Promise<{ id: number }>
-  } catch {
-    setRequestState("error");
-    throw new Error("could not register request")
-  }
+  const response = await fetch(`${import.meta.env.VITE_BASE_URL}/search`, {
+    body: JSON.stringify(payload),
+    headers: {
+      "Content-Type": "application/json"
+    },
+    method: "POST"
+  })
+  return response.json() as Promise<{ id: number }>
 }
 const addResponse = async (payload: ResponseDto) => {
-  try {
-    const response = await fetch(`${import.meta.env.VITE_BASE_URL}/search`, {
-      body: JSON.stringify(payload),
-      headers: {
-        "Content-Type": "application/json"
-      },
-      method: "PATCH"
-    })
-    return response.json() as Promise<{ id: number }>
-  } catch {
-    setRequestState("error");
-    throw new Error("could not register request")
-  }
+  const response = await fetch(`${import.meta.env.VITE_BASE_URL}/search`, {
+    body: JSON.stringify(payload),
+    headers: {
+      "Content-Type": "application/json"
+    },
+    method: "PATCH"
+  })
+  return response.json() as Promise<{ id: number }>
 }
 
 const handleStreamedResponse = (id: number, askType: AskType) => {
@@ -113,9 +103,13 @@ const handleStreamedResponse = (id: number, askType: AskType) => {
 };
 
 const requestExplanation = async (payload: AskDto) => {
-  setRequestState("loading");
-  const { id } = await ask(payload);
-  handleStreamedResponse(id, "firstQuestion");
+  try {
+    setRequestState("loading");
+    const { id } = await ask(payload);
+    handleStreamedResponse(id, "firstQuestion");
+  } catch {
+    setRequestState("error");
+  }
 };
 
 const requestContinuation = async (id: number) => {
@@ -123,15 +117,19 @@ const requestContinuation = async (id: number) => {
 };
 
 const askQuestion = async (question: string) => {
-  setRequestState("loading");
-  const askId = useSearchStore.getState().askId;
-  appendMessage({ content: question, id: uuid(), timestamp: Date.now(), type: "user" });
-  await addResponse({
-    askId,
-    content: question,
-    type: "user"
-  })
-  requestContinuation(askId)
+  try {
+    setRequestState("loading");
+    const askId = useSearchStore.getState().askId;
+    appendMessage({ content: question, id: uuid(), timestamp: Date.now(), type: "user" });
+    await addResponse({
+      askId,
+      content: question,
+      type: "user"
+    })
+    requestContinuation(askId)
+  } catch {
+    setRequestState("error");
+  }
 }
 
 
