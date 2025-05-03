@@ -89,7 +89,8 @@ export function Selection() {
 			.filter((item) => item.trim() !== selectedText.current.trim())
 			.join(" ");
 
-		webPageContent.current = collectedText;
+		// use the collected text otherwise the user selected the entire page, so use the selected text as the context
+		webPageContent.current = collectedText || selectedText.current;
 	};
 
 	const isInsideExtension = (target: Node) => {
