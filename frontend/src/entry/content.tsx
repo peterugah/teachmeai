@@ -44,6 +44,19 @@ function mountContent(shadowHost: HTMLElement) {
 	) {
 		document.head.appendChild(fontLink);
 	}
+	// Inject Google OAuth client script
+	const googleScriptSrc = "https://accounts.google.com/gsi/client";
+	if (
+		![...document.head.querySelectorAll("script")].some(
+			(script) => script.src === googleScriptSrc
+		)
+	) {
+		const gsiScript = document.createElement("script");
+		gsiScript.src = googleScriptSrc;
+		gsiScript.async = true;
+		gsiScript.defer = true;
+		document.head.appendChild(gsiScript);
+	}
 
 	const shadowHost = document.createElement("div");
 	shadowHost.id = ROOT_CONTAINER_ID;

@@ -14,3 +14,22 @@ export interface ResponseDto {
   content: string;
 }
 export type AskType = "firstQuestion" | "continuation"
+
+export interface TranslationDto {
+  key: string;
+  value: string;
+}
+
+export interface TranslateDto {
+  language: Language;
+  translations: TranslationDto[];
+}
+
+export interface OllamaResponse {
+  model: string;
+  created_at: string;
+  response: string;
+  done: boolean;
+  done_reason: string;
+  context: number[]
+}

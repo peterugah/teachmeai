@@ -6,11 +6,11 @@ interface Prop {
 }
 export const Response = ({ content, type }: Prop) => {
 	return (
-		<div className="flex flex-col my-2">
+		<div className="flex flex-col">
 			<div
 				className={`${
 					type === "user"
-						? "bg-gray-100 w-auto rounded-[10px] justify-end p-2 dark:bg-neutral-800 dark:text-neutral-100"
+						? "bg-gray-100 w-auto rounded-[10px] justify-end p-2 dark:bg-neutral-800 dark:text-neutral-100 my-2"
 						: ""
 				}`}
 			>

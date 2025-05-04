@@ -4,30 +4,20 @@ import { TextForm } from "../../components/TextForm";
 import { FeatureRequest } from "./FeatureRequest";
 import { searchStore } from "../../store/search";
 import { Response } from "./Response";
-import { useLayoutEffect, useRef } from "react";
+import { useRef } from "react";
+import { translationStore } from "../../store/translations";
+import { settingsStore } from "../../store/settings";
 
 export function Content() {
 	const { conversation, requestState } = searchStore.useSearchStore();
+	const { language } = settingsStore.useSettingsStore();
 	const scrollContainerRef = useRef<HTMLDivElement>(null);
-
-	const setScrollContainerHeight = () => {
-		if (scrollContainerRef.current) {
-			scrollContainerRef.current.scrollTop =
-				scrollContainerRef.current.scrollHeight;
-		}
-	};
 
 	const handleFeatureRequestClick = (show: boolean) => {
 		if (show) {
-			setTimeout(() => {
-				setScrollContainerHeight();
-			}, 50);
+			setTimeout(() => {}, 50);
 		}
 	};
-
-	useLayoutEffect(() => {
-		setScrollContainerHeight();
-	}, [conversation, requestState]);
 
 	return (
 		<div className="bg-white rounded-2xl dark:bg-neutral-900 pb-4">
@@ -39,16 +29,17 @@ export function Content() {
 				{conversation.map((msg, i) => (
 					<Response key={i} content={msg.content} type={msg.type} />
 				))}
-				{requestState === "loading" && <p>processing...</p>}
+				{requestState === "loading" && (
+					<span>{translationStore.translate("processing", language)}</span>
+				)}
 				<SectionThree />
 				<TextForm
 					onSubmit={searchStore.askQuestion}
-					placeholderText="Ask more..."
+					placeholderText={translationStore.translate("askMore", language)}
 				/>
 				<FeatureRequest
 					onClick={handleFeatureRequestClick}
 					onSubmit={() => {}}
-					placeholderText="I'd like to hear from you :)"
 				/>
 			</div>
 		</div>
