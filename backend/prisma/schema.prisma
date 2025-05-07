@@ -1,0 +1,28 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// models
+model Ask {
+  id Int @default(autoincrement()) @id
+  context String
+  searchTerm String
+  language String  @default("EN")
+  responses Response[]
+}
+
+model Response {
+  id      Int      @id @default(autoincrement())
+  content String
+  type    String @default("ai")
+  askId   Int 
+  ask     Ask  @relation(fields: [askId], references: [id]) 
+}
