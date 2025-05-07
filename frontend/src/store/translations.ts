@@ -1,0 +1,95 @@
+import { Language } from "@shared/languageEnum"
+import { RequestState, } from "@shared/types"
+import { create } from "zustand"
+
+export interface TranslationKeys {
+  logo: Partial<Record<Language, string>>
+  askMore: Partial<Record<Language, string>>
+  theme: Partial<Record<Language, string>>
+  history: Partial<Record<Language, string>>
+  settings: Partial<Record<Language, string>>
+  language: Partial<Record<Language, string>>
+  processing: Partial<Record<Language, string>>
+  hearFromYou: Partial<Record<Language, string>>
+  reportBugAskForFeature: Partial<Record<Language, string>>
+}
+
+interface TranslationsStore {
+  requestState: RequestState;
+  translations: TranslationKeys;
+}
+
+const initialState: TranslationsStore = {
+  requestState: "done",
+  translations: {
+    logo: {
+      [Language.English]: "Logo",
+    },
+    askMore: {
+      [Language.English]: "Ask more...",
+    },
+    theme: {
+      [Language.English]: "Theme",
+    },
+    history: {
+      [Language.English]: "History",
+    },
+    settings: {
+      [Language.English]: "Settings",
+    },
+    language: {
+      [Language.English]: "Language",
+    },
+    processing: {
+      [Language.English]: "Processing...",
+    },
+    reportBugAskForFeature: {
+      [Language.English]: "report bug / feature request / contact me 🙂",
+    },
+    hearFromYou: {
+      [Language.English]: "I'd like to hear from You :)",
+    },
+  }
+}
+
+const useTranslationsStore = create(() => initialState)
+
+const setRequestState = (requestState: RequestState) => {
+  useTranslationsStore.setState(() => ({ requestState }))
+}
+
+const fetchTranslations = async (language: Language) => {
+  try {
+    setRequestState("loading");
+    console.log({ language })
+    // const translations: TranslationDto[] = Object.entries(initialState.translations).map((item) => ({
+    //   key: item[0],
+    //   value: item[1][Language.English] || ''
+    // }))
+    // const body: TranslateDto = {
+    //   translations,
+    //   language
+    // }
+    // await fetch(`${import.meta.env.VITE_BASE_URL}/translation`, {
+    //   method: "POST",
+    //   body: JSON.stringify(body),
+    //   headers: {
+    //     "Content-Type": "application/json"
+    //   },
+    // })
+    setRequestState("done");
+  } catch {
+    setRequestState("error");
+  }
+}
+
+const translate = (key: keyof TranslationsStore["translations"], language: Language) => {
+  const { translations } = useTranslationsStore.getState();
+  return translations[key][language] ? translations[key][language] : translations[key][Language.English] || ''
+}
+
+export const translationStore = {
+  translate,
+  fetchTranslations,
+  useTranslationsStore,
+}

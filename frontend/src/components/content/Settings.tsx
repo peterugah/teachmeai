@@ -1,15 +1,19 @@
-import { Language } from "../../../../shared/languageEnum";
 import { ArrowUturnLeftIcon } from "@heroicons/react/24/outline";
 import { Theme } from "../../enums/theme";
 import { settingsStore } from "../../store/settings";
 import { visibilityStore } from "../../store/visibility";
+import { translationStore } from "../../store/translations";
+import { Language } from "@shared/languageEnum";
 
 export function Settings() {
 	// const [hoveredStar, setHoveredStar] = useState<number | null>(null);
-	const { language, theme } = settingsStore.useSettingsStore();
+	const { theme, language } = settingsStore.useSettingsStore();
 
 	const handleOnLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-		settingsStore.setLanguage(e.target.value as Language);
+		const language = e.target.value as Language;
+		settingsStore.setLanguage(language);
+		console.log(language);
+		translationStore.fetchTranslations(language);
 	};
 
 	const handleOnChangeTheme = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -28,8 +32,8 @@ export function Settings() {
 	};
 
 	const renderLanguages = () => {
-		return settingsStore.getLanguages().map(([value, key]) => (
-			<option key={key} value={key}>
+		return settingsStore.getLanguages().map(([key, value]) => (
+			<option key={key} value={value}>
 				{value}
 			</option>
 		));
@@ -70,7 +74,9 @@ export function Settings() {
 	return (
 		<div className="bg-white rounded-2xl dark:bg-neutral-900">
 			<div className="p-2 flex justify-between">
-				<h1 className="font-bold dark:text-neutral-300">Settings</h1>
+				<h1 className="font-bold dark:text-neutral-300">
+					{translationStore.translate("settings", language)}
+				</h1>
 				<button
 					onClick={handleOnBackClick}
 					className="cursor-pointer text-gray-800 hover:text-black dark:text-neutral-400 dark:hover:text-neutral-300"
@@ -82,7 +88,7 @@ export function Settings() {
 			<div className="flex flex-col gap-4 p-2">
 				<div className="flex justify-between gap-2">
 					<label className="text-gray-700 mr-5 dark:text-neutral-300">
-						Theme
+						{translationStore.translate("theme", language)}
 					</label>
 					<div className="bg-red overflow-hidden w-full">
 						<select
@@ -112,7 +118,7 @@ export function Settings() {
 			{/* History */}
 			<div className="p-2">
 				<h2 className="font-bold text-[12px] text-gray-700 dark:text-neutral-300">
-					History
+					{translationStore.translate("history", language)}
 				</h2>
 				<div className="mt-2">
 					<input
