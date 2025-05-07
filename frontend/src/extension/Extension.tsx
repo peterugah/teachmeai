@@ -6,6 +6,8 @@ import { visibilityStore } from "../store/visibility";
 import { ROOT_CONTAINER_ID } from "../constant";
 import { settingsStore } from "../store/settings";
 import { Theme } from "../enums/theme";
+import { Login } from "../components/google/Login";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 
 export function Extension() {
 	const { showSettings, position, showPopup } =
@@ -70,6 +72,11 @@ export function Extension() {
 					theme === Theme.Dark && "dark"
 				}`}
 			>
+				{
+					<GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
+						<Login />
+					</GoogleOAuthProvider>
+				}
 				{showPopup && <Content />}
 				{showSettings && <Settings />}
 			</div>
