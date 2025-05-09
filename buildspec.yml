@@ -1,14 +1,6 @@
 version: 0.2
 
 phases:
-  pre_build:
-    commands:
-      - echo "Installing Node.js 20 manually in pre_build..."
-      - curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
-      - yum install -y nodejs
-      - node -v
-      - npm -v
-
   install:
     commands:
       - echo "Entering backend directory..."
@@ -21,7 +13,8 @@ phases:
       - yarn build
 
 artifacts:
+  base-directory: backend
   files:
     - "**/*"
-  base-directory: backend
+    - "!yarn.lock" # Exclude yarn.lock file
   discard-paths: yes
