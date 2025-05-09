@@ -10,7 +10,6 @@ phases:
 
   build:
     commands:
-      - cd backend
       - yarn build
 
 artifacts:
