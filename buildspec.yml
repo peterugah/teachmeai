@@ -14,11 +14,10 @@ phases:
       - cd ../
 
 artifacts:
-  base-directory: .
+  base-directory: backend
   files:
-    - backend/node_modules/**/*
-    - backend/dist/**/*
-    - backend/prisma/**/*
-    - backend/package.json
+    - node_modules/**/*
+    - dist/**/*
+    - prisma/**/*
+    - package.json
     - shared/**/*
-  discard-paths: yes
