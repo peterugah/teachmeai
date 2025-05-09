@@ -12,6 +12,7 @@ export interface TranslationKeys {
   processing: Partial<Record<Language, string>>
   hearFromYou: Partial<Record<Language, string>>
   reportBugAskForFeature: Partial<Record<Language, string>>
+  logInToContinue: Partial<Record<Language, string>>
 }
 
 interface TranslationsStore {
@@ -48,6 +49,9 @@ const initialState: TranslationsStore = {
     },
     hearFromYou: {
       [Language.English]: "I'd like to hear from You :)",
+    },
+    logInToContinue: {
+      [Language.English]: "Log in to continue :)",
     },
   }
 }

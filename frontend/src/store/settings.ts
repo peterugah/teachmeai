@@ -10,11 +10,13 @@ import { ROOT_CONTAINER_ID } from "../constant";
 export interface SettingsStore {
   theme: Theme;
   language: Language;
+  loggedIn: boolean;
 }
 
 const initialState: SettingsStore = {
   theme: Theme.Dark,
   language: Language.English,
+  loggedIn: false
 }
 
 const useSettingsStore = create<SettingsStore>()(
@@ -38,6 +40,10 @@ const setTheme = (theme: Theme) => {
   useSettingsStore.setState(() => ({ theme }))
 }
 
+const setLoggedIn = (loggedIn: boolean) => {
+  useSettingsStore.setState(() => ({ loggedIn }))
+}
+
 const setLanguage = (language: Language) => {
   useSettingsStore.setState(() => ({ language }))
 }
@@ -46,6 +52,7 @@ export const settingsStore = {
   setTheme,
   isLocalhost,
   setLanguage,
+  setLoggedIn,
   getLanguages,
   getBrowserTheme,
   useSettingsStore,

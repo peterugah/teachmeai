@@ -4,7 +4,7 @@ import { InformationCircleIcon } from "@heroicons/react/24/outline";
 import { visibilityStore } from "../../store/visibility";
 import { settingsStore } from "../../store/settings";
 import { Theme } from "../../enums/theme";
-import { searchStore } from "../../store/search";
+import { selectionStore } from "../../store/selection";
 
 export function Selection() {
 	const { position } = visibilityStore.useVisibilityStore();
@@ -159,10 +159,9 @@ export function Selection() {
 	};
 
 	const handleOnIconClick = () => {
-		searchStore.requestExplanation({
-			context: webPageContent.current,
+		selectionStore.setSelection({
+			webPage: webPageContent.current,
 			searchTerm: selectedText.current,
-			language: settingsStore.useSettingsStore.getState().language,
 		});
 
 		setShowInfoIcon(false);
