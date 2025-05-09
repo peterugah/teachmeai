@@ -1,9 +1,11 @@
 version: 0.2
-phases:
-  environment:
+
+env:
+  variables:
     DATABASE_URL: postgresql://postgres.rwhnkwotaizeytuegewy:JtBeUzjbi49wtIzl@aws-0-eu-west-2.pooler.supabase.com:6543/postgres?pgbouncer=true
     DIRECT_URL: postgresql://postgres.rwhnkwotaizeytuegewy:JtBeUzjbi49wtIzl@aws-0-eu-west-2.pooler.supabase.com:5432/postgres
 
+phases:
   install:
     runtime-versions:
       nodejs: 20.x
