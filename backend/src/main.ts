@@ -1,16 +1,22 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { Logger } from '@nestjs/common';
+import { Logger, NestApplicationOptions } from '@nestjs/common';
 import { json, urlencoded } from 'express';
 import * as fs from 'fs';
 async function bootstrap() {
   const PORT = process.env.PORT || 3000;
-  const app = await NestFactory.create(AppModule, {
-    httpsOptions: {
-      key: fs.readFileSync('certs/key.pem'),
-      cert: fs.readFileSync('certs/cert.pem'),
-    },
-  });
+  const isLocal = process.env.NODE_ENV !== 'production';
+
+  const httpsOptions: NestApplicationOptions = isLocal
+    ? {
+      httpsOptions: {
+        key: fs.readFileSync('certs/key.pem'),
+        cert: fs.readFileSync('certs/cert.pem'),
+      },
+    }
+    : {};
+
+  const app = await NestFactory.create(AppModule, httpsOptions);
 
   app.use(json({ limit: '1mb' }));
   app.use(urlencoded({ extended: true, limit: '1mb' }));
