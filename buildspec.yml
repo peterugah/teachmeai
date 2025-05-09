@@ -11,12 +11,14 @@ phases:
   build:
     commands:
       - yarn build
+      - cd ../
 
 artifacts:
-  base-directory: backend
+  base-directory: .
   files:
-    - node_modules/**/*
-    - dist/**/*
-    - prisma/**/*
-    - package.json
+    - backend/node_modules/**/*
+    - backend/dist/**/*
+    - backend/prisma/**/*
+    - backend/package.json
+    - shared/**/*
   discard-paths: yes
