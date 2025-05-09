@@ -10,6 +10,8 @@ phases:
 
   build:
     commands:
+      - yarn generate:migration
+      - yarn prisma:generate
       - yarn build
 
 artifacts:
