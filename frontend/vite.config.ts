@@ -13,20 +13,18 @@ export default defineConfig(({ mode }) => ({
       '@shared': resolve(__dirname, '../shared'),
     },
   },
-  plugins: [
-    react(),
-    tailwindcss(),
-  ],
+
+  plugins: [react(), tailwindcss()],
+
   build: {
-    lib: {
-      entry: resolve(__dirname, 'src/entry/content.tsx'),
-      formats: ['es'],
-    },
     rollupOptions: {
+      input: {
+        content: resolve(__dirname, 'src/entry/content.tsx'),
+        background: resolve(__dirname, 'src/entry/background.ts'),
+      },
       output: {
+        entryFileNames: '[name].js',
         format: 'es',
-        entryFileNames: 'content.js',
-        inlineDynamicImports: true,
       },
     },
     outDir: 'dist',
@@ -34,6 +32,7 @@ export default defineConfig(({ mode }) => ({
     target: 'esnext',
     cssCodeSplit: false,
   },
+
   server: {
     fs: {
       allow: ['..'],

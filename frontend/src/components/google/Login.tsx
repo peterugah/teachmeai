@@ -1,29 +1,45 @@
-import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
-import { jwtDecode } from "jwt-decode";
 import { useEffect, useState } from "react";
+import { translationStore } from "../../store/translations";
+import { settingsStore } from "../../store/settings";
 
 export const Login = () => {
-	const [details, setDetails] = useState();
-	const handleOnSuccess = (e: CredentialResponse) => {
-		if (e.credential) {
-			setDetails(jwtDecode(e.credential));
-		}
+	const { language } = settingsStore.useSettingsStore();
+	const [loggedIn, setLoggedIn] = useState(false);
+
+	// Check login status on mount
+	useEffect(() => {
+		chrome.runtime.sendMessage({ type: "CHECK_LOGIN_STATUS" }, (response) => {
+			setLoggedIn(response?.loggedIn);
+		});
+	}, []);
+
+	const handleLogin = () => {
+		chrome.runtime.sendMessage({ type: "START_AUTH_FLOW" }, (response) => {
+			if (response?.success) {
+				console.log("Logged in with token:", response);
+				setLoggedIn(true);
+			} else {
+				console.error("Login failed");
+			}
+		});
 	};
 
-	useEffect(() => {
-		console.log({ details });
-	}, [details]);
-
 	return (
-		<GoogleLogin
-			onSuccess={handleOnSuccess}
-			onError={() => console.log("error")}
-			shape="pill"
-			auto_select={true}
-			text="continue_with"
-			size="medium"
-			theme="filled_blue"
-			width={80}
-		></GoogleLogin>
+		<div className="flex items-center justify-center flex-col">
+			<div className="flex flex-col justify-center items-center gap-1 mb-4">
+				<p>{translationStore.translate("hiThere", language)}</p>
+				<p>{translationStore.translate("helpYou", language)}</p>
+			</div>
+			{loggedIn ? (
+				<p>You are already logged in</p>
+			) : (
+				<button
+					onClick={handleLogin}
+					className="p-2 bg-blue-500 text-white rounded"
+				>
+					{translationStore.translate("loginWithGoogle", language)}
+				</button>
+			)}
+		</div>
 	);
 };

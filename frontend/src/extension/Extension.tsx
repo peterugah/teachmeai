@@ -6,13 +6,14 @@ import { visibilityStore } from "../store/visibility";
 import { ROOT_CONTAINER_ID } from "../constant";
 import { settingsStore } from "../store/settings";
 import { Theme } from "../enums/theme";
-import { Login } from "../components/google/Login";
-import { GoogleOAuthProvider } from "@react-oauth/google";
+import { searchStore } from "../store/search";
 
 export function Extension() {
 	const { showSettings, position, showPopup } =
 		visibilityStore.useVisibilityStore();
+
 	const { theme } = settingsStore.useSettingsStore();
+
 	const divRef = useRef<HTMLDivElement>(null);
 	const [adjustedLeft, setAdjustedLeft] = useState<number>(position.left);
 
@@ -55,8 +56,16 @@ export function Extension() {
 		return () => {
 			document.removeEventListener("mousedown", handleClickOutside);
 			document.removeEventListener("keydown", handleEscapeKey);
+			console.log("cleared");
 		};
 	}, []);
+
+	useEffect(() => {
+		// TODO: refactor for clarity
+		if (!showPopup && !showSettings) {
+			searchStore.resetStore();
+		}
+	}, [showPopup, showSettings]);
 
 	return (
 		<>
@@ -72,11 +81,6 @@ export function Extension() {
 					theme === Theme.Dark && "dark"
 				}`}
 			>
-				{
-					<GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
-						<Login />
-					</GoogleOAuthProvider>
-				}
 				{showPopup && <Content />}
 				{showSettings && <Settings />}
 			</div>

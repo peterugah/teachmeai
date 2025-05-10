@@ -5,10 +5,11 @@ import { visibilityStore } from "../../store/visibility";
 import { settingsStore } from "../../store/settings";
 import { Theme } from "../../enums/theme";
 import { searchStore } from "../../store/search";
+import { selectionStore } from "../../store/selection";
 
 export function Selection() {
 	const { position } = visibilityStore.useVisibilityStore();
-	const { theme } = settingsStore.useSettingsStore();
+	const { theme, loggedIn } = settingsStore.useSettingsStore();
 
 	const selectedText = useRef("");
 	const webPageContent = useRef("");
@@ -159,11 +160,19 @@ export function Selection() {
 	};
 
 	const handleOnIconClick = () => {
-		searchStore.requestExplanation({
-			context: webPageContent.current,
+		selectionStore.setSelection({
+			webPage: webPageContent.current,
 			searchTerm: selectedText.current,
-			language: settingsStore.useSettingsStore.getState().language,
 		});
+
+		if (loggedIn) {
+			// if logged in then make request
+			searchStore.requestExplanation({
+				context: webPageContent.current,
+				searchTerm: selectedText.current,
+				language: settingsStore.useSettingsStore.getState().language,
+			});
+		}
 
 		setShowInfoIcon(false);
 		selectedText.current = "";

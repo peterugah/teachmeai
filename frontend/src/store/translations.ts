@@ -12,6 +12,9 @@ export interface TranslationKeys {
   processing: Partial<Record<Language, string>>
   hearFromYou: Partial<Record<Language, string>>
   reportBugAskForFeature: Partial<Record<Language, string>>
+  hiThere: Partial<Record<Language, string>>
+  helpYou: Partial<Record<Language, string>>
+  loginWithGoogle: Partial<Record<Language, string>>
 }
 
 interface TranslationsStore {
@@ -48,6 +51,15 @@ const initialState: TranslationsStore = {
     },
     hearFromYou: {
       [Language.English]: "I'd like to hear from You :)",
+    },
+    hiThere: {
+      [Language.English]: "Hi there!",
+    },
+    helpYou: {
+      [Language.English]: "I can't wait to help you :). Sign in to continue",
+    },
+    loginWithGoogle: {
+      [Language.English]: "Login with Google",
     },
   }
 }
