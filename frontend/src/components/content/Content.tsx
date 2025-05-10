@@ -7,10 +7,11 @@ import { Response } from "./Response";
 import { useRef } from "react";
 import { translationStore } from "../../store/translations";
 import { settingsStore } from "../../store/settings";
+import { Login } from "../google/Login";
 
 export function Content() {
 	const { conversation, requestState } = searchStore.useSearchStore();
-	const { language } = settingsStore.useSettingsStore();
+	const { language, loggedIn } = settingsStore.useSettingsStore();
 	const scrollContainerRef = useRef<HTMLDivElement>(null);
 
 	const handleFeatureRequestClick = (show: boolean) => {
@@ -26,6 +27,7 @@ export function Content() {
 				ref={scrollContainerRef}
 				className="px-3 max-h-120 overflow-auto scrollbar-hidden"
 			>
+				{!loggedIn && <Login />}
 				{conversation.map((msg, i) => (
 					<Response key={i} content={msg.content} type={msg.type} />
 				))}

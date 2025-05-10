@@ -1,4 +1,3 @@
-// src/utils/chromeStorage.ts
 import { PersistStorage, StorageValue } from "zustand/middleware"
 
 export function createChromeStorage<T>(type: "local" | "sync" = "local"): PersistStorage<T> {

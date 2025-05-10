@@ -5,18 +5,25 @@ import { persist } from "zustand/middleware";
 import { createChromeStorage } from "./chromeStorage";
 import { isLocalhost } from "../utils/isLocalHost";
 import { ROOT_CONTAINER_ID } from "../constant";
+import { createLocalStorage } from "./localStorage";
 
 
 export interface SettingsStore {
   theme: Theme;
   language: Language;
   loggedIn: boolean;
+  firstName: string;
+  lastName: string;
+  email: string;
 }
 
 const initialState: SettingsStore = {
   theme: Theme.Dark,
   language: Language.English,
-  loggedIn: false
+  loggedIn: false,
+  firstName: "",
+  lastName: "",
+  email: ""
 }
 
 const useSettingsStore = create<SettingsStore>()(
@@ -24,10 +31,11 @@ const useSettingsStore = create<SettingsStore>()(
     () => initialState,
     {
       name: `${ROOT_CONTAINER_ID}-settings-store`,
-      storage: isLocalhost() ? undefined : createChromeStorage<SettingsStore>("sync"),
+      storage: isLocalhost() ? createLocalStorage<SettingsStore>() : createChromeStorage<SettingsStore>("sync"),
     }
   )
 );
+
 const getLanguages = () => {
   return Object.entries(Language)
 }
@@ -47,12 +55,25 @@ const setLoggedIn = (loggedIn: boolean) => {
 const setLanguage = (language: Language) => {
   useSettingsStore.setState(() => ({ language }))
 }
+const setFirstName = (firstName: string) => {
+  useSettingsStore.setState(() => ({ firstName }))
+}
+const setLastName = (lastName: string) => {
+  useSettingsStore.setState(() => ({ lastName }))
+}
+
+const setEmail = (email: string) => {
+  useSettingsStore.setState(() => ({ email }))
+}
 
 export const settingsStore = {
   setTheme,
+  setEmail,
   isLocalhost,
   setLanguage,
   setLoggedIn,
+  setLastName,
+  setFirstName,
   getLanguages,
   getBrowserTheme,
   useSettingsStore,
