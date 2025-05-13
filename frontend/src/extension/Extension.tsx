@@ -7,6 +7,7 @@ import { ROOT_CONTAINER_ID } from "../constant";
 import { settingsStore } from "../store/settings";
 import { Theme } from "../enums/theme";
 import { searchStore } from "../store/search";
+// import { PostHogProvider } from "posthog-js/react";
 import { selectionStore } from "../store/selection";
 
 export function Extension() {
@@ -88,6 +89,13 @@ export function Extension() {
 	}, [loggedIn, reRender]);
 	return (
 		<>
+			{/*  <PostHogProvider
+		 	apiKey={import.meta.env.VITE_PUBLIC_POSTHOG_KEY}
+		 	options={{
+		 		api_host: import.meta.env.VITE_PUBLIC_POSTHOG_HOST,
+		 		disable_session_recording: true,
+		 	}}
+		 > */}
 			<Selection />
 			<div
 				style={{
@@ -103,6 +111,7 @@ export function Extension() {
 				{showPopup && <Content />}
 				{showSettings && <Settings />}
 			</div>
+			{/* </PostHogProvider > */}
 		</>
 	);
 }

@@ -129,7 +129,7 @@ const askQuestion = async (question: string) => {
       content: question,
       type: "user"
     })
-    requestContinuation(askId)
+    await requestContinuation(askId)
   } catch {
     setRequestState("error");
   }

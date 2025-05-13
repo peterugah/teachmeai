@@ -9,12 +9,27 @@ import { translationStore } from "../../store/translations";
 import { settingsStore } from "../../store/settings";
 import { Login } from "../google/Login";
 import { visibilityStore } from "../../store/visibility";
+import removeMarkdown from "remove-markdown";
 
 export function Content() {
 	const { conversation, requestState } = searchStore.useSearchStore();
 	const { language, loggedIn } = settingsStore.useSettingsStore();
 	const { showPopup } = visibilityStore.useVisibilityStore();
 	const scrollContainerRef = useRef<HTMLDivElement>(null);
+	const handleOnCopy = () => {
+		const conversation = searchStore.useSearchStore.getState().conversation;
+		const content = conversation.reduce((a, convo) => {
+			a += `${
+				convo.type === "user"
+					? `[${
+							settingsStore.useSettingsStore.getState().firstName
+					  }]\n${new Date(convo.timestamp).toLocaleString()}\n`
+					: `[AI]\n${new Date(convo.timestamp).toLocaleString()}\n`
+			}${removeMarkdown(convo.content.trim().replace(/\n/g, ""))}\n\n`;
+			return a;
+		}, "");
+		navigator.clipboard.writeText(content);
+	};
 
 	const handleFeatureRequestClick = () => {
 		setTimeout(() => {
@@ -69,7 +84,7 @@ export function Content() {
 				{requestState === "loading" && (
 					<span>{translationStore.translate("processing", language)}</span>
 				)}
-				<SectionThree onCopy={() => {}} onLike={() => {}} onPlay={() => {}} />
+				<SectionThree onCopy={handleOnCopy} onLike={() => {}} />
 				<TextForm
 					onSubmit={searchStore.askQuestion}
 					placeholderText={translationStore.translate("askMore", language)}

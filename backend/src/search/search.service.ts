@@ -138,9 +138,11 @@ export class SearchService {
     responses: ResponseDto[],
   ) {
     await this.vectorStoreService.indexPageContent(payload.context);
+
     const context = await this.vectorStoreService.retrieveRelevantContent(
       payload.searchTerm,
     );
+
     const prompt = this.buildConversationalPrompt({
       ...payload,
       context,

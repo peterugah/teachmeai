@@ -63,6 +63,7 @@ export class SearchController {
       where: { id },
     });
 
+    console.log({ searchTerm: data.searchTerm });
     return this.searchService.question({
       context: data.context,
       language: data.language as Language,
@@ -83,13 +84,15 @@ export class SearchController {
     const responses = [...data.responses].reverse();
     let searchTerm = '';
 
-    for (let i = responses.length - 1; i >= 0; i--) {
+    for (let i = 0; i < responses.length; i++) {
       if (responses[i].type === 'user') {
         searchTerm = responses[i].content;
         responses.splice(i, 1);
         break;
       }
     }
+
+    console.log({ searchTerm });
 
     const finalResponses = responses.reverse();
     return this.searchService.conversation(

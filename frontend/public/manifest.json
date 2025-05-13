@@ -7,7 +7,8 @@
     "scripting",
     "activeTab",
     "storage",
-    "identity"
+    "identity",
+    "clipboardWrite"
   ],
   "oauth2": {
     "client_id": "61625300728-95i7lflp0250qh0sadsque0ikriligbm.apps.googleusercontent.com",
@@ -46,5 +47,8 @@
         "<all_urls>"
       ]
     }
-  ]
+  ],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'"
+  }
 }
