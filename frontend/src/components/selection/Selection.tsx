@@ -4,12 +4,11 @@ import { InformationCircleIcon } from "@heroicons/react/24/outline";
 import { visibilityStore } from "../../store/visibility";
 import { settingsStore } from "../../store/settings";
 import { Theme } from "../../enums/theme";
-import { searchStore } from "../../store/search";
 import { selectionStore } from "../../store/selection";
 
 export function Selection() {
 	const { position } = visibilityStore.useVisibilityStore();
-	const { theme, loggedIn } = settingsStore.useSettingsStore();
+	const { theme } = settingsStore.useSettingsStore();
 
 	const selectedText = useRef("");
 	const webPageContent = useRef("");
@@ -164,15 +163,6 @@ export function Selection() {
 			webPage: webPageContent.current,
 			searchTerm: selectedText.current,
 		});
-
-		if (loggedIn) {
-			// if logged in then make request
-			searchStore.requestExplanation({
-				context: webPageContent.current,
-				searchTerm: selectedText.current,
-				language: settingsStore.useSettingsStore.getState().language,
-			});
-		}
 
 		setShowInfoIcon(false);
 		selectedText.current = "";

@@ -2,6 +2,7 @@ import { create } from "zustand"
 import { ResponseDto, RequestState, ResponseType, AskDto, AskType, } from "@shared/types";
 import { v4 as uuid } from "uuid"
 import { END_OF_SSE_EVENT } from "@shared/constants";
+import { settingsStore } from "./settings";
 
 interface Conversation {
   id: string;
@@ -87,6 +88,7 @@ const handleStreamedResponse = (id: number, askType: AskType) => {
       setRequestState("done");
     } else {
       addResponse({
+        userId: settingsStore.useSettingsStore.getState().id,
         askId: id,
         content,
         type: "ai"
@@ -122,6 +124,7 @@ const askQuestion = async (question: string) => {
     const askId = useSearchStore.getState().askId;
     appendMessage({ content: question, id: uuid(), timestamp: Date.now(), type: "user" });
     await addResponse({
+      userId: settingsStore.useSettingsStore.getState().id,
       askId,
       content: question,
       type: "user"

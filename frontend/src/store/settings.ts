@@ -6,6 +6,7 @@ import { createChromeStorage } from "./chromeStorage";
 import { isLocalhost } from "../utils/isLocalHost";
 import { ROOT_CONTAINER_ID } from "../constant";
 import { createLocalStorage } from "./localStorage";
+import { CreateUserDto, UserDto } from "@shared/types";
 
 
 export interface SettingsStore {
@@ -15,12 +16,16 @@ export interface SettingsStore {
   firstName: string;
   lastName: string;
   email: string;
+  lastContentScrollTopPosition: number;
+  id: number;
 }
 
 const initialState: SettingsStore = {
-  theme: Theme.Dark,
+  lastContentScrollTopPosition: 0,
   language: Language.English,
+  theme: Theme.Dark,
   loggedIn: false,
+  id: 0,
   firstName: "",
   lastName: "",
   email: ""
@@ -55,26 +60,34 @@ const setLoggedIn = (loggedIn: boolean) => {
 const setLanguage = (language: Language) => {
   useSettingsStore.setState(() => ({ language }))
 }
-const setFirstName = (firstName: string) => {
-  useSettingsStore.setState(() => ({ firstName }))
-}
-const setLastName = (lastName: string) => {
-  useSettingsStore.setState(() => ({ lastName }))
+
+const createUser = async (payload: CreateUserDto) => {
+  const response = await fetch(`${import.meta.env.VITE_BASE_URL}/user`, {
+    body: JSON.stringify(payload),
+    headers: {
+      "Content-Type": "application/json"
+    },
+    method: "POST"
+  })
+  return response.json() as Promise<UserDto>
 }
 
-const setEmail = (email: string) => {
-  useSettingsStore.setState(() => ({ email }))
+const setLastContentScrollTopPosition = (lastContentScrollTopPosition: number) => {
+  useSettingsStore.setState({ lastContentScrollTopPosition })
 }
 
+const setUserDetails = (details: Pick<SettingsStore, "email" | "firstName" | "lastName" | "id">) => {
+  useSettingsStore.setState(() => details)
+}
 export const settingsStore = {
   setTheme,
-  setEmail,
+  createUser,
   isLocalhost,
   setLanguage,
   setLoggedIn,
-  setLastName,
-  setFirstName,
   getLanguages,
+  setUserDetails,
   getBrowserTheme,
   useSettingsStore,
+  setLastContentScrollTopPosition
 }

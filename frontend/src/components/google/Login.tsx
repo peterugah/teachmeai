@@ -1,28 +1,62 @@
 import { useEffect, useState } from "react";
 import { translationStore } from "../../store/translations";
 import { settingsStore } from "../../store/settings";
+import { isLocalhost } from "../../utils/isLocalHost";
+import { ServiceWorkerMessageEvents } from "../../enums/sw";
+import { GoogleAuthFlowResponse } from "@shared/types";
 
 export const Login = () => {
 	const { language } = settingsStore.useSettingsStore();
-	const [loggedIn, setLoggedIn] = useState(false);
+	const [loading, setLoading] = useState(false);
+	const [error, setError] = useState(false);
 
-	// Check login status on mount
-	useEffect(() => {
-		chrome.runtime.sendMessage({ type: "CHECK_LOGIN_STATUS" }, (response) => {
-			setLoggedIn(response?.loggedIn);
-		});
-	}, []);
-
-	const handleLogin = () => {
-		chrome.runtime.sendMessage({ type: "START_AUTH_FLOW" }, (response) => {
-			if (response?.success) {
-				console.log("Logged in with token:", response);
-				setLoggedIn(true);
-			} else {
-				console.error("Login failed");
-			}
-		});
+	const handleLoginResponse = async (response: GoogleAuthFlowResponse) => {
+		if (response.success && response.userInfo) {
+			setLoading(false);
+			const user = await settingsStore.createUser({
+				email: response.userInfo.email,
+				firstName: response.userInfo.given_name,
+				lastName: response.userInfo.family_name,
+			});
+			settingsStore.setUserDetails(user);
+			settingsStore.setLoggedIn(true);
+		} else {
+			setError(true);
+		}
 	};
+
+	const handleLogin = async () => {
+		// NOTE: this is only for local host
+		if (isLocalhost()) {
+			setLoading(true);
+			const user = await settingsStore.createUser({
+				email: "demo@demo.com",
+				firstName: "demo",
+				lastName: "user",
+			});
+			settingsStore.setUserDetails(user);
+			settingsStore.setLoggedIn(true);
+			setLoading(false);
+			return;
+		}
+		setLoading(true);
+		chrome.runtime.sendMessage(
+			{ type: ServiceWorkerMessageEvents.START_AUTH_FLOW },
+			handleLoginResponse
+		);
+	};
+
+	useEffect(() => {
+		if (isLocalhost()) {
+			return;
+		}
+		chrome.runtime.sendMessage(
+			{ type: ServiceWorkerMessageEvents.CHECK_LOGIN_STATUS },
+			(response) => {
+				settingsStore.setLoggedIn(response);
+			}
+		);
+	}, []);
 
 	return (
 		<div className="flex items-center justify-center flex-col">
@@ -30,15 +64,19 @@ export const Login = () => {
 				<p>{translationStore.translate("hiThere", language)}</p>
 				<p>{translationStore.translate("helpYou", language)}</p>
 			</div>
-			{loggedIn ? (
-				<p>You are already logged in</p>
-			) : (
-				<button
-					onClick={handleLogin}
-					className="p-2 bg-blue-500 text-white rounded"
-				>
-					{translationStore.translate("loginWithGoogle", language)}
-				</button>
+			<button
+				onClick={handleLogin}
+				className="p-2 bg-blue-500 text-white rounded"
+			>
+				{translationStore.translate(
+					loading ? "processing" : "loginWithGoogle",
+					language
+				)}
+			</button>
+			{error && (
+				<p className="py-2 text-center text-red-700 dark:text-red-100">
+					{translationStore.translate("loginErrorMessage", language)}
+				</p>
 			)}
 		</div>
 	);

@@ -5,24 +5,39 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
   directUrl = env("DIRECT_URL")
 }
 
 // models
-model Ask {
-  id Int @default(autoincrement()) @id
-  context String
-  searchTerm String
-  language String  @default("EN")
+
+model User {
+  id        Int        @id @default(autoincrement())
+  email     String
+  firstName String
+  lastName  String
+  paying    Boolean    @default(false)
   responses Response[]
+  asks      Ask[]
+}
+
+model Ask {
+  id         Int        @id @default(autoincrement())
+  context    String
+  searchTerm String
+  userId     Int
+  user       User       @relation(fields: [userId], references: [id])
+  language   String     @default("EN")
+  responses  Response[]
 }
 
 model Response {
-  id      Int      @id @default(autoincrement())
+  id      Int    @id @default(autoincrement())
   content String
   type    String @default("ai")
-  askId   Int 
-  ask     Ask  @relation(fields: [askId], references: [id]) 
+  askId   Int
+  ask     Ask    @relation(fields: [askId], references: [id])
+  userId  Int
+  user    User   @relation(fields: [userId], references: [id])
 }

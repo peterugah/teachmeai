@@ -4,26 +4,19 @@ export type RequestState = "loading" | "error" | "done"
 
 export type ResponseType = "user" | "ai";
 export interface AskDto {
+  userId: number;
   context: string;
   language: Language;
   searchTerm: string;
 }
 export interface ResponseDto {
+  userId: number;
   askId: number;
   type: ResponseType;
   content: string;
 }
 export type AskType = "firstQuestion" | "continuation"
 
-export interface TranslationDto {
-  key: string;
-  value: string;
-}
-
-export interface TranslateDto {
-  language: Language;
-  translations: TranslationDto[];
-}
 
 export interface OllamaResponse {
   model: string;
@@ -33,3 +26,30 @@ export interface OllamaResponse {
   done_reason: string;
   context: number[]
 }
+
+interface GoogleUserInfo {
+  sub: string;
+  name: string;
+  given_name: string;
+  family_name: string;
+  picture: string;
+  email: string;
+  email_verified: boolean;
+  locale?: string; // Optional, in case you request locale scope
+}
+
+export interface GoogleAuthFlowResponse {
+  success: boolean;
+  token?: string;
+  userInfo?: GoogleUserInfo;
+  error?: string;
+}
+
+export interface UserDto {
+  id: number;
+  email: string;
+  firstName: string;
+  lastName: string;
+  paying: boolean;
+}
+export type CreateUserDto = Omit<UserDto, "id" | "paying">

@@ -15,6 +15,9 @@ export interface TranslationKeys {
   hiThere: Partial<Record<Language, string>>
   helpYou: Partial<Record<Language, string>>
   loginWithGoogle: Partial<Record<Language, string>>
+  loginErrorMessage: Partial<Record<Language, string>>
+  liked: Partial<Record<Language, string>>
+  copied: Partial<Record<Language, string>>
 }
 
 interface TranslationsStore {
@@ -60,6 +63,15 @@ const initialState: TranslationsStore = {
     },
     loginWithGoogle: {
       [Language.English]: "Login with Google",
+    },
+    loginErrorMessage: {
+      [Language.English]: "Unable to login :(. Please try again or report a bug below!",
+    },
+    liked: {
+      [Language.English]: "Liked",
+    },
+    copied: {
+      [Language.English]: "Copied",
     },
   }
 }

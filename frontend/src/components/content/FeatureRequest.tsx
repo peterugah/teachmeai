@@ -5,14 +5,14 @@ import { settingsStore } from "../../store/settings";
 
 interface Props {
 	onSubmit: () => void;
-	onClick: (show: boolean) => void;
+	onClick: () => void;
 }
 export function FeatureRequest({ onSubmit, onClick }: Props) {
 	const { language } = settingsStore.useSettingsStore();
 	const [show, setShow] = useState(false);
 	const handleOnClick = () => {
+		onClick();
 		setShow(!show);
-		onClick(show);
 	};
 	return (
 		<>
