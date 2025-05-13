@@ -52,7 +52,7 @@ export class SearchService {
       });
     });
   }
-  private constructFirstQuestionPrompt(payload: AskDto) {
+  private constructFirstQuestionPrompt(payload: Omit<AskDto, 'userId'>) {
     return `
       You will receive a block of webpage content. A phrase will be marked as "<SELECTED_TEXT>", with possible multiple occurrences—**focus only on the last one**.
 
@@ -133,7 +133,10 @@ export class SearchService {
       Return **only the answer**, formatted in Markdown.
 `;
   }
-  async conversation(payload: AskDto, responses: ResponseDto[]) {
+  async conversation(
+    payload: Omit<AskDto, 'userId'>,
+    responses: ResponseDto[],
+  ) {
     await this.vectorStoreService.indexPageContent(payload.context);
     const context = await this.vectorStoreService.retrieveRelevantContent(
       payload.searchTerm,
@@ -146,7 +149,7 @@ export class SearchService {
 
     return this.streamResponse(prompt);
   }
-  async question(payload: AskDto) {
+  async question(payload: Omit<AskDto, 'userId'>) {
     await this.vectorStoreService.indexPageContent(payload.context);
     const context = await this.vectorStoreService.retrieveRelevantContent(
       payload.searchTerm,

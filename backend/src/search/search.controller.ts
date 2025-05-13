@@ -25,7 +25,10 @@ export class SearchController {
   async askPost(@Body(new ZodValidationPipe(askValidator)) data: AskDto) {
     // TODO: check if the item already exists, if so, the return it
     const response = await this.databaseService.ask.create({
-      data,
+      data: {
+        ...data,
+        userId: data.userId,
+      },
       select: {
         id: true,
       },
@@ -41,7 +44,12 @@ export class SearchController {
       where: { id: data.askId },
     });
     return this.databaseService.response.create({
-      data,
+      data: {
+        content: data.content,
+        askId: data.askId,
+        type: data.type,
+        userId: data.userId,
+      },
       select: {
         id: true,
       },

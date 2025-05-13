@@ -1,16 +1,23 @@
+enum ServiceWorkerMessageEvents {
+  CHECK_LOGIN_STATUS,
+  START_AUTH_FLOW,
+}
+
 chrome.runtime.onMessage.addListener((message, _, sendResponse) => {
-  if (message.type === "START_AUTH_FLOW") {
+  if (message.type === ServiceWorkerMessageEvents.START_AUTH_FLOW) {
     startAuthFlow(sendResponse);
     return true; // keep the message channel open
   }
 
-  if (message.type === "CHECK_LOGIN_STATUS") {
+  if (message.type === ServiceWorkerMessageEvents.CHECK_LOGIN_STATUS) {
     chrome.storage.local.get("access_token", (result) => {
       const token = result.access_token;
-      sendResponse({ loggedIn: Boolean(token), token });
+      const isLoggedIn = Boolean(token);
+      sendResponse(isLoggedIn);  // true or false
     });
     return true;
   }
+
 });
 
 function startAuthFlow(sendResponse: (response: unknown) => void) {
@@ -30,7 +37,6 @@ function startAuthFlow(sendResponse: (response: unknown) => void) {
     { url: authUrl, interactive: true },
     (redirectUrl) => {
       if (chrome.runtime.lastError || !redirectUrl) {
-        console.error("Auth Error:", chrome.runtime.lastError?.message || "No redirect");
         sendResponse({ success: false });
         return;
       }

@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { Content } from "../components/content/Content";
 import { Settings } from "../components/content/Settings";
 import { Selection } from "../components/selection/Selection";
@@ -7,16 +7,20 @@ import { ROOT_CONTAINER_ID } from "../constant";
 import { settingsStore } from "../store/settings";
 import { Theme } from "../enums/theme";
 import { searchStore } from "../store/search";
+import { selectionStore } from "../store/selection";
 
 export function Extension() {
 	const { showSettings, position, showPopup } =
 		visibilityStore.useVisibilityStore();
 
-	const { theme } = settingsStore.useSettingsStore();
+	const { theme, loggedIn, language } = settingsStore.useSettingsStore();
 
 	const divRef = useRef<HTMLDivElement>(null);
 	const [adjustedLeft, setAdjustedLeft] = useState<number>(position.left);
 
+	const reRender = useMemo(() => {
+		return showPopup || showSettings;
+	}, [showPopup, showSettings]);
 	const handleClickOutside = (event: MouseEvent) => {
 		const extensionRootContainer = document.getElementById(ROOT_CONTAINER_ID);
 		if (
@@ -61,12 +65,27 @@ export function Extension() {
 	}, []);
 
 	useEffect(() => {
-		// TODO: refactor for clarity
+		// NOTE: reset the content once any of this is not visible anymore
 		if (!showPopup && !showSettings) {
 			searchStore.resetStore();
 		}
 	}, [showPopup, showSettings]);
 
+	useEffect(() => {
+		const searchTerm = selectionStore.useSelectionStore.getState().searchTerm;
+		const webPage = selectionStore.useSelectionStore.getState().webPage;
+		if (searchTerm && webPage && loggedIn && reRender) {
+			// request explanation
+			searchStore.requestExplanation({
+				userId: settingsStore.useSettingsStore.getState().id,
+				context: webPage,
+				searchTerm,
+				language,
+			});
+			selectionStore.setSelection({});
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [loggedIn, reRender]);
 	return (
 		<>
 			<Selection />

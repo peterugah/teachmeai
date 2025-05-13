@@ -4,21 +4,56 @@ import { TextForm } from "../../components/TextForm";
 import { FeatureRequest } from "./FeatureRequest";
 import { searchStore } from "../../store/search";
 import { Response } from "./Response";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { translationStore } from "../../store/translations";
 import { settingsStore } from "../../store/settings";
 import { Login } from "../google/Login";
+import { visibilityStore } from "../../store/visibility";
 
 export function Content() {
 	const { conversation, requestState } = searchStore.useSearchStore();
 	const { language, loggedIn } = settingsStore.useSettingsStore();
+	const { showPopup } = visibilityStore.useVisibilityStore();
 	const scrollContainerRef = useRef<HTMLDivElement>(null);
 
-	const handleFeatureRequestClick = (show: boolean) => {
-		if (show) {
-			setTimeout(() => {}, 50);
-		}
+	const handleFeatureRequestClick = () => {
+		setTimeout(() => {
+			const scrollContainer = scrollContainerRef.current;
+			if (scrollContainer) {
+				scrollContainer.scrollTo({
+					top: scrollContainer.scrollHeight,
+					behavior: "smooth",
+				});
+			}
+		}, 50);
 	};
+
+	useEffect(() => {
+		const scrollContainer = scrollContainerRef.current;
+		const scrollHandler = () => {
+			if (scrollContainer) {
+				settingsStore.setLastContentScrollTopPosition(
+					scrollContainer.scrollTop
+				);
+			}
+		};
+		if (scrollContainer) {
+			scrollContainer.addEventListener("scroll", scrollHandler);
+			return () => {
+				if (scrollContainer) {
+					scrollContainer.removeEventListener("scroll", scrollHandler);
+				}
+			};
+		}
+	}, []);
+
+	useEffect(() => {
+		const scrollContainer = scrollContainerRef.current;
+		if (showPopup && scrollContainer) {
+			scrollContainer.scrollTop =
+				settingsStore.useSettingsStore.getState().lastContentScrollTopPosition;
+		}
+	}, [showPopup]);
 
 	return (
 		<div className="bg-white rounded-2xl dark:bg-neutral-900 pb-4">
@@ -34,7 +69,7 @@ export function Content() {
 				{requestState === "loading" && (
 					<span>{translationStore.translate("processing", language)}</span>
 				)}
-				<SectionThree />
+				<SectionThree onCopy={() => {}} onLike={() => {}} onPlay={() => {}} />
 				<TextForm
 					onSubmit={searchStore.askQuestion}
 					placeholderText={translationStore.translate("askMore", language)}
