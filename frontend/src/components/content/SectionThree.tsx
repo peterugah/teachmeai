@@ -1,7 +1,7 @@
 import {
 	HandThumbUpIcon,
 	DocumentDuplicateIcon,
-	SpeakerWaveIcon,
+	// SpeakerWaveIcon,
 } from "@heroicons/react/24/outline";
 import { translationStore } from "../../store/translations";
 import { settingsStore } from "../../store/settings";
@@ -11,13 +11,13 @@ import { useState } from "react";
 interface SectionThreeInterface {
 	onCopy: () => void;
 	onLike: () => void;
-	onPlay: () => void;
+	// onPlay: () => void;
 }
 export const SectionThree = ({
 	onLike,
 	onCopy,
-	onPlay,
-}: SectionThreeInterface) => {
+}: // onPlay,
+SectionThreeInterface) => {
 	const { language } = settingsStore.useSettingsStore();
 	const [showCopyTooltip, setShowCopyTooltip] = useState(false);
 	const [showLikeTooltip, setShowLikeTooltip] = useState(false);
@@ -32,9 +32,9 @@ export const SectionThree = ({
 		setShowCopyTooltip(true);
 	};
 
-	const handleOnPlay = () => {
-		onPlay();
-	};
+	// const handleOnPlay = () => {
+	// 	onPlay();
+	// };
 
 	return (
 		<div className="space-x-2 pt-2">
@@ -54,7 +54,7 @@ export const SectionThree = ({
 				tooltipText={translationStore.translate("copied", language)}
 				icon={<DocumentDuplicateIcon />}
 			/>
-			<TooltipButton onClick={handleOnPlay} icon={<SpeakerWaveIcon />} />
+			{/* <TooltipButton onClick={handleOnPlay} icon={<SpeakerWaveIcon />} /> */}
 		</div>
 	);
 };

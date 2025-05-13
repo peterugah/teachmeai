@@ -37,6 +37,7 @@ export class VectorStoreService {
       new OllamaEmbeddings({
         model: this.configService.get(EnvEnum.OLLAMA_EMBEDDING_MODEL),
         baseUrl: this.configService.get(EnvEnum.OLLAMA_BASE_URL),
+        keepAlive: 1,
       }),
     );
     this.vectorStore = response;
@@ -44,6 +45,7 @@ export class VectorStoreService {
 
   async retrieveRelevantContent(query: string, k = 3) {
     const results = await this.vectorStore.similaritySearch(query, k);
-    return results.map((doc) => doc.pageContent).join('\n');
+    const outcome = results.map((doc) => doc.pageContent).join('\n');
+    return outcome;
   }
 }

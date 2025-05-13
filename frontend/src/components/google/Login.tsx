@@ -4,9 +4,10 @@ import { settingsStore } from "../../store/settings";
 import { isLocalhost } from "../../utils/isLocalHost";
 import { ServiceWorkerMessageEvents } from "../../enums/sw";
 import { GoogleAuthFlowResponse } from "@shared/types";
+import posthog from "posthog-js";
 
 export const Login = () => {
-	const { language } = settingsStore.useSettingsStore();
+	const { language, email } = settingsStore.useSettingsStore();
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState(false);
 
@@ -20,6 +21,8 @@ export const Login = () => {
 			});
 			settingsStore.setUserDetails(user);
 			settingsStore.setLoggedIn(true);
+			// register user for posthog tracking
+			posthog.identify(user.email);
 		} else {
 			setError(true);
 		}
@@ -36,6 +39,8 @@ export const Login = () => {
 			});
 			settingsStore.setUserDetails(user);
 			settingsStore.setLoggedIn(true);
+			// register user for posthog tracking
+			posthog.identify(user.email);
 			setLoading(false);
 			return;
 		}
@@ -54,9 +59,13 @@ export const Login = () => {
 			{ type: ServiceWorkerMessageEvents.CHECK_LOGIN_STATUS },
 			(response) => {
 				settingsStore.setLoggedIn(response);
+				if (response) {
+					// register user for posthog tracking
+					posthog.identify(email);
+				}
 			}
 		);
-	}, []);
+	}, [email]);
 
 	return (
 		<div className="flex items-center justify-center flex-col">
