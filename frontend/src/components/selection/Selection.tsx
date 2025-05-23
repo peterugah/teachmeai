@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { ROOT_CONTAINER_ID } from "../../constant";
-import { InformationCircleIcon } from "@heroicons/react/24/outline";
 import { visibilityStore } from "../../store/visibility";
 import { settingsStore } from "../../store/settings";
 import { Theme } from "../../enums/theme";
 import { selectionStore } from "../../store/selection";
+import Logo from "../Logo";
+import { ServiceWorkerMessageEvents } from "../../enums/sw";
 
 export function Selection() {
 	const { position } = visibilityStore.useVisibilityStore();
@@ -132,7 +133,16 @@ export function Selection() {
 		if (isInsideExtension(e.target as Node)) return;
 
 		selectedText.current = text;
+
+		// if (settingsStore.useSettingsStore.getState().iconContext === "selection") {
 		setShowInfoIcon(true);
+		// } else {
+		chrome.runtime.sendMessage(
+			{ type: ServiceWorkerMessageEvents.ADD_TO_CONTEXT_MENU },
+			() => {}
+		);
+		// }
+
 		visibilityStore.setShowPopup(false);
 		visibilityStore.setShowSettings(false);
 
@@ -178,6 +188,7 @@ export function Selection() {
 			document.removeEventListener("mouseup", handleOnMouseUp);
 			document.removeEventListener("click", handleOnWindowClick);
 		};
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	return showInfoIcon ? (
@@ -192,7 +203,7 @@ export function Selection() {
 					position: "absolute",
 				}}
 			>
-				<InformationCircleIcon />
+				<Logo />
 			</button>
 		</div>
 	) : null;

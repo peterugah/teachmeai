@@ -1,15 +1,30 @@
+// TODO: move this to a shared file and bundle it as one for the background.ts file
 enum ServiceWorkerMessageEvents {
-  CHECK_LOGIN_STATUS,
-  START_AUTH_FLOW,
+  START_AUTH_FLOW = "START_AUTH_FLOW",
+  CHECK_LOGIN_STATUS = "CHECK_LOGIN_STATUS",
+  ADD_TO_CONTEXT_MENU = "ADD_TO_CONTEXT_MENU",
 }
 
 chrome.runtime.onMessage.addListener((message, _, sendResponse) => {
+  // Add the icon to the context menu
+  if (message.type === ServiceWorkerMessageEvents.ADD_TO_CONTEXT_MENU) {
+    chrome.contextMenus.create({
+      // TODO: this should be shared too
+      id: "teachme-ai-option",
+      title: "expand on the selection",
+      contexts: ["selection"]
+    })
+    sendResponse(true);
+    return true;
+  }
+  // Login user
   if (message.type === ServiceWorkerMessageEvents.START_AUTH_FLOW) {
     startAuthFlow(sendResponse);
     return true; // keep the message channel open
   }
-
+  // Check if user is logged in
   if (message.type === ServiceWorkerMessageEvents.CHECK_LOGIN_STATUS) {
+    // TODO: move this retrieval and setting logic to the settings store
     chrome.storage.local.get("access_token", (result) => {
       const token = result.access_token;
       const isLoggedIn = Boolean(token);
@@ -17,7 +32,6 @@ chrome.runtime.onMessage.addListener((message, _, sendResponse) => {
     });
     return true;
   }
-
 });
 
 function startAuthFlow(sendResponse: (response: unknown) => void) {

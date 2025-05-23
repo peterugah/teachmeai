@@ -29,7 +29,6 @@ export const Login = () => {
 	};
 
 	const handleLogin = async () => {
-		// NOTE: this is only for local host
 		if (isLocalhost()) {
 			setLoading(true);
 			const user = await settingsStore.createUser({

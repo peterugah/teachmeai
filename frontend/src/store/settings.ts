@@ -8,19 +8,21 @@ import { ROOT_CONTAINER_ID } from "../constant";
 import { createLocalStorage } from "./localStorage";
 import { CreateUserDto, UserDto } from "@shared/types";
 
-
+type IconContext = "selection" | "menuContext";
 export interface SettingsStore {
-  theme: Theme;
-  language: Language;
-  loggedIn: boolean;
-  firstName: string;
-  lastName: string;
-  email: string;
-  lastContentScrollTopPosition: number;
   id: number;
+  theme: Theme;
+  email: string;
+  lastName: string;
+  firstName: string;
+  loggedIn: boolean;
+  language: Language;
+  iconContext: IconContext;
+  lastContentScrollTopPosition: number;
 }
 
 const initialState: SettingsStore = {
+  iconContext: "selection",
   lastContentScrollTopPosition: 0,
   language: Language.English,
   theme: Theme.Dark,
@@ -51,6 +53,9 @@ const getBrowserTheme = (): Theme => {
 
 const setTheme = (theme: Theme) => {
   useSettingsStore.setState(() => ({ theme }))
+}
+const setIconContext = (iconContext: IconContext) => {
+  useSettingsStore.setState(() => ({ iconContext }))
 }
 
 const setLoggedIn = (loggedIn: boolean) => {
@@ -87,6 +92,7 @@ export const settingsStore = {
   setLoggedIn,
   getLanguages,
   setUserDetails,
+  setIconContext,
   getBrowserTheme,
   useSettingsStore,
   setLastContentScrollTopPosition

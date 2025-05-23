@@ -8,7 +8,8 @@
     "activeTab",
     "storage",
     "identity",
-    "clipboardWrite"
+    "clipboardWrite",
+    "contextMenus"
   ],
   "oauth2": {
     "client_id": "61625300728-95i7lflp0250qh0sadsque0ikriligbm.apps.googleusercontent.com",

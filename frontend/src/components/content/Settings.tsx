@@ -114,9 +114,11 @@ export function Settings() {
 						</select>
 					</div>
 				</div>
+				{/* select icon context */}
 			</div>
+
 			{/* History */}
-			<div className="p-2">
+			{/* <div className="p-2">
 				<h2 className="font-bold text-[12px] text-gray-700 dark:text-neutral-300">
 					{translationStore.translate("history", language)}
 				</h2>
@@ -129,9 +131,9 @@ export function Settings() {
 					/>
 				</div>
 				<div className="ml-2 mt-2 max-h-80 overflow-y-auto">
-					{/* <ul>{renderPreviousSearches()}</ul> */}
+					<ul>{renderPreviousSearches()}</ul>
 				</div>
-			</div>
+			</div> */}
 			{/* Rating */}
 			{/* <div className="border-t-[1px] border-gray-200 p-2">
 				<h2 className="font-bold text-[12px] text-gray-700">Rate us</h2>

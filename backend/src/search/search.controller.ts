@@ -22,8 +22,8 @@ export class SearchController {
   ) { }
 
   @Post('')
+  // TODO: check if the item already exists, if so, the return it
   async askPost(@Body(new ZodValidationPipe(askValidator)) data: AskDto) {
-    // TODO: check if the item already exists, if so, the return it
     const response = await this.databaseService.ask.create({
       data: {
         ...data,
@@ -44,12 +44,7 @@ export class SearchController {
       where: { id: data.askId },
     });
     return this.databaseService.response.create({
-      data: {
-        content: data.content,
-        askId: data.askId,
-        type: data.type,
-        userId: data.userId,
-      },
+      data,
       select: {
         id: true,
       },
@@ -62,8 +57,6 @@ export class SearchController {
     const data = await this.databaseService.ask.findFirstOrThrow({
       where: { id },
     });
-
-    console.log({ searchTerm: data.searchTerm });
     return this.searchService.question({
       context: data.context,
       language: data.language as Language,
@@ -91,8 +84,6 @@ export class SearchController {
         break;
       }
     }
-
-    console.log({ searchTerm });
 
     const finalResponses = responses.reverse();
     return this.searchService.conversation(
