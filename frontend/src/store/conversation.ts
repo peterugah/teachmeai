@@ -18,20 +18,20 @@ const initialState: ConversationStore = {
   responses: []
 };
 
-const useConversationStore = create(() => initialState);
+const store = create(() => initialState);
 
 const ResponseDto = (response: ConversationResponse) => {
-  useConversationStore.setState((store) => ({
+  store.setState((store) => ({
     responses: [...store.responses, response]
   }))
 }
 
 const initializeConversation = (conversation: ConversationStore) => {
-  useConversationStore.setState(() => (conversation))
+  store.setState(() => (conversation))
 }
 
 export const conversationStore = {
   ResponseDto,
-  useConversationStore,
+  store,
   initializeConversation,
 }

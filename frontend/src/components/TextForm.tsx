@@ -7,7 +7,7 @@ interface Props {
 	placeholderText: string;
 }
 export function TextForm({ onSubmit, placeholderText }: Props) {
-	const { loggedIn } = settingsStore.useSettingsStore();
+	const { loggedIn } = settingsStore.store();
 	const textareaRef = useRef<HTMLTextAreaElement>(null);
 
 	const autoResizeTextArea = () => {

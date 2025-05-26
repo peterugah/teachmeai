@@ -18,7 +18,7 @@ export const SectionThree = ({
 	onCopy,
 }: // onPlay,
 SectionThreeInterface) => {
-	const { language } = settingsStore.useSettingsStore();
+	const { language } = settingsStore.store();
 	const [showCopyTooltip, setShowCopyTooltip] = useState(false);
 	const [showLikeTooltip, setShowLikeTooltip] = useState(false);
 

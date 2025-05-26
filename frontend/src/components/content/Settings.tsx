@@ -7,7 +7,7 @@ import { Language } from "@shared/languageEnum";
 
 export function Settings() {
 	// const [hoveredStar, setHoveredStar] = useState<number | null>(null);
-	const { theme, language } = settingsStore.useSettingsStore();
+	const { theme, language } = settingsStore.store();
 
 	const handleOnLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
 		const language = e.target.value as Language;

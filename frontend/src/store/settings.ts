@@ -33,7 +33,7 @@ const initialState: SettingsStore = {
   email: ""
 }
 
-const useSettingsStore = create<SettingsStore>()(
+const store = create<SettingsStore>()(
   persist(
     () => initialState,
     {
@@ -52,18 +52,18 @@ const getBrowserTheme = (): Theme => {
 };
 
 const setTheme = (theme: Theme) => {
-  useSettingsStore.setState(() => ({ theme }))
+  store.setState(() => ({ theme }))
 }
 const setIconContext = (iconContext: IconContext) => {
-  useSettingsStore.setState(() => ({ iconContext }))
+  store.setState(() => ({ iconContext }))
 }
 
 const setLoggedIn = (loggedIn: boolean) => {
-  useSettingsStore.setState(() => ({ loggedIn }))
+  store.setState(() => ({ loggedIn }))
 }
 
 const setLanguage = (language: Language) => {
-  useSettingsStore.setState(() => ({ language }))
+  store.setState(() => ({ language }))
 }
 
 const createUser = async (payload: CreateUserDto) => {
@@ -78,11 +78,11 @@ const createUser = async (payload: CreateUserDto) => {
 }
 
 const setLastContentScrollTopPosition = (lastContentScrollTopPosition: number) => {
-  useSettingsStore.setState({ lastContentScrollTopPosition })
+  store.setState({ lastContentScrollTopPosition })
 }
 
 const setUserDetails = (details: Pick<SettingsStore, "email" | "firstName" | "lastName" | "id">) => {
-  useSettingsStore.setState(() => details)
+  store.setState(() => details)
 }
 export const settingsStore = {
   setTheme,
@@ -94,6 +94,6 @@ export const settingsStore = {
   setUserDetails,
   setIconContext,
   getBrowserTheme,
-  useSettingsStore,
+  store,
   setLastContentScrollTopPosition
 }

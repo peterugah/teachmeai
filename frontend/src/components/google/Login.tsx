@@ -4,10 +4,9 @@ import { settingsStore } from "../../store/settings";
 import { isLocalhost } from "../../utils/isLocalHost";
 import { ServiceWorkerMessageEvents } from "../../enums/sw";
 import { GoogleAuthFlowResponse } from "@shared/types";
-import posthog from "posthog-js";
 
 export const Login = () => {
-	const { language, email } = settingsStore.useSettingsStore();
+	const { language, email } = settingsStore.store();
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState(false);
 
@@ -21,8 +20,6 @@ export const Login = () => {
 			});
 			settingsStore.setUserDetails(user);
 			settingsStore.setLoggedIn(true);
-			// register user for posthog tracking
-			posthog.identify(user.email);
 		} else {
 			setError(true);
 		}
@@ -38,11 +35,10 @@ export const Login = () => {
 			});
 			settingsStore.setUserDetails(user);
 			settingsStore.setLoggedIn(true);
-			// register user for posthog tracking
-			posthog.identify(user.email);
 			setLoading(false);
 			return;
 		}
+
 		setLoading(true);
 		chrome.runtime.sendMessage(
 			{ type: ServiceWorkerMessageEvents.START_AUTH_FLOW },
@@ -56,13 +52,7 @@ export const Login = () => {
 		}
 		chrome.runtime.sendMessage(
 			{ type: ServiceWorkerMessageEvents.CHECK_LOGIN_STATUS },
-			(response) => {
-				settingsStore.setLoggedIn(response);
-				if (response) {
-					// register user for posthog tracking
-					posthog.identify(email);
-				}
-			}
+			(response) => settingsStore.setLoggedIn(response)
 		);
 	}, [email]);
 
