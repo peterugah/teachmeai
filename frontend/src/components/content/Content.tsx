@@ -13,17 +13,17 @@ import removeMarkdown from "remove-markdown";
 
 export function Content() {
 	const { conversation, requestState } = searchStore.useSearchStore();
-	const { language, loggedIn } = settingsStore.useSettingsStore();
-	const { showPopup } = visibilityStore.useVisibilityStore();
+	const { language, loggedIn } = settingsStore.store();
+	const { showPopup } = visibilityStore.store();
 	const scrollContainerRef = useRef<HTMLDivElement>(null);
 	const handleOnCopy = () => {
 		const conversation = searchStore.useSearchStore.getState().conversation;
 		const content = conversation.reduce((a, convo) => {
 			a += `${
 				convo.type === "user"
-					? `[${
-							settingsStore.useSettingsStore.getState().firstName
-					  }]\n${new Date(convo.timestamp).toLocaleString()}\n`
+					? `[${settingsStore.store.getState().firstName}]\n${new Date(
+							convo.timestamp
+					  ).toLocaleString()}\n`
 					: `[AI]\n${new Date(convo.timestamp).toLocaleString()}\n`
 			}${removeMarkdown(convo.content.trim().replace(/\n/g, ""))}\n\n`;
 			return a;
@@ -66,7 +66,7 @@ export function Content() {
 		const scrollContainer = scrollContainerRef.current;
 		if (showPopup && scrollContainer) {
 			scrollContainer.scrollTop =
-				settingsStore.useSettingsStore.getState().lastContentScrollTopPosition;
+				settingsStore.store.getState().lastContentScrollTopPosition;
 		}
 	}, [showPopup]);
 

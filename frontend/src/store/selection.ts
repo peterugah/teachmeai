@@ -7,13 +7,13 @@ interface SelectionStore {
 const initialState: SelectionStore = {
 };
 
-const useSelectionStore = create(() => initialState);
+const store = create(() => initialState);
 
 const setSelection = (selection: SelectionStore) => {
-  useSelectionStore.setState(() => (selection))
+  store.setState(() => (selection))
 }
 
 export const selectionStore = {
-  useSelectionStore,
+  store,
   setSelection,
 }

@@ -8,7 +8,7 @@ interface Props {
 	onClick: () => void;
 }
 export function FeatureRequest({ onSubmit, onClick }: Props) {
-	const { language } = settingsStore.useSettingsStore();
+	const { language } = settingsStore.store();
 	const [show, setShow] = useState(false);
 	const handleOnClick = () => {
 		onClick();
