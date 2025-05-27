@@ -17,6 +17,7 @@ export function Extension() {
 	const [position, setPosition] = useState<Position>({ top: 0, left: 0 });
 	const selectedText = useRef<string>("");
 	const webPageContent = useRef<string>("");
+	const INFO_ICON_DIMENSION = 40;
 
 	const normalizeText = (text: string): string =>
 		text
@@ -32,6 +33,7 @@ export function Extension() {
 			el.getAttribute("aria-hidden") !== "true"
 		);
 	};
+
 	const getUniqueChunks = (text: string, seen: Set<string>): string[] => {
 		return text
 			.split(/(?<=[.!?])\s+(?=[A-Z])/g) // sentence-splitting regex
@@ -42,6 +44,7 @@ export function Extension() {
 				return true;
 			});
 	};
+
 	const getWebPageContent = (selection: Selection) => {
 		const anchorNode = selection.anchorNode;
 
@@ -97,16 +100,28 @@ export function Extension() {
 
 	const getSelectionDetails = () => {
 		const selection = window.getSelection();
-		if (!selection) {
-			return undefined;
-		}
+		if (!selection || selection.rangeCount === 0) return undefined;
 		const text = selection.toString().trim();
+		if (text.length < 3) return undefined;
 
-		if (text.length < 3) {
-			return undefined;
-		}
 		const range = selection.getRangeAt(0);
-		const { top, left } = range.getBoundingClientRect();
+
+		// Grab all the client rects for the range
+		const rects = Array.from(range.getClientRects());
+		let posX: number, posY: number;
+
+		if (rects.length > 0) {
+			// Use the last rect for "end of selection"
+			const lastRect = rects[rects.length - 1];
+			posX = lastRect.right;
+			posY = lastRect.bottom;
+		} else {
+			// Fallback in case there's only one rect
+			const { right, bottom } = range.getBoundingClientRect();
+			posX = right;
+			posY = bottom;
+		}
+
 		const node = range.commonAncestorContainer;
 		const element =
 			node.nodeType === Node.ELEMENT_NODE
@@ -116,8 +131,8 @@ export function Extension() {
 		return {
 			selection,
 			text,
-			top,
-			left,
+			top: posY,
+			left: posX,
 			element,
 			isCollapsed: selection.isCollapsed,
 		};
@@ -130,7 +145,6 @@ export function Extension() {
 		containerHeight: number
 	): Position {
 		const { innerWidth, innerHeight } = window;
-
 		// Start by positioning the top-left corner at an offset from the cursor
 		let left = posX;
 		let top = posY;
@@ -154,7 +168,7 @@ export function Extension() {
 
 	const handleOnMouseUp = (e: MouseEvent) => {
 		if (!isOutsideExtension(e)) {
-			return undefined;
+			return;
 		}
 		const response = getSelectionDetails();
 		if (!response || !divRef.current) {
@@ -172,15 +186,16 @@ export function Extension() {
 		const { left: positionLeft, top: positionTop } = calculatePopupPosition(
 			left,
 			top,
-			0,
-			0
+			INFO_ICON_DIMENSION,
+			INFO_ICON_DIMENSION
 		);
+
 		setPosition({ left: positionLeft, top: positionTop });
 	};
 
 	const handleOnSelectionClick = (e: MouseEvent) => {
 		if (!isOutsideExtension(e)) {
-			return undefined;
+			return;
 		}
 		const response = getSelection();
 		if (!response) {
@@ -203,27 +218,36 @@ export function Extension() {
 		visibilityStore.setShowPopup(true);
 		visibilityStore.setShowInfoIcon(false);
 		// calculate the position
-		const { width, height } = divRef.current!.getBoundingClientRect();
-		const { left, top } = calculatePopupPosition(
-			position.left,
-			position.top,
-			width,
-			height
-		);
-		setPosition({ left, top });
-		// make the request
-		searchStore.requestExplanation({
-			context: webPageContent.current,
-			language,
-			searchTerm: selectedText.current,
-			userId: id,
-		});
+		setTimeout(() => {
+			const { width, height } = divRef.current!.getBoundingClientRect();
+			const { left, top } = calculatePopupPosition(
+				position.left,
+				position.top,
+				width - INFO_ICON_DIMENSION, // removing the info icon width,
+				height
+			);
+			// get the scroll position
+			const scrollTop =
+				window.pageYOffset ||
+				document.documentElement.scrollTop ||
+				document.body.scrollTop;
+			//
+			const finalTop = top + scrollTop + 5; //  5 IS PADDING
+			setPosition({ left, top: finalTop });
+			// make the request
+			searchStore.requestExplanation({
+				context: webPageContent.current,
+				language,
+				searchTerm: selectedText.current,
+				userId: id,
+			});
+		}, 0);
 	};
 
 	useEffect(() => {
 		document.addEventListener("mouseup", handleOnMouseUp);
 		document.addEventListener("click", handleOnSelectionClick);
-
+		//
 		return () => {
 			document.removeEventListener("mouseup", handleOnMouseUp);
 			document.removeEventListener("click", handleOnSelectionClick);

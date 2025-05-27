@@ -84,7 +84,6 @@ function fetchUserInfo(accessToken: string, sendResponse: (response: unknown) =>
   })
     .then((response) => response.json())
     .then((userInfo) => {
-      console.log("User Info:", userInfo);
       sendResponse({ success: true, token: accessToken, userInfo });
     })
     .catch((error) => {
