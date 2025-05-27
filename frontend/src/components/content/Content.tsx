@@ -71,7 +71,7 @@ export function Content() {
 	}, [showPopup]);
 
 	return (
-		<div className="bg-white rounded-2xl dark:bg-neutral-900 pb-4">
+		<div className="bg-white rounded-2xl dark:bg-neutral-900 pb-4 shadow dark:shadow-none">
 			<Header />
 			<div
 				ref={scrollContainerRef}

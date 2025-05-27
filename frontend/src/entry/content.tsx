@@ -18,6 +18,7 @@ function mountContent(shadowHost: HTMLElement) {
 	style.textContent = convertRemToPx(tailwindCss);
 	shadowRoot.appendChild(style);
 	const extensionContainer = document.createElement("div");
+	extensionContainer.style.backgroundColor = "red";
 	shadowRoot.appendChild(extensionContainer);
 	createRoot(extensionContainer).render(<Extension />);
 }
