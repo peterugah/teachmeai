@@ -223,7 +223,7 @@ export function Extension() {
 			const { left, top } = calculatePopupPosition(
 				position.left,
 				position.top,
-				width - INFO_ICON_DIMENSION, // removing the 40 added to the position by the info icon,
+				width - INFO_ICON_DIMENSION, // removing the info icon width,
 				height
 			);
 			// get the scroll position
@@ -232,7 +232,7 @@ export function Extension() {
 				document.documentElement.scrollTop ||
 				document.body.scrollTop;
 			//
-			const finalTop = top + scrollTop + 5; //  5 is passing
+			const finalTop = top + scrollTop + 5; //  5 IS PADDING
 			setPosition({ left, top: finalTop });
 			// make the request
 			searchStore.requestExplanation({
