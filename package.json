@@ -11,7 +11,9 @@
     "packages/*"
   ],
   "scripts": {
-    "dev": "turbo dev"
+    "dev": "turbo dev",
+    "dev:be": "turbo dev --filter=backend",
+    "build": "turbo build"
   },
   "keywords": [],
   "author": "",
