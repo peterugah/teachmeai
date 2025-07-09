@@ -1,9 +1,9 @@
 import Logo from "../Logo";
 
-interface SelectionProps {
+interface UserSelectionProps {
 	onClick: () => void;
 }
-export function Selection({ onClick }: SelectionProps) {
+export function UserSelection({ onClick }: UserSelectionProps) {
 	return (
 		<button
 			onClick={onClick}
