@@ -1,0 +1,21 @@
+{
+  "name": "teachmeai",
+  "version": "1.0.0",
+  "main": "index.js",
+  "devDependencies": {
+    "turbo": "^2.5.4"
+  },
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "turbo dev"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "packageManager": "yarn@1.22.22"
+}

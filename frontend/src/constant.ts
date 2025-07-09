@@ -1,1 +1,0 @@
-export const ROOT_CONTAINER_ID = `teach-me-ai-root-div-container`;
