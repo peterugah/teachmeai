@@ -7,11 +7,12 @@ import { Theme } from "../enums/theme";
 import { ROOT_CONTAINER_ID } from "../constant";
 import { searchStore } from "../store/search";
 import { UserSelection } from "../components/selection/UserSelection";
-import { AskDto } from "@shared/types";
+import { ServiceWorkerMessageEvents } from "../enums/sw";
 
 type Position = { top: number; left: number };
 
 export function Extension() {
+	const { pendingRequest } = searchStore.store();
 	const { theme, language, id, trigger, loggedIn } = settingsStore.store();
 	const divRef = useRef<HTMLDivElement>(null);
 	const { showPopup, showSettings, showInfoIcon } = visibilityStore.store();
@@ -192,6 +193,12 @@ export function Extension() {
 			INFO_ICON_DIMENSION,
 			INFO_ICON_DIMENSION
 		);
+		//NOTE: save the content for retrieval later
+		searchStore.setPendingRequest({
+			context: webPageContent.current,
+			language,
+			searchTerm: selectedText.current,
+		});
 
 		setPosition({ left: positionLeft, top: positionTop });
 	};
@@ -214,12 +221,16 @@ export function Extension() {
 		}, 0);
 	};
 
-	const handleOnTriggerIconClick = () => {
+	const showExplanation = () => {
 		// reset the store
 		searchStore.resetStore();
 		// set the visibility conditions
 		visibilityStore.setShowPopup(true);
 		visibilityStore.setShowInfoIcon(false);
+	};
+
+	const handleOnTriggerIconClick = () => {
+		showExplanation();
 		// calculate the position
 		setTimeout(() => {
 			const { width, height } = divRef.current!.getBoundingClientRect();
@@ -238,34 +249,51 @@ export function Extension() {
 			const finalTop = top + scrollTop + 5; //  5 IS PADDING
 			setPosition({ left, top: finalTop });
 
-			// make or save request for later
-			const request: AskDto = {
-				context: webPageContent.current,
-				language,
-				searchTerm: selectedText.current,
-				userId: id,
-			};
-
-			if (loggedIn) {
-				searchStore.requestExplanation(request);
-			} else {
-				console.log("saved request");
-				searchStore.saveRequestForLater(request);
+			if (loggedIn && pendingRequest) {
+				searchStore.requestExplanation({
+					...pendingRequest,
+					userId: id,
+				});
 			}
 		}, 0);
 	};
 
+	const handleChromeExtensionMessage = async ({
+		type,
+	}: {
+		type: ServiceWorkerMessageEvents;
+	}) => {
+		if (type === ServiceWorkerMessageEvents.EXPLAIN_SELECTED_TEXT) {
+			if (pendingRequest) {
+				showExplanation();
+				await searchStore.requestExplanation({ ...pendingRequest, userId: id });
+			}
+		}
+	};
+	useEffect(() => {
+		chrome.runtime.onMessage.addListener(handleChromeExtensionMessage);
+		return () => {
+			chrome.runtime.onMessage.removeListener(handleChromeExtensionMessage);
+		};
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [pendingRequest]);
+
 	useEffect(() => {
 		document.addEventListener("mouseup", handleOnMouseUp);
-		document.addEventListener("click", handleOnSelectionClick);
-		//
 		return () => {
 			document.removeEventListener("mouseup", handleOnMouseUp);
+		};
+		// when the trigger value changes, we wan't this update
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [trigger]);
+
+	useEffect(() => {
+		document.addEventListener("click", handleOnSelectionClick);
+		return () => {
 			document.removeEventListener("click", handleOnSelectionClick);
 		};
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
-
 	return (
 		<div
 			style={{

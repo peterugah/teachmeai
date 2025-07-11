@@ -1,8 +1,8 @@
-
 // TODO: move this to a shared file and bundle it as one for the background.ts file
 enum ServiceWorkerMessageEvents {
   START_AUTH_FLOW = "START_AUTH_FLOW",
   CHECK_LOGIN_STATUS = "CHECK_LOGIN_STATUS",
+  EXPLAIN_SELECTED_TEXT = "EXPLAIN_SELECTED_TEXT"
 }
 
 const TEACH_ME_AI_CONTEXT_MENU_ID = "TEACH-ME-AI-CONTEXT-MENU-ID"
@@ -15,6 +15,15 @@ chrome.runtime.onInstalled.addListener(() => {
       title: "Explain selection",
       contexts: ["selection"],
     });
+  });
+});
+
+// listen for menu item click 
+chrome.contextMenus.onClicked.addListener((info, tab) => {
+  if (info.menuItemId !== TEACH_ME_AI_CONTEXT_MENU_ID) return;
+  if (!tab?.id) return;
+  chrome.tabs.sendMessage(tab.id, {
+    type: ServiceWorkerMessageEvents.EXPLAIN_SELECTED_TEXT
   });
 });
 
