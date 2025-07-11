@@ -3,24 +3,22 @@
 enum ServiceWorkerMessageEvents {
   START_AUTH_FLOW = "START_AUTH_FLOW",
   CHECK_LOGIN_STATUS = "CHECK_LOGIN_STATUS",
-  ADD_TO_CONTEXT_MENU = "ADD_TO_CONTEXT_MENU",
 }
 
 const TEACH_ME_AI_CONTEXT_MENU_ID = "TEACH-ME-AI-CONTEXT-MENU-ID"
 
-chrome.runtime.onMessage.addListener((message, _, sendResponse) => {
-  // Add the icon to the context menu
-  if (message.type === ServiceWorkerMessageEvents.ADD_TO_CONTEXT_MENU) {
+// add icon to context menu
+chrome.runtime.onInstalled.addListener(() => {
+  chrome.contextMenus.removeAll(() => {
     chrome.contextMenus.create({
       id: TEACH_ME_AI_CONTEXT_MENU_ID,
-      title: "Expand on this selection",
+      title: "Explain selection",
       contexts: ["selection"],
+    });
+  });
+});
 
-    })
-    sendResponse(true);
-    return true;
-  }
-
+chrome.runtime.onMessage.addListener((message, _, sendResponse) => {
   // Login user
   if (message.type === ServiceWorkerMessageEvents.START_AUTH_FLOW) {
     startAuthFlow(sendResponse);
