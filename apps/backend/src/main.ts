@@ -4,7 +4,7 @@ import { Logger, NestApplicationOptions } from '@nestjs/common';
 import { json, urlencoded } from 'express';
 import * as fs from 'fs';
 async function bootstrap() {
-  const PORT = process.env.PORT || 3000;
+  const PORT = process.env.PORT || 3001;
   const isProduction = process.env.NODE_ENV === 'production';
 
   /** only use the certificate when working locally */
@@ -25,7 +25,7 @@ async function bootstrap() {
   app.enableCors();
 
   await app
-    .listen(process.env.PORT ?? 3000)
+    .listen(process.env.PORT || 3000)
     .then(() => {
       Logger.debug(`LISTENING ON PORT ${PORT}`);
     })
