@@ -3,6 +3,11 @@ import { ResponseDto, RequestState, ResponseType, AskDto, AskType, } from "@shar
 import { v4 as uuid } from "uuid"
 import { END_OF_SSE_EVENT } from "@shared/constants";
 import { settingsStore } from "./settings";
+import { persist } from "zustand/middleware";
+import { ROOT_CONTAINER_ID } from "../constant";
+import { isLocalhost } from "../utils/isLocalHost";
+import { createLocalStorage } from "./localStorage";
+import { createChromeStorage } from "./chromeStorage";
 
 interface Conversation {
   id: string;
@@ -14,6 +19,7 @@ interface SearchStore {
   askId: number;
   conversation: Conversation[];
   requestState: RequestState;
+  pendingRequest?: AskDto;
 }
 
 const initialState: SearchStore = {
@@ -22,20 +28,34 @@ const initialState: SearchStore = {
   conversation: [],
 };
 
-const useSearchStore = create(() => initialState);
+
+const store = create<SearchStore>()(
+  persist(
+    () => initialState,
+    {
+      name: `${ROOT_CONTAINER_ID}-search-store`,
+      storage: isLocalhost() ? createLocalStorage<SearchStore>() : createChromeStorage<SearchStore>("sync"),
+    }
+  )
+);
 
 const resetStore = () => {
-  useSearchStore.setState(() => initialState)
+  store.setState(() => initialState)
+}
+
+const setPendingRequest = (pendingRequest?: AskDto) => {
+  store.setState(() => ({ pendingRequest }))
+
 }
 
 const appendMessage = (conversation: Conversation) => {
-  useSearchStore.setState((state) => ({
+  store.setState((state) => ({
     conversation: [...state.conversation, conversation],
   }));
 };
 
 const uploadLastAIResponse = (content: string) => {
-  useSearchStore.setState((state) => {
+  store.setState((state) => {
     const updated = [...state.conversation];
     const last = updated[updated.length - 1];
     if (last.type === "ai") {
@@ -45,12 +65,12 @@ const uploadLastAIResponse = (content: string) => {
   });
 };
 
-
 const setRequestState = (requestState: RequestState) => {
-  useSearchStore.setState(() => ({ requestState }))
+  store.setState(() => ({ requestState }))
 }
+
 const setAskId = (askId: number) => {
-  useSearchStore.setState(() => ({ askId }))
+  store.setState(() => ({ askId }))
 }
 
 const ask = async (payload: AskDto) => {
@@ -121,7 +141,7 @@ const requestContinuation = async (id: number) => {
 const askQuestion = async (question: string) => {
   try {
     setRequestState("loading");
-    const askId = useSearchStore.getState().askId;
+    const askId = store.getState().askId;
     appendMessage({ content: question, id: uuid(), timestamp: Date.now(), type: "user" });
     await addResponse({
       userId: settingsStore.store.getState().id,
@@ -135,12 +155,17 @@ const askQuestion = async (question: string) => {
   }
 }
 
+const saveRequestForLater = (pendingRequest: AskDto) => {
+  store.setState(() => ({ pendingRequest }))
+}
 
 export const searchStore = {
+  store,
   resetStore,
   askQuestion,
   appendMessage,
-  useSearchStore,
   setRequestState,
+  setPendingRequest,
   requestExplanation,
+  saveRequestForLater
 }

@@ -4,7 +4,7 @@ import { Logger, NestApplicationOptions } from '@nestjs/common';
 import { json, urlencoded } from 'express';
 import * as fs from 'fs';
 async function bootstrap() {
-  const PORT = process.env.PORT || 3001;
+  const PORT = process.env.PORT || 3000;
   const isProduction = process.env.NODE_ENV === 'production';
 
   /** only use the certificate when working locally */

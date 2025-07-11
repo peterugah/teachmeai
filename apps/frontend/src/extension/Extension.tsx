@@ -7,11 +7,12 @@ import { Theme } from "../enums/theme";
 import { ROOT_CONTAINER_ID } from "../constant";
 import { searchStore } from "../store/search";
 import { UserSelection } from "../components/selection/UserSelection";
+import { AskDto } from "@shared/types";
 
 type Position = { top: number; left: number };
 
 export function Extension() {
-	const { theme, language, id, trigger } = settingsStore.store();
+	const { theme, language, id, trigger, loggedIn } = settingsStore.store();
 	const divRef = useRef<HTMLDivElement>(null);
 	const { showPopup, showSettings, showInfoIcon } = visibilityStore.store();
 	const [position, setPosition] = useState<Position>({ top: 0, left: 0 });
@@ -236,13 +237,21 @@ export function Extension() {
 			//
 			const finalTop = top + scrollTop + 5; //  5 IS PADDING
 			setPosition({ left, top: finalTop });
-			// make the request
-			searchStore.requestExplanation({
+
+			// make or save request for later
+			const request: AskDto = {
 				context: webPageContent.current,
 				language,
 				searchTerm: selectedText.current,
 				userId: id,
-			});
+			};
+
+			if (loggedIn) {
+				searchStore.requestExplanation(request);
+			} else {
+				console.log("saved request");
+				searchStore.saveRequestForLater(request);
+			}
 		}, 0);
 	};
 

@@ -12,18 +12,18 @@ import { visibilityStore } from "../../store/visibility";
 import removeMarkdown from "remove-markdown";
 
 export function Content() {
-	const { conversation, requestState } = searchStore.useSearchStore();
+	const { conversation, requestState } = searchStore.store();
 	const { language, loggedIn } = settingsStore.store();
 	const { showPopup } = visibilityStore.store();
 	const scrollContainerRef = useRef<HTMLDivElement>(null);
 	const handleOnCopy = () => {
-		const conversation = searchStore.useSearchStore.getState().conversation;
+		const conversation = searchStore.store.getState().conversation;
 		const content = conversation.reduce((a, convo) => {
 			a += `${
 				convo.type === "user"
 					? `[${settingsStore.store.getState().firstName}]\n${new Date(
 							convo.timestamp
-					  ).toLocaleString()}\n`
+						).toLocaleString()}\n`
 					: `[AI]\n${new Date(convo.timestamp).toLocaleString()}\n`
 			}${removeMarkdown(convo.content.trim().replace(/\n/g, ""))}\n\n`;
 			return a;
