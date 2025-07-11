@@ -19,7 +19,7 @@ interface SearchStore {
   askId: number;
   conversation: Conversation[];
   requestState: RequestState;
-  pendingRequest?: AskDto;
+  pendingRequest?: Omit<AskDto, "userId">;
 }
 
 const initialState: SearchStore = {
@@ -155,7 +155,7 @@ const askQuestion = async (question: string) => {
   }
 }
 
-const saveRequestForLater = (pendingRequest: AskDto) => {
+const saveRequestForLater = (pendingRequest: Omit<AskDto, "userId">) => {
   store.setState(() => ({ pendingRequest }))
 }
 
