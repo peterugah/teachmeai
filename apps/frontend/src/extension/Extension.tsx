@@ -8,6 +8,7 @@ import { ROOT_CONTAINER_ID } from "../constant";
 import { searchStore } from "../store/search";
 import { UserSelection } from "../components/selection/UserSelection";
 import { ServiceWorkerMessageEvents } from "../enums/sw";
+import { isLocalhost } from "../utils/isLocalHost";
 
 type Position = { top: number; left: number };
 
@@ -270,7 +271,11 @@ export function Extension() {
 			}
 		}
 	};
+
 	useEffect(() => {
+		if (isLocalhost()) {
+			return;
+		}
 		chrome.runtime.onMessage.addListener(handleChromeExtensionMessage);
 		return () => {
 			chrome.runtime.onMessage.removeListener(handleChromeExtensionMessage);

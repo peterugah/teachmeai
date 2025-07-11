@@ -32,7 +32,7 @@
     "<all_urls>"
   ],
   "action": {
-    "default_popup": ""
+    "default_popup": "popup.html"
   },
   "content_scripts": [
     {
