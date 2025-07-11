@@ -30,7 +30,7 @@ const resetStore = () => {
   store.setState(() => initialState)
 }
 
-const setPendingRequest = (pendingRequest?: AskDto) => {
+const setPendingRequest = (pendingRequest?: Omit<AskDto, "userId">) => {
   store.setState(() => ({ pendingRequest }))
 
 }
@@ -142,9 +142,6 @@ const askQuestion = async (question: string) => {
   }
 }
 
-const saveRequestForLater = (pendingRequest: Omit<AskDto, "userId">) => {
-  store.setState(() => ({ pendingRequest }))
-}
 
 export const searchStore = {
   store,
@@ -154,5 +151,4 @@ export const searchStore = {
   setRequestState,
   setPendingRequest,
   requestExplanation,
-  saveRequestForLater
 }

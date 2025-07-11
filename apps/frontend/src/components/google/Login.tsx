@@ -28,7 +28,6 @@ export const Login = () => {
 					...pendingRequest,
 					userId: user.id,
 				});
-				searchStore.setPendingRequest(undefined);
 			}
 		} else {
 			setError(true);
@@ -51,7 +50,6 @@ export const Login = () => {
 					...pendingRequest,
 					userId: user.id,
 				});
-				searchStore.setPendingRequest(undefined);
 			}
 			return;
 		}
