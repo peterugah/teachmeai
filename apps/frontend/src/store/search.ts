@@ -3,11 +3,6 @@ import { ResponseDto, RequestState, ResponseType, AskDto, AskType, } from "@shar
 import { v4 as uuid } from "uuid"
 import { END_OF_SSE_EVENT } from "@shared/constants";
 import { settingsStore } from "./settings";
-import { persist } from "zustand/middleware";
-import { ROOT_CONTAINER_ID } from "../constant";
-import { isLocalhost } from "../utils/isLocalHost";
-import { createLocalStorage } from "./localStorage";
-import { createChromeStorage } from "./chromeStorage";
 
 interface Conversation {
   id: string;
@@ -29,15 +24,7 @@ const initialState: SearchStore = {
 };
 
 
-const store = create<SearchStore>()(
-  persist(
-    () => initialState,
-    {
-      name: `${ROOT_CONTAINER_ID}-search-store`,
-      storage: isLocalhost() ? createLocalStorage<SearchStore>() : createChromeStorage<SearchStore>("sync"),
-    }
-  )
-);
+const store = create(() => initialState);
 
 const resetStore = () => {
   store.setState(() => initialState)
