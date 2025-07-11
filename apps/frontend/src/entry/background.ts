@@ -1,3 +1,5 @@
+import { ROOT_CONTAINER_ID } from "src/constant";
+
 // TODO: move this to a shared file and bundle it as one for the background.ts file
 enum ServiceWorkerMessageEvents {
   START_AUTH_FLOW = "START_AUTH_FLOW",
@@ -9,14 +11,15 @@ chrome.runtime.onMessage.addListener((message, _, sendResponse) => {
   // Add the icon to the context menu
   if (message.type === ServiceWorkerMessageEvents.ADD_TO_CONTEXT_MENU) {
     chrome.contextMenus.create({
-      // TODO: this should be shared too
-      id: "teachme-ai-option",
-      title: "expand on the selection",
-      contexts: ["selection"]
+      id: ROOT_CONTAINER_ID,
+      title: "Expand on this selection",
+      contexts: ["selection"],
+
     })
     sendResponse(true);
     return true;
   }
+
   // Login user
   if (message.type === ServiceWorkerMessageEvents.START_AUTH_FLOW) {
     startAuthFlow(sendResponse);
