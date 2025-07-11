@@ -3,7 +3,10 @@
   "version": "1.0.0",
   "main": "index.js",
   "devDependencies": {
-    "turbo": "^2.5.4"
+    "turbo": "^2.5.4",
+    "vite": "6.2.0",
+    "@vitejs/plugin-react": "4.3.4",
+    "@tailwindcss/vite": "4.1.3"
   },
   "private": true,
   "workspaces": [
@@ -13,11 +16,17 @@
   "scripts": {
     "dev": "turbo dev",
     "dev:be": "turbo dev --filter=backend",
+    "dev:fe": "turbo dev --filter=frontend",
     "build": "turbo build"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
-  "packageManager": "yarn@1.22.22"
+  "packageManager": "yarn@1.22.22",
+  "resolutions": {
+    "vite": "6.2.0",
+    "@vitejs/plugin-react": "4.3.4",
+    "@tailwindcss/vite": "4.1.3"
+  }
 }
