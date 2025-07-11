@@ -4,9 +4,11 @@ import { settingsStore } from "../../store/settings";
 import { isLocalhost } from "../../utils/isLocalHost";
 import { ServiceWorkerMessageEvents } from "../../enums/sw";
 import { GoogleAuthFlowResponse } from "@shared/types";
+import { searchStore } from "../../store/search";
 
 export const Login = () => {
 	const { language, email } = settingsStore.store();
+	const { pendingRequest } = searchStore.store();
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState(false);
 
@@ -20,6 +22,14 @@ export const Login = () => {
 			});
 			settingsStore.setUserDetails(user);
 			settingsStore.setLoggedIn(true);
+			// retry the last request
+			if (pendingRequest) {
+				await searchStore.requestExplanation({
+					...pendingRequest,
+					userId: user.id,
+				});
+				searchStore.setPendingRequest(undefined);
+			}
 		} else {
 			setError(true);
 		}
@@ -36,6 +46,13 @@ export const Login = () => {
 			settingsStore.setUserDetails(user);
 			settingsStore.setLoggedIn(true);
 			setLoading(false);
+			if (pendingRequest) {
+				await searchStore.requestExplanation({
+					...pendingRequest,
+					userId: user.id,
+				});
+				searchStore.setPendingRequest(undefined);
+			}
 			return;
 		}
 
