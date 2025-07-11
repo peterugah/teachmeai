@@ -11,7 +11,7 @@
     "start": "nest start",
     "dev": "nest start  --watch",
     "debug": "nest start --debug --watch",
-    "prod": "node dist/backend/src/main",
+    "prod": "node dist/apps/backend/src/main",
     "cloud": "npm run prisma:generate && npm run generate:migration && npm run prod",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",

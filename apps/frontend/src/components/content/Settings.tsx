@@ -1,18 +1,27 @@
 import { ArrowUturnLeftIcon } from "@heroicons/react/24/outline";
 import { Theme } from "../../enums/theme";
-import { settingsStore } from "../../store/settings";
+import {
+	TRIGGER_TYPES,
+	TriggerType,
+	settingsStore,
+} from "../../store/settings";
 import { visibilityStore } from "../../store/visibility";
 import { translationStore } from "../../store/translations";
 import { Language } from "@shared/languageEnum";
 
 export function Settings() {
 	// const [hoveredStar, setHoveredStar] = useState<number | null>(null);
-	const { theme, language } = settingsStore.store();
+	const { theme, language, trigger } = settingsStore.store();
 
 	const handleOnLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
 		const language = e.target.value as Language;
 		settingsStore.setLanguage(language);
 		translationStore.fetchTranslations(language);
+	};
+
+	const handleOnTriggerChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+		const trigger = e.target.value as TriggerType;
+		settingsStore.setTrigger(trigger);
 	};
 
 	const handleOnChangeTheme = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -30,10 +39,18 @@ export function Settings() {
 		visibilityStore.setShowPopup(true);
 	};
 
-	const renderLanguages = () => {
+	const renderLanguagesList = () => {
 		return settingsStore.getLanguages().map(([key, value]) => (
 			<option key={key} value={value}>
 				{value}
+			</option>
+		));
+	};
+
+	const renderTriggerList = () => {
+		return TRIGGER_TYPES.map((key) => (
+			<option key={key} value={key}>
+				{key}
 			</option>
 		));
 	};
@@ -86,8 +103,8 @@ export function Settings() {
 			{/* Settings  */}
 			<div className="flex flex-col gap-4 p-2">
 				<div className="flex justify-between gap-2">
-					<label className="text-gray-700 mr-5 dark:text-neutral-300">
-						{translationStore.translate("theme", language)}
+					<label className="text-gray-700 dark:text-neutral-300 flex-shrink-0">
+						{translationStore.translate("theme", language)}:
 					</label>
 					<div className="bg-red overflow-hidden w-full">
 						<select
@@ -99,9 +116,10 @@ export function Settings() {
 						</select>
 					</div>
 				</div>
+				{/* language  */}
 				<div className="flex justify-between gap-2">
-					<label className="text-gray-700 dark:text-neutral-300">
-						Language
+					<label className="text-gray-700 dark:text-neutral-300 flex-shrink-0">
+						{translationStore.translate("language", language)}:
 					</label>
 					<div className="bg-red overflow-hidden w-full">
 						<select
@@ -109,11 +127,25 @@ export function Settings() {
 							value={language}
 							onChange={handleOnLanguageChange}
 						>
-							{renderLanguages()}
+							{renderLanguagesList()}
 						</select>
 					</div>
 				</div>
 				{/* select icon context */}
+				<div className="flex justify-between gap-2">
+					<label className="text-gray-700 dark:text-neutral-300 flex-shrink-0">
+						{translationStore.translate("trigger", language)}:
+					</label>
+					<div className="bg-red overflow-hidden w-full">
+						<select
+							className="w-full focus:outline-none"
+							value={trigger}
+							onChange={handleOnTriggerChange}
+						>
+							{renderTriggerList()}
+						</select>
+					</div>
+				</div>
 			</div>
 
 			{/* History */}

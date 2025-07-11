@@ -1,17 +1,17 @@
 import { useEffect, useRef, useState } from "react";
 import { Content } from "../components/content/Content";
 import { Settings } from "../components/content/Settings";
-import { Selection } from "../components/selection/Selection";
 import { visibilityStore } from "../store/visibility";
 import { settingsStore } from "../store/settings";
 import { Theme } from "../enums/theme";
 import { ROOT_CONTAINER_ID } from "../constant";
 import { searchStore } from "../store/search";
+import { UserSelection } from "../components/selection/UserSelection";
 
 type Position = { top: number; left: number };
 
 export function Extension() {
-	const { theme, language, id } = settingsStore.store();
+	const { theme, language, id, trigger } = settingsStore.store();
 	const divRef = useRef<HTMLDivElement>(null);
 	const { showPopup, showSettings, showInfoIcon } = visibilityStore.store();
 	const [position, setPosition] = useState<Position>({ top: 0, left: 0 });
@@ -178,7 +178,9 @@ export function Extension() {
 		visibilityStore.setShowPopup(false);
 		visibilityStore.setShowSettings(false);
 		// show the icon
-		visibilityStore.setShowInfoIcon(true);
+		if (trigger === "Icon") {
+			visibilityStore.setShowInfoIcon(true);
+		}
 		// set the values
 		webPageContent.current = getWebPageContent(response.selection) || "";
 		selectedText.current = text;
@@ -211,7 +213,7 @@ export function Extension() {
 		}, 0);
 	};
 
-	const handleOnInfoIconClick = () => {
+	const handleOnTriggerIconClick = () => {
 		// reset the store
 		searchStore.resetStore();
 		// set the visibility conditions
@@ -269,7 +271,7 @@ export function Extension() {
 		>
 			{showPopup && <Content />}
 			{showSettings && <Settings />}
-			{showInfoIcon && <Selection onClick={handleOnInfoIconClick} />}
+			{showInfoIcon && <UserSelection onClick={handleOnTriggerIconClick} />}
 		</div>
 	);
 }

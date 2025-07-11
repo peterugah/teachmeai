@@ -18,6 +18,7 @@ export interface TranslationKeys {
   loginErrorMessage: Partial<Record<Language, string>>
   liked: Partial<Record<Language, string>>
   copied: Partial<Record<Language, string>>
+  trigger: Partial<Record<Language, string>>
 }
 
 interface TranslationsStore {
@@ -73,6 +74,9 @@ const initialState: TranslationsStore = {
     copied: {
       [Language.English]: "Copied",
     },
+    trigger: {
+      [Language.English]: "Trigger",
+    }
   }
 }
 

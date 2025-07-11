@@ -1,5 +1,4 @@
 import { create } from "zustand"
-import { Language } from "../../../shared/languageEnum"
 import { Theme, } from "../enums/theme";
 import { persist } from "zustand/middleware";
 import { createChromeStorage } from "./chromeStorage";
@@ -7,8 +6,11 @@ import { isLocalhost } from "../utils/isLocalHost";
 import { ROOT_CONTAINER_ID } from "../constant";
 import { createLocalStorage } from "./localStorage";
 import { CreateUserDto, UserDto } from "@shared/types";
+import { Language } from "@shared/languageEnum";
 
-type IconContext = "selection" | "menuContext";
+export const TRIGGER_TYPES = ["Icon", "Menu Item"] as const;
+
+export type TriggerType = typeof TRIGGER_TYPES[number];
 export interface SettingsStore {
   id: number;
   theme: Theme;
@@ -17,12 +19,12 @@ export interface SettingsStore {
   firstName: string;
   loggedIn: boolean;
   language: Language;
-  iconContext: IconContext;
+  trigger: TriggerType;
   lastContentScrollTopPosition: number;
 }
 
 const initialState: SettingsStore = {
-  iconContext: "selection",
+  trigger: "Icon",
   lastContentScrollTopPosition: 0,
   language: Language.English,
   theme: Theme.Dark,
@@ -54,8 +56,8 @@ const getBrowserTheme = (): Theme => {
 const setTheme = (theme: Theme) => {
   store.setState(() => ({ theme }))
 }
-const setIconContext = (iconContext: IconContext) => {
-  store.setState(() => ({ iconContext }))
+const setTrigger = (trigger: TriggerType) => {
+  store.setState(() => ({ trigger }))
 }
 
 const setLoggedIn = (loggedIn: boolean) => {
@@ -85,6 +87,7 @@ const setUserDetails = (details: Pick<SettingsStore, "email" | "firstName" | "la
   store.setState(() => details)
 }
 export const settingsStore = {
+  store,
   setTheme,
   createUser,
   isLocalhost,
@@ -92,8 +95,7 @@ export const settingsStore = {
   setLoggedIn,
   getLanguages,
   setUserDetails,
-  setIconContext,
   getBrowserTheme,
-  store,
+  setTrigger,
   setLastContentScrollTopPosition
 }
