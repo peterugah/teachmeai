@@ -48,7 +48,11 @@
   "web_accessible_resources": [
     {
       "resources": [
-        "content.js"
+        "content.js",
+        "logo-16x16.png",
+        "logo-32x32.png",
+        "logo-48x48.png",
+        "logo-128x128.png"
       ],
       "matches": [
         "<all_urls>"
