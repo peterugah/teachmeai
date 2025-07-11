@@ -1,4 +1,3 @@
-import { ROOT_CONTAINER_ID } from "src/constant";
 
 // TODO: move this to a shared file and bundle it as one for the background.ts file
 enum ServiceWorkerMessageEvents {
@@ -7,11 +6,13 @@ enum ServiceWorkerMessageEvents {
   ADD_TO_CONTEXT_MENU = "ADD_TO_CONTEXT_MENU",
 }
 
+const TEACH_ME_AI_CONTEXT_MENU_ID = "TEACH-ME-AI-CONTEXT-MENU-ID"
+
 chrome.runtime.onMessage.addListener((message, _, sendResponse) => {
   // Add the icon to the context menu
   if (message.type === ServiceWorkerMessageEvents.ADD_TO_CONTEXT_MENU) {
     chrome.contextMenus.create({
-      id: ROOT_CONTAINER_ID,
+      id: TEACH_ME_AI_CONTEXT_MENU_ID,
       title: "Expand on this selection",
       contexts: ["selection"],
 
