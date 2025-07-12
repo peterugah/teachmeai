@@ -164,7 +164,6 @@ export class SearchService {
     responses: ResponseDto[],
   ) {
 
-    console.log({ payload, responses })
     await this.vectorStoreService.indexPageContent(payload.context);
 
     const context = await this.vectorStoreService.retrieveRelevantContent(

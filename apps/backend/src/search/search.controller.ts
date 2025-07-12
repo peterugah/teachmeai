@@ -66,7 +66,8 @@ export class SearchController {
 
   @Sse('conversation/:id')
   @Get('conversation/:id')
-  async askConversation(@Param('id', ParseIntPipe) id: number) {
+  async askConversation(@Param('id', ParseIntPipe) id: number,
+  ) {
     const data = await this.databaseService.ask.findFirstOrThrow({
       where: { id },
       include: {
