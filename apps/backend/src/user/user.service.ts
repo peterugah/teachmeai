@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from '@shared/types';
-import { DatabaseService } from 'src/database/database.service';
+import { DatabaseService } from '../database/database.service';
 
 @Injectable()
 export class UserService {
@@ -15,7 +15,7 @@ export class UserService {
     });
   }
 
-  async findUser(user: CreateUserDto) {
+  findUser(user: CreateUserDto) {
     return this.databaseService.user.findFirst({
       where: user,
     });

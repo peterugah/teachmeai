@@ -1,13 +1,12 @@
 import { PaperAirplaneIcon } from "@heroicons/react/24/outline";
 import { useRef } from "react";
-import { settingsStore } from "../store/settings";
 
 interface Props {
 	onSubmit: (question: string) => void;
 	placeholderText: string;
+	disabled: boolean;
 }
-export function TextForm({ onSubmit, placeholderText }: Props) {
-	const { loggedIn } = settingsStore.store();
+export function TextForm({ onSubmit, placeholderText, disabled }: Props) {
 	const textareaRef = useRef<HTMLTextAreaElement>(null);
 
 	const autoResizeTextArea = () => {
@@ -39,7 +38,7 @@ export function TextForm({ onSubmit, placeholderText }: Props) {
 		<div className="mt-4 border-gray-300 rounded-[15px] relative bg-gray-100 dark:bg-neutral-800">
 			<form onSubmit={handleOnSubmit}>
 				<textarea
-					disabled={!loggedIn}
+					disabled={disabled}
 					spellCheck={true}
 					ref={textareaRef}
 					placeholder={placeholderText}
@@ -49,7 +48,7 @@ export function TextForm({ onSubmit, placeholderText }: Props) {
 				/>
 
 				<button
-					disabled={!loggedIn}
+					disabled={disabled}
 					type="submit"
 					className="absolute cursor-pointer bottom-[8px] right-[8px] text-sm text-white border-gray-50 p-2 rounded-2xl bg-blue-500 hover:bg-blue-600 transition disabled:bg-neutral-400 disabled:cursor-default"
 				>

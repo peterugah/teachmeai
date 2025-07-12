@@ -94,7 +94,11 @@ export function Settings() {
 					{translationStore.translate("settings", language)}
 				</h1>
 				<button
-					onClick={handleOnBackClick}
+					onClick={(e) => {
+						e.preventDefault();
+						e.stopPropagation();
+						handleOnBackClick();
+					}}
 					className="cursor-pointer text-gray-800 hover:text-black dark:text-neutral-400 dark:hover:text-neutral-300"
 				>
 					<ArrowUturnLeftIcon className="size-6 " />

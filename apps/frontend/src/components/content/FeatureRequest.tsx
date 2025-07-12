@@ -4,10 +4,11 @@ import { translationStore } from "../../store/translations";
 import { settingsStore } from "../../store/settings";
 
 interface Props {
-	onSubmit: () => void;
+	disabled: boolean;
 	onClick: () => void;
+	onSubmit: (report: string) => void;
 }
-export function FeatureRequest({ onSubmit, onClick }: Props) {
+export function FeatureRequest({ onSubmit, onClick, disabled }: Props) {
 	const { language } = settingsStore.store();
 	const [show, setShow] = useState(false);
 	const handleOnClick = () => {
@@ -27,6 +28,7 @@ export function FeatureRequest({ onSubmit, onClick }: Props) {
 			{show && (
 				<div className="">
 					<TextForm
+						disabled={disabled}
 						onSubmit={onSubmit}
 						placeholderText={translationStore.translate(
 							"hearFromYou",
