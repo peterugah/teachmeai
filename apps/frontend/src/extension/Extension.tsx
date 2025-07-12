@@ -287,9 +287,9 @@ export function Extension() {
 		return () => {
 			document.removeEventListener("mouseup", handleOnMouseUp);
 		};
-		// when the trigger value changes, we wan't this update
+		// when the trigger value changes, we wan't this update, also when the language has been changed by the user
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [trigger]);
+	}, [trigger, language]);
 
 	useEffect(() => {
 		document.addEventListener("click", handleOnSelectionClick);

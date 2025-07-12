@@ -85,8 +85,9 @@ const handleStreamedResponse = (id: number, askType: AskType) => {
   let content = "";
   setRequestState("loading");
   appendMessage({ type: "ai", id: uuid(), timestamp: Date.now(), content: "" });
-
-  const eventSource = askType === "firstQuestion" ? new EventSource(`${import.meta.env.VITE_BASE_URL}/search/${id}`) : new EventSource(`${import.meta.env.VITE_BASE_URL}/search/conversation/${id}`);
+  const eventSource = askType === "firstQuestion" ?
+    new EventSource(`${import.meta.env.VITE_BASE_URL}/search/${id}`) :
+    new EventSource(`${import.meta.env.VITE_BASE_URL}/search/conversation/${id}`);
 
   eventSource.onmessage = (e) => {
     if (e.data !== END_OF_SSE_EVENT) {

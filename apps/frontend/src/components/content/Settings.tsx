@@ -16,7 +16,6 @@ export function Settings() {
 	const handleOnLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
 		const language = e.target.value as Language;
 		settingsStore.setLanguage(language);
-		translationStore.fetchTranslations(language);
 	};
 
 	const handleOnTriggerChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
