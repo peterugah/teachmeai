@@ -53,3 +53,10 @@ export interface UserDto {
   paying: boolean;
 }
 export type CreateUserDto = Omit<UserDto, "id" | "paying">
+
+
+export interface CreateReportDto {
+  report: string;
+  askId: number;
+  userId: number;
+}

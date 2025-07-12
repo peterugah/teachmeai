@@ -14,7 +14,11 @@ export const Header = () => {
 	return (
 		<nav className="flex items-center justify-between">
 			<button
-				onClick={handleShowSettings}
+				onClick={(e) => {
+					e.preventDefault();
+					e.stopPropagation();
+					handleShowSettings();
+				}}
 				className="size-6 m-2 cursor-pointer text-gray-800 hover:text-black dark:text-neutral-500 dark:hover:text-neutral-300"
 			>
 				<Cog8ToothIcon />
@@ -23,7 +27,11 @@ export const Header = () => {
 				<Logo />
 			</p>
 			<button
-				onClick={handleClosePopUp}
+				onClick={(e) => {
+					e.preventDefault();
+					e.stopPropagation();
+					handleClosePopUp();
+				}}
 				className="size-7 m-2 cursor-pointer text-gray-800 hover:text-black  dark:text-neutral-500 dark:hover:text-neutral-300"
 			>
 				<XMarkIcon />

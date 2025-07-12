@@ -4,18 +4,35 @@ import { TextForm } from "../../components/TextForm";
 import { FeatureRequest } from "./FeatureRequest";
 import { searchStore } from "../../store/search";
 import { Response } from "./Response";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { translationStore } from "../../store/translations";
 import { settingsStore } from "../../store/settings";
 import { Login } from "../google/Login";
 import { visibilityStore } from "../../store/visibility";
 import removeMarkdown from "remove-markdown";
+import { reportStore } from "../../store/report";
+import Notification, { NotificationType } from "./Notification";
 
 export function Content() {
-	const { conversation, requestState } = searchStore.store();
-	const { language, loggedIn } = settingsStore.store();
+	const {
+		conversation,
+		requestState: searchRequestState,
+		askId,
+	} = searchStore.store();
+	const { language, loggedIn, id } = settingsStore.store();
 	const { showPopup } = visibilityStore.store();
+	const { requestState: reportRequestState } = reportStore.store();
 	const scrollContainerRef = useRef<HTMLDivElement>(null);
+	const [notificationProps, setNotificationProps] = useState<{
+		type: NotificationType;
+		text: string;
+	}>();
+
+	const disabled =
+		!loggedIn ||
+		searchRequestState === "loading" ||
+		reportRequestState === "loading";
+
 	const handleOnCopy = () => {
 		const conversation = searchStore.store.getState().conversation;
 		const content = conversation.reduce((a, convo) => {
@@ -41,6 +58,27 @@ export function Content() {
 				});
 			}
 		}, 50);
+	};
+
+	const handleReportSubmission = async (report: string) => {
+		reportStore
+			.createReport({
+				askId,
+				report,
+				userId: id,
+			})
+			.then(() => {
+				setNotificationProps({
+					type: "success",
+					text: "Report submitted successfully",
+				});
+			})
+			.catch(() => {
+				setNotificationProps({
+					type: "error",
+					text: "Error submitting report",
+				});
+			});
 	};
 
 	useEffect(() => {
@@ -70,8 +108,29 @@ export function Content() {
 		}
 	}, [showPopup]);
 
+	/** after 10 seconds automatically close the notification */
+	useEffect(() => {
+		let resetTimout: NodeJS.Timeout;
+		if (notificationProps) {
+			resetTimout = setTimeout(() => {
+				setNotificationProps(undefined);
+			}, 5000);
+		}
+		return () => {
+			clearTimeout(resetTimout);
+		};
+	}, [notificationProps]);
+
 	return (
 		<div className="bg-white rounded-2xl dark:bg-neutral-900 pb-4 shadow dark:shadow-none">
+			{/* General notifications */}
+			{notificationProps && (
+				<Notification
+					onClose={() => setNotificationProps(undefined)}
+					text={notificationProps.text}
+					type={notificationProps.type}
+				/>
+			)}
 			<Header />
 			<div
 				ref={scrollContainerRef}
@@ -81,17 +140,19 @@ export function Content() {
 				{conversation.map((msg, i) => (
 					<Response key={i} content={msg.content} type={msg.type} />
 				))}
-				{requestState === "loading" && (
+				{searchRequestState === "loading" && (
 					<span>{translationStore.translate("processing", language)}</span>
 				)}
 				<SectionThree onCopy={handleOnCopy} onLike={() => {}} />
 				<TextForm
+					disabled={disabled}
 					onSubmit={searchStore.askQuestion}
 					placeholderText={translationStore.translate("askMore", language)}
 				/>
 				<FeatureRequest
+					disabled={disabled}
 					onClick={handleFeatureRequestClick}
-					onSubmit={() => {}}
+					onSubmit={handleReportSubmission}
 				/>
 			</div>
 		</div>
