@@ -1,5 +1,5 @@
 import {
-	HandThumbUpIcon,
+	// HandThumbUpIcon,
 	DocumentDuplicateIcon,
 	// SpeakerWaveIcon,
 } from "@heroicons/react/24/outline";
@@ -14,18 +14,18 @@ interface SectionThreeInterface {
 	// onPlay: () => void;
 }
 export const SectionThree = ({
-	onLike,
+	// onLike,
 	onCopy,
 }: // onPlay,
 SectionThreeInterface) => {
 	const { language } = settingsStore.store();
 	const [showCopyTooltip, setShowCopyTooltip] = useState(false);
-	const [showLikeTooltip, setShowLikeTooltip] = useState(false);
+	// const [showLikeTooltip, setShowLikeTooltip] = useState(false);
 
-	const handleOnLike = async () => {
-		await onLike();
-		setShowLikeTooltip(true);
-	};
+	// const handleOnLike = async () => {
+	// 	await onLike();
+	// 	setShowLikeTooltip(true);
+	// };
 
 	const handleOnCopy = () => {
 		onCopy();
@@ -38,14 +38,14 @@ SectionThreeInterface) => {
 
 	return (
 		<div className="space-x-2 pt-2">
-			<TooltipButton
+			{/* <TooltipButton
 				onClick={handleOnLike}
 				onHide={() => setShowLikeTooltip(false)}
 				showTooltip={showLikeTooltip}
 				hideAfter={1000}
 				tooltipText={translationStore.translate("liked", language)}
 				icon={<HandThumbUpIcon />}
-			/>
+			/> */}
 			<TooltipButton
 				onClick={handleOnCopy}
 				onHide={() => setShowCopyTooltip(false)}
