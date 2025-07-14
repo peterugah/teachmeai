@@ -20,6 +20,7 @@ export default defineConfig(({ mode }) => ({
     rollupOptions: {
       input: {
         content: resolve(__dirname, 'src/entry/content.tsx'),
+        popup: resolve(__dirname, 'src/entry/popup.tsx'),
         background: resolve(__dirname, 'src/entry/background.ts'),
       },
       output: {
