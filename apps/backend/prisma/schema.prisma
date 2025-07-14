@@ -32,6 +32,7 @@ model Ask {
   language   String     @default("EN")
   responses  Response[]
   reports    Reports[]
+  createdAt  DateTime   @default(now())
 }
 
 model Response {
