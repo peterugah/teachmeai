@@ -230,26 +230,29 @@ export function Extension() {
 		visibilityStore.setShowInfoIcon(false);
 	};
 
+	const positionContainer = () => {
+		const { width, height } = divRef.current!.getBoundingClientRect();
+		const { left, top } = calculatePopupPosition(
+			position.left,
+			position.top,
+			width - INFO_ICON_DIMENSION, // removing the info icon width,
+			height
+		);
+		// get the scroll position
+		const scrollTop =
+			window.pageYOffset ||
+			document.documentElement.scrollTop ||
+			document.body.scrollTop;
+		//
+		const finalTop = top + scrollTop + 5; //  5 IS PADDING
+		setPosition({ left, top: finalTop });
+	};
+
 	const handleOnTriggerIconClick = () => {
 		showExplanation();
 		// calculate the position
 		setTimeout(() => {
-			const { width, height } = divRef.current!.getBoundingClientRect();
-			const { left, top } = calculatePopupPosition(
-				position.left,
-				position.top,
-				width - INFO_ICON_DIMENSION, // removing the info icon width,
-				height
-			);
-			// get the scroll position
-			const scrollTop =
-				window.pageYOffset ||
-				document.documentElement.scrollTop ||
-				document.body.scrollTop;
-			//
-			const finalTop = top + scrollTop + 5; //  5 IS PADDING
-			setPosition({ left, top: finalTop });
-
+			positionContainer();
 			if (loggedIn && pendingRequest) {
 				searchStore.requestExplanation({
 					...pendingRequest,
@@ -267,6 +270,7 @@ export function Extension() {
 		if (type === ServiceWorkerMessageEvents.EXPLAIN_SELECTED_TEXT) {
 			if (pendingRequest) {
 				showExplanation();
+				positionContainer();
 				await searchStore.requestExplanation({ ...pendingRequest, userId: id });
 			}
 		}

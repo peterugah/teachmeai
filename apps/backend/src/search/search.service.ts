@@ -55,9 +55,9 @@ export class SearchService {
   }
   private constructFirstQuestionPrompt(payload: Omit<AskDto, 'userId'>) {
     return `
-      You will receive a block of webpage content. A phrase will be marked as "<SELECTED_TEXT>", with possible multiple occurrences—**focus only on the last one**.
+      You will receive a block of webpage content. A phrase to expatiate on, with possible multiple occurrences—**focus only on the last one**.
 
-      Your task is to thoroughly interpret and explain the phrase "<SELECTED_TEXT>" **based on the context**, in the indicated language "<LANGUAGE>", even if it requires some reasonable inference.
+      Your task is to thoroughly interpret and explain the phrase **based on the context**, in the indicated language, even if it requires some reasonable inference.
 
       Rules:
       - **Assume** the surrounding context is sufficient unless it is clearly fragmented or missing.
@@ -81,10 +81,10 @@ export class SearchService {
       \`\`\`
 
       Phrase to elaborate on:
-      <SELECTED_TEXT>: **${payload.searchTerm}**
+      **${payload.searchTerm}**
 
       Language: 
-      <LANGUAGE>: **${payload.language}**
+      **${payload.language}**
 
       Return only the explanation in Markdown format.
 `;
