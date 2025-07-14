@@ -13,7 +13,7 @@ export class CronjobService implements OnModuleInit {
 
   @Cron(CronExpression.EVERY_HOUR)
   async deleteOldRecors() {
-    this.logger.debug("fetching records for deletion");
+    this.logger.debug("Fetching records for deletion");
     const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000); // current time minus 1 hour
     const records = await this.databaseService.ask.findMany({
       take: 100, // get first 100 records
