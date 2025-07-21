@@ -24,9 +24,10 @@ phases:
       - echo "🔧 Installing production deps in apps/backend"
       - cd apps/backend
       - pwd
+      - ls -al
       - cat package.json
       - rm -rf node_modules
-      - yarn install --production --frozen-lockfile
+      - yarn install --production
       - echo "📦 Zipping artifact"
       - zip -r ../../backend-deploy.zip dist node_modules package.json yarn.lock
 
