@@ -21,13 +21,19 @@ phases:
 
   post_build:
     commands:
-      - echo "🔧 Installing production deps in apps/backend"
+      - echo "🔧 Installing production deps into apps/backend/node_modules"
+      # from repo root, install only prod deps of backend into its node_modules
+      - yarn install \
+        --production \
+        --frozen-lockfile \
+        --modules-folder apps/backend/node_modules \
+        --ignore-workspace-root-check
+
+      - echo "📦 Zipping deployable artifact"
+      # now package dist + that node_modules + manifest files
       - cd apps/backend
-      - echo "current directory is:"
-      - pwd
-      - yarn install --production --frozen-lockfile
-      - echo "📦 Zipping artifact"
-      - zip -r ../../backend-deploy.zip dist node_modules/* package.json yarn.lock
+      - zip -r ../../backend-deploy.zip dist node_modules package.json yarn.lock
+      - echo "✅ backend-deploy.zip ready"
 
 artifacts:
   files:
