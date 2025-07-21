@@ -27,7 +27,6 @@ phases:
       - yarn install --production
       - cp -r apps/backend/dist ./dist
       - cp apps/backend/package.json ./package.json
-      - cp apps/backend/yarn.lock ./yarn.lock
       - cp apps/backend/node_modules ./node_modules_2
       - echo "📦 Zipping artifact"
       - zip -r ../../backend-deploy.zip dist node_modules node_modules_2 package.json yarn.lock
