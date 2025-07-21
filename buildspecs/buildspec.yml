@@ -23,9 +23,11 @@ phases:
     commands:
       - echo "🔧 Installing production deps in apps/backend"
       - cd apps/backend
+      - echo "current directory is:"
+      - pwd
       - yarn install --production --frozen-lockfile
       - echo "📦 Zipping artifact"
-      - zip -r ../../backend-deploy.zip dist node_modules package.json yarn.lock
+      - zip -r ../../backend-deploy.zip dist node_modules/* package.json yarn.lock
 
 artifacts:
   files:
