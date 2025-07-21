@@ -23,8 +23,8 @@ phases:
     commands:
       - echo "🔧 Installing production deps in apps/backend"
       - cd apps/backend
-      - echo "current directory is:"
       - pwd
+      - cat package.json
       - rm -rf node_modules
       - yarn install --production --frozen-lockfile
       - echo "📦 Zipping artifact"
