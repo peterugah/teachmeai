@@ -18,16 +18,17 @@ phases:
     commands:
       - echo "🚀 Building backend + shared"
       - yarn build:be
+      - echo "🧹 Cleaning out all node_modules"
+      - rm -rf node_modules apps/backend/node_modules
 
   post_build:
     commands:
-      - echo "🔧 Installing production deps in apps/backend"
-      - cd apps/backend
-      - pwd
-      - ls -al
-      - cat package.json
-      - rm -rf node_modules
-      - yarn install
+      - echo "🔧 Installing production deps"
+      - yarn install --production
+      - cp -r apps/backend/dist ./dist
+      - cp apps/backend/package.json ./package.json
+      - cp apps/backend/yarn.lock ./yarn.lock
+      - cp apps/backend/node_modules ./node_modules_2
       - echo "📦 Zipping artifact"
       - zip -r ../../backend-deploy.zip dist node_modules package.json yarn.lock
 
