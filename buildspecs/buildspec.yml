@@ -1,0 +1,38 @@
+version: 0.2
+
+cache:
+  paths:
+    - node_modules/**/*
+    - apps/backend/node_modules/**/*
+    - packages/shared/node_modules/**/*
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 20
+    commands:
+      - echo "📦 Installing all workspace deps"
+      - yarn install --frozen-lockfile
+
+  build:
+    commands:
+      - echo "🚀 Building backend + shared"
+      - yarn build:be
+
+  post_build:
+    commands:
+      - echo "🔧 Installing production-only deps for backend"
+      # this will drop prod‑deps into apps/backend/node_modules
+      - yarn install \
+        --production \
+        --modules-folder apps/backend/node_modules \
+        --ignore-workspace-root-check
+
+      - echo "📦 Zipping artifact"
+      - cd apps/backend
+      - zip -r ../../backend-deploy.zip dist node_modules package.json yarn.lock
+      - echo "✅ backend-deploy.zip ready"
+
+artifacts:
+  files:
+    - backend-deploy.zip
