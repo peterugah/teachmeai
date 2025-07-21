@@ -15,9 +15,11 @@
   ],
   "scripts": {
     "dev": "turbo dev",
+    "build": "turbo build",
     "dev:be": "turbo dev --filter=backend",
     "dev:fe": "turbo dev --filter=frontend",
-    "build": "turbo build"
+    "build:be": "turbo build --filter=backend",
+    "build:fe": "turbo build --filter=frontend"
   },
   "keywords": [],
   "author": "",
