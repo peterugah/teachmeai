@@ -21,17 +21,11 @@ phases:
 
   post_build:
     commands:
-      - echo "🔧 Installing production-only deps for backend"
-      # this will drop prod‑deps into apps/backend/node_modules
-      - yarn install \
-        --production \
-        --modules-folder apps/backend/node_modules \
-        --ignore-workspace-root-check
-
-      - echo "📦 Zipping artifact"
+      - echo "🔧 Installing production deps in apps/backend"
       - cd apps/backend
+      - yarn install --production --frozen-lockfile
+      - echo "📦 Zipping artifact"
       - zip -r ../../backend-deploy.zip dist node_modules package.json yarn.lock
-      - echo "✅ backend-deploy.zip ready"
 
 artifacts:
   files:
