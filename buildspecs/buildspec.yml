@@ -23,13 +23,14 @@ phases:
 
   post_build:
     commands:
-      - echo "🔧 Installing production deps"
-      - yarn install --production
+      - echo "Installing production deps for the backend app"
+      - yarn workspace backend install --production
       - cp -r apps/backend/dist ./dist
       - cp apps/backend/package.json ./package.json
+      - cp apps/backend/Procfile ./Procfile
       - cp -a apps/backend/node_modules/. node_modules/
       - echo "📦 Zipping artifact"
-      - zip -r backend-deploy.zip dist node_modules package.json yarn.lock
+      - zip -r backend-deploy.zip dist node_modules package.json Procfile yarn.lock
 
 artifacts:
   files:
