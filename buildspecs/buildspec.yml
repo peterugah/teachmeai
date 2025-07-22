@@ -31,8 +31,8 @@ phases:
       - cp apps/backend/Procfile ./Procfile
       - cp -a apps/backend/node_modules/. node_modules/
       - echo "📦 Zipping artifact"
-      - zip -r backend-deploy.zip dist node_modules package.json Procfile yarn.lock
+      # - zip -r backend-deploy.zip dist node_modules package.json Procfile yarn.lock
 
 artifacts:
   files:
-    - backend-deploy.zip
+    - "**/*"
