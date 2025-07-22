@@ -5,17 +5,16 @@ import { json, urlencoded } from 'express';
 import * as fs from 'fs';
 async function bootstrap() {
   const PORT = process.env.PORT || 3000;
-  const isProduction = process.env.NODE_ENV === 'production';
+  const isLocal = process.env.NODE_ENV === 'local';
 
   /** only use the certificate when working locally */
-  const httpsOptions: NestApplicationOptions = isProduction
-    ? {}
-    : {
+  const httpsOptions: NestApplicationOptions = isLocal
+    ? {
       httpsOptions: {
         key: fs.readFileSync('certs/key.pem'),
         cert: fs.readFileSync('certs/cert.pem'),
       },
-    };
+    } : {};
 
   const app = await NestFactory.create(AppModule, httpsOptions);
 

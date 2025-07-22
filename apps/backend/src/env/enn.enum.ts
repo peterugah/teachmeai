@@ -1,4 +1,5 @@
 export enum NodeEnv {
+  Local = 'local',
   Production = 'production',
   Development = 'development',
 }
