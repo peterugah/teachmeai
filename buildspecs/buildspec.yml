@@ -29,7 +29,7 @@ phases:
       - cp apps/backend/package.json ./package.json
       - cp -a apps/backend/node_modules/. node_modules/
       - echo "📦 Zipping artifact"
-      - zip -r ../../backend-deploy.zip dist node_modules package.json yarn.lock
+      - zip -r backend-deploy.zip dist node_modules package.json yarn.lock
 
 artifacts:
   files:
