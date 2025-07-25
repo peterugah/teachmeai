@@ -59,7 +59,6 @@ export class SearchController {
     const data = await this.databaseService.ask.findFirstOrThrow({
       where: { id },
     });
-    this.logger.debug(`request hitting search controller ${this.askGet.name}`)
     return this.searchService.question({
       context: data.context,
       language: data.language as Language,
