@@ -11,6 +11,7 @@ import { Language } from '@shared/languageEnum';
 
 @Injectable()
 export class SearchService {
+  private readonly logger = new Logger(SearchService.name, { timestamp: true })
   constructor(
     private readonly httpService: HttpService,
     private readonly vectorStoreService: VectorStoreService,
@@ -37,18 +38,19 @@ export class SearchService {
             const lines: string[] = chunk.toString('utf-8').split('\n');
             const object: OllamaModelResponse = JSON.parse(lines[0]);
             observer.next(object.response);
+            this.logger.debug("ollama data response is ", lines)
           });
           res.data.on('end', () => {
             observer.next(END_OF_SSE_EVENT);
             observer.complete();
           });
           res.data.on('error', (err) => {
-            Logger.error('error from ollama read ', err);
+            this.logger.error('error from ollama read ', err);
             observer.error('Unable to respond at this time');
           });
         },
         error: (err) => {
-          Logger.error('error from ollama read two', err);
+          this.logger.error('error from ollama read two', err);
         },
       });
     });
