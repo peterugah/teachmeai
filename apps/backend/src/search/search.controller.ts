@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  Logger,
   Param,
   ParseIntPipe,
   Patch,
@@ -16,6 +17,7 @@ import { DatabaseService } from 'src/database/database.service';
 import { Language } from '@shared/languageEnum';
 @Controller('search')
 export class SearchController {
+  private readonly logger = new Logger(SearchController.name, { timestamp: true })
   constructor(
     private readonly searchService: SearchService,
     private readonly databaseService: DatabaseService,
@@ -57,6 +59,7 @@ export class SearchController {
     const data = await this.databaseService.ask.findFirstOrThrow({
       where: { id },
     });
+    this.logger.debug(`request hitting search controller ${this.askGet.name}`)
     return this.searchService.question({
       context: data.context,
       language: data.language as Language,
