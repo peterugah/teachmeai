@@ -29,4 +29,13 @@ for model in mistral nomic-embed-text; do
   echo "[INFO] $(timestamp) Model '$model' pulled successfully." | tee -a "$LOG_FILE"
 done
 
+echo "[INFO] $(timestamp) Checking if ollama serve is already running..." | tee -a "$LOG_FILE"
+if pgrep -f "ollama serve" >/dev/null 2>&1; then
+  echo "[INFO] $(timestamp) ollama serve is already running." | tee -a "$LOG_FILE"
+else
+  echo "[INFO] $(timestamp) ollama serve not running. Starting ollama serve..." | tee -a "$LOG_FILE"
+  nohup ollama serve >>"$LOG_FILE" 2>&1 &
+  echo "[INFO] $(timestamp) ollama serve started." | tee -a "$LOG_FILE"
+fi
+
 echo "[INFO] $(timestamp) All done." | tee -a "$LOG_FILE"
