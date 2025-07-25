@@ -31,11 +31,35 @@ done
 
 echo "[INFO] $(timestamp) Checking if ollama serve is already running..." | tee -a "$LOG_FILE"
 if pgrep -f "ollama serve" >/dev/null 2>&1; then
-  echo "[INFO] $(timestamp) ollama serve is already running." | tee -a "$LOG_FILE"
+  PID=$(pgrep -f "ollama serve" | head -n1)
+  echo "[INFO] $(timestamp) ollama serve is already running (PID $PID)." | tee -a "$LOG_FILE"
 else
   echo "[INFO] $(timestamp) ollama serve not running. Starting ollama serve..." | tee -a "$LOG_FILE"
   nohup ollama serve >>"$LOG_FILE" 2>&1 &
-  echo "[INFO] $(timestamp) ollama serve started." | tee -a "$LOG_FILE"
+  PID=$!
+  echo "[INFO] $(timestamp) Started ollama serve (PID $PID)." | tee -a "$LOG_FILE"
+  # give it a moment to bind
+  sleep 2
 fi
+
+# Determine which port ollama serve is listening on
+echo "[INFO] $(timestamp) Detecting ollama serve port..." | tee -a "$LOG_FILE"
+if command -v ss >/dev/null 2>&1; then
+  PORT=$(ss -tlnp 2>/dev/null \
+    | grep "pid=$PID" \
+    | grep -oE ':[0-9]+' \
+    | grep -oE '[0-9]+' \
+    | head -n1)
+elif command -v netstat >/dev/null 2>&1; then
+  PORT=$(netstat -tlnp 2>/dev/null \
+    | grep "$PID" \
+    | grep -oE ':[0-9]+' \
+    | grep -oE '[0-9]+' \
+    | head -n1)
+else
+  PORT="unknown"
+fi
+
+echo "[INFO] $(timestamp) ollama serve is listening on port ${PORT}." | tee -a "$LOG_FILE"
 
 echo "[INFO] $(timestamp) All done." | tee -a "$LOG_FILE"
