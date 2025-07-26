@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 set -e
+# log all errors
+export OLLAMA_DEBUG=2
 
 # -----------------------------------------------------------------------------
 # Configuration: Log file and timestamp helper
