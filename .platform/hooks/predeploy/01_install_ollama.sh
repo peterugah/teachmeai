@@ -52,9 +52,6 @@ done
 # ----------------------------------------------------------------------------
 # Ensure numactl is installed for NUMA interleaving
 # ----------------------------------------------------------------------------
-# ----------------------------------------------------------------------------
-# Ensure numactl is installed for NUMA interleaving
-# ----------------------------------------------------------------------------
 if ! command -v numactl >/dev/null 2>&1; then
   echo "[INFO] $(timestamp) numactl not found; attempting to install..." | tee -a "$LOG_FILE"
   if command -v yum >/dev/null 2>&1; then
@@ -67,12 +64,9 @@ if ! command -v numactl >/dev/null 2>&1; then
 else
   echo "[INFO] $(timestamp) numactl already installed." | tee -a "$LOG_FILE"
 fi
-else
-  echo "[INFO] $(timestamp) numactl already installed." | tee -a "$LOG_FILE"
-fi
 
 # ----------------------------------------------------------------------------
-# Ensure Ollama Serve is Running with Optimized Flags
+# Ensure Ollama Serve is Running with Optimized Flags is Running with Optimized Flags
 # ----------------------------------------------------------------------------
 echo "[INFO] $(timestamp) Checking if ollama serve is already running..." | tee -a "$LOG_FILE"
 EXISTING_PID=$(pgrep -f "ollama serve" | head -n1 || true)
