@@ -50,23 +50,50 @@ for model in mistral nomic-embed-text; do
 done
 
 # ----------------------------------------------------------------------------
+# Ensure numactl is installed for NUMA interleaving
+# ----------------------------------------------------------------------------
+# ----------------------------------------------------------------------------
+# Ensure numactl is installed for NUMA interleaving
+# ----------------------------------------------------------------------------
+if ! command -v numactl >/dev/null 2>&1; then
+  echo "[INFO] $(timestamp) numactl not found; attempting to install..." | tee -a "$LOG_FILE"
+  if command -v yum >/dev/null 2>&1; then
+    yum install -y numactl >>"$LOG_FILE" 2>&1 && echo "[INFO] $(timestamp) numactl installed via yum." | tee -a "$LOG_FILE"
+  elif command -v dnf >/dev/null 2>&1; then
+    dnf install -y numactl >>"$LOG_FILE" 2>&1 && echo "[INFO] $(timestamp) numactl installed via dnf." | tee -a "$LOG_FILE"
+  else
+    echo "[WARN] $(timestamp) No suitable package manager found (yum/dnf); cannot install numactl. Continuing without NUMA interleaving." | tee -a "$LOG_FILE"
+  fi
+else
+  echo "[INFO] $(timestamp) numactl already installed." | tee -a "$LOG_FILE"
+fi
+else
+  echo "[INFO] $(timestamp) numactl already installed." | tee -a "$LOG_FILE"
+fi
+
+# ----------------------------------------------------------------------------
 # Ensure Ollama Serve is Running with Optimized Flags
 # ----------------------------------------------------------------------------
 echo "[INFO] $(timestamp) Checking if ollama serve is already running..." | tee -a "$LOG_FILE"
 EXISTING_PID=$(pgrep -f "ollama serve" | head -n1 || true)
 if [ -n "$EXISTING_PID" ]; then
   echo "[INFO] $(timestamp) Terminating existing ollama serve (PID $EXISTING_PID) ..." | tee -a "$LOG_FILE"
-  kill "$EXISTING_PID"
+  kill "$EXISTING_PID" || true
   sleep 1
 fi
 
 echo "[INFO] $(timestamp) Starting ollama serve with optimized flags..." | tee -a "$LOG_FILE"
-taskset -c 0-$((NPROC-1)) numactl --interleave=all \
-  nohup ollama serve \
-    --threads "$NPROC" \
-    --batch-size "$BATCH_SIZE" \
-    --ctx-size "$CTX_SIZE" \
-    --mmap >>"$LOG_FILE" 2>&1 &
+# Build serve command
+SERVE_CMD=(ollama serve --threads "$NPROC" --batch-size "$BATCH_SIZE" --ctx-size "$CTX_SIZE" --mmap)
+# Wrap with numactl if installed
+if command -v numactl >/dev/null 2>&1; then
+  SERVE_CMD=(numactl --interleave=all "${SERVE_CMD[@]}")
+  echo "[INFO] $(timestamp) Will use numactl for NUMA interleaving." | tee -a "$LOG_FILE"
+else
+  echo "[WARN] $(timestamp) numactl not available; skipping NUMA interleaving." | tee -a "$LOG_FILE"
+fi
+# Pin to cores and launch
+taskset -c 0-$((NPROC-1)) nohup "${SERVE_CMD[@]}" >>"$LOG_FILE" 2>&1 &
 PID=$!
 echo "[INFO] $(timestamp) Started ollama serve (PID $PID) with threads=$NPROC, batch-size=$BATCH_SIZE, ctx-size=$CTX_SIZE, mmap enabled." | tee -a "$LOG_FILE"
 sleep 2
@@ -87,10 +114,14 @@ elif command -v netstat >/dev/null 2>&1; then
     | grep -oE ':[0-9]+' \
     | grep -oE '[0-9]+' \
     | head -n1)
-else
-  PORT="unknown"
 fi
-echo "[INFO] $(timestamp) ollama serve is listening on port $PORT." | tee -a "$LOG_FILE"
+# Fallback to default Ollama port if detection fails
+if [ -z "$PORT" ]; then
+  PORT=11434
+  echo "[WARN] $(timestamp) Could not detect serve port; defaulting to $PORT." | tee -a "$LOG_FILE"
+else
+  echo "[INFO] $(timestamp) ollama serve is listening on port $PORT." | tee -a "$LOG_FILE"
+fi
 
 # ----------------------------------------------------------------------------
 # Warm‑Up Probe to Prime Runners
