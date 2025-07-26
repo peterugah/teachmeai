@@ -53,22 +53,23 @@ done
 # Ensure Ollama Serve is Running with Optimized Flags
 # ----------------------------------------------------------------------------
 echo "[INFO] $(timestamp) Checking if ollama serve is already running..." | tee -a "$LOG_FILE"
-if pgrep -f "ollama serve" >/dev/null 2>&1; then
-  PID=$(pgrep -f "ollama serve" | head -n1)
-  echo "[INFO] $(timestamp) ollama serve is already running (PID $PID)." | tee -a "$LOG_FILE"
-else
-  echo "[INFO] $(timestamp) ollama serve not running. Starting ollama serve with optimized flags..." | tee -a "$LOG_FILE"
-  # Pin to all cores, interleave memory, and pass perf flags
-  taskset -c 0-$((NPROC-1)) numactl --interleave=all \
-    nohup ollama serve \
-      --threads "$NPROC" \
-      --batch-size "$BATCH_SIZE" \
-      --ctx-size "$CTX_SIZE" \
-      --mmap >>"$LOG_FILE" 2>&1 &
-  PID=$!
-  echo "[INFO] $(timestamp) Started ollama serve (PID $PID) with threads=$NPROC, batch-size=$BATCH_SIZE, ctx-size=$CTX_SIZE, mmap enabled." | tee -a "$LOG_FILE"
-  sleep 2
+EXISTING_PID=$(pgrep -f "ollama serve" | head -n1 || true)
+if [ -n "$EXISTING_PID" ]; then
+  echo "[INFO] $(timestamp) Terminating existing ollama serve (PID $EXISTING_PID) ..." | tee -a "$LOG_FILE"
+  kill "$EXISTING_PID"
+  sleep 1
 fi
+
+echo "[INFO] $(timestamp) Starting ollama serve with optimized flags..." | tee -a "$LOG_FILE"
+taskset -c 0-$((NPROC-1)) numactl --interleave=all \
+  nohup ollama serve \
+    --threads "$NPROC" \
+    --batch-size "$BATCH_SIZE" \
+    --ctx-size "$CTX_SIZE" \
+    --mmap >>"$LOG_FILE" 2>&1 &
+PID=$!
+echo "[INFO] $(timestamp) Started ollama serve (PID $PID) with threads=$NPROC, batch-size=$BATCH_SIZE, ctx-size=$CTX_SIZE, mmap enabled." | tee -a "$LOG_FILE"
+sleep 2
 
 # ----------------------------------------------------------------------------
 # Detect Listening Port for Ollama Serve
