@@ -5,6 +5,6 @@ import { Response } from 'express';
 export class AppController {
   @Get("health-check")
   healthCheck(@Res() res: Response) {
-    return res.status(200).send("working")
+    return res.status(200).json({ working: true })
   }
 }
