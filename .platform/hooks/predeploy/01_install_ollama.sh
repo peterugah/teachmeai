@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 set -e
-# log all errors
-export OLLAMA_DEBUG=2
 
 # -----------------------------------------------------------------------------
 # Configuration: Log file and timestamp helper
@@ -43,23 +41,7 @@ for model in mistral nomic-embed-text; do
 done
 
 # -----------------------------------------------------------------------------
-# Section 4: Align & right‑size your context windows
-# -----------------------------------------------------------------------------
-EMBED_CTX_SIZE=2048       # matches nomic-embed-text’s trained max
-CHAT_CTX_SIZE=4096        # only what you actually need for Mistral
-echo "[INFO] $(timestamp) Aligning Ollama context windows:" \
-     "embed=${EMBED_CTX_SIZE}, chat=${CHAT_CTX_SIZE}" | tee -a "$LOG_FILE"
-
-# Ollama uses OLLAMA_CONTEXT_LENGTH for all runners; embed model will clamp to its 2K max
-export OLLAMA_CONTEXT_LENGTH=${CHAT_CTX_SIZE}
-
-# Log what Ollama will see if you query its CLI after startup
-echo "[INFO] $(timestamp) After serve, the following 'ollama show' entries will confirm context lengths:" | tee -a "$LOG_FILE"
-echo "[INFO] $(timestamp)   → nomic-embed-text: context_length should report ${EMBED_CTX_SIZE}" | tee -a "$LOG_FILE"
-echo "[INFO] $(timestamp)   → mistral:            context_length should report <= ${CHAT_CTX_SIZE}" | tee -a "$LOG_FILE"
-
-# -----------------------------------------------------------------------------
-# Section 5: Ensure ’ollama serve’ is running
+# Section 4: Ensure ’ollama serve’ is running
 # -----------------------------------------------------------------------------
 echo "[INFO] $(timestamp) Checking if ’ollama serve’ is already running…" | tee -a "$LOG_FILE"
 
@@ -76,7 +58,7 @@ else
 fi
 
 # -----------------------------------------------------------------------------
-# Section 6: Detect which port ’ollama serve’ is listening on
+# Section 5: Detect which port ’ollama serve’ is listening on
 # -----------------------------------------------------------------------------
 echo "[INFO] $(timestamp) Detecting ollama serve port…" | tee -a "$LOG_FILE"
 
@@ -99,6 +81,6 @@ fi
 echo "[INFO] $(timestamp) ollama serve is listening on port ${PORT}." | tee -a "$LOG_FILE"
 
 # -----------------------------------------------------------------------------
-# Section 7: Finalization
+# Section 6: Finalization
 # -----------------------------------------------------------------------------
 echo "[INFO] $(timestamp) All steps completed successfully." | tee -a "$LOG_FILE"
